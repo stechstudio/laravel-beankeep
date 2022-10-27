@@ -1,0 +1,17 @@
+{
+    "name": "stechstudio/beankeep-laravel",
+    "description": "A Laravel wrapper for stechstudio/beankeep",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Stechstudio\\BeankeepLaravel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "V13Axel",
+            "email": "alex@stechstudios.com"
+        }
+    ],
+    "require": {}
+}
