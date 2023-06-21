@@ -1,16 +1,20 @@
 {
-    "name": "stechstudio/beankeep-laravel",
+    "name": "stechstudio/laravel-beankeep",
     "description": "A Laravel wrapper for stechstudio/beankeep",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Stechstudio\\BeankeepLaravel\\": "src/"
+            "Stechstudio\\LaravelBeankeep\\": "src/"
         }
     },
     "authors": [
         {
             "name": "V13Axel",
-            "email": "alex@stechstudios.com"
+            "email": "alex@stechstudio.com"
+        },
+        {
+            "name": "Zeb DeOs",
+            "email": "zebulin@stechstudio.com"
         }
     ],
     "require": {}
