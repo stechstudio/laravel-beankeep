@@ -2,6 +2,8 @@
     "name": "stechstudio/laravel-beankeep",
     "description": "A Laravel wrapper for stechstudio/beankeep",
     "type": "library",
+    "version": "0.1.0-dev",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "STS\\LaravelBeankeep\\": "src/"
