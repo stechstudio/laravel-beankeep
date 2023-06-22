@@ -24,7 +24,8 @@
         "laravel": {
             "providers": [
                 "STS\\Beankeep\\Laravel\\BeankeepServiceProvider"
-            ]
+            ],
+            "aliases": {}
         }
     }
 }
