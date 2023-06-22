@@ -1,6 +1,6 @@
 <?php
 
-namespace STS\LaravelBeankeep;
+namespace STS\Beankeep\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 

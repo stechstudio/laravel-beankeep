@@ -6,7 +6,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "STS\\LaravelBeankeep\\": "src/"
+            "STS\\Beankeep\\Laravel\\": "src/"
         }
     },
     "authors": [
