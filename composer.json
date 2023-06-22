@@ -19,5 +19,12 @@
             "email": "zebulin@stechstudio.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "STS\\Beankeep\\Laravel\\BeankeepServiceProvider"
+            ]
+        }
+    }
 }
