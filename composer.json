@@ -19,7 +19,15 @@
             "email": "zebulin@stechstudio.com"
         }
     ],
-    "require": {},
+    "require": {
+        "stechstudio/beankeep": "dev-initial-sketches"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:stechstudio/beankeep.git"
+        }
+    ],
     "extra": {
         "laravel": {
             "providers": [
