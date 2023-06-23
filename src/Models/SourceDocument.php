@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Livewire\TemporaryUploadedFile;
+use Illuminate\Http\UploadedFile;
 
 class SourceDocument extends Model
 {
@@ -37,12 +37,11 @@ class SourceDocument extends Model
 
     public static function diskName(): string
     {
+        // TODO(zmd): this should be configurable, not hard-coded
         return 'documents';
     }
 
-    // TODO(zmd): reconsider making Livewire temp file a hard dependency here
-    //   (can we code to a contract instead?)
-    public function store(TemporaryUploadedFile $tempUploadFile): self
+    public function store(UploadedFile $tempUploadFile): self
     {
         $this->attachment = static::generateAttachmentName();
         $this->filename = $tempUploadFile->getClientOriginalName();
@@ -99,6 +98,7 @@ class SourceDocument extends Model
 
     protected function attachmentDirectory(): string
     {
+        // TODO(zmd): this should be configurable, not hard-coded
         // TODO(zmd): we are probably going to need to think harder about this,
         //   to ensure files from different domains aren't mixed-- something
         //   the user should be able to configure and set up somehow.
