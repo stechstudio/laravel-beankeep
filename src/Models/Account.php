@@ -6,6 +6,7 @@ namespace STS\Beankeep\Laravel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use STS\Beankeep\Enums\AccountType;
 
 class Account extends Model
 {
@@ -16,6 +17,11 @@ class Account extends Model
         'name',
         'number',
     ];
+
+    protected $casts = [
+        'type' => AccountType::class,
+    ];
+
 
     public function lineItems(): HasMany
     {
