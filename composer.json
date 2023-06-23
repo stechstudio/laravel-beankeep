@@ -20,6 +20,10 @@
         }
     ],
     "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0",
+        "illuminate/database": "^10.0",
+        "league/mime-type-detection": "^1.11.0",
         "stechstudio/beankeep": "dev-initial-sketches"
     },
     "repositories": [

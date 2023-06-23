@@ -25,8 +25,6 @@ class MimeDetector
 
     public static function fromContents(string $fileContents): ?string
     {
-        // TODO(zmd): we should probably update composer.json to explicitly
-        //   depend on League\MimeTypeDetection
         return (new FinfoMimeTypeDetector())
             ->detectMimeType('', $fileContents);
     }
