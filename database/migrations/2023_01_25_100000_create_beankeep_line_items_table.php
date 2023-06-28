@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('journal_line_items', function (Blueprint $table) {
+        Schema::create('beankeep_line_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\STS\Beankeep\Laravel\Models\Account::class);
             $table->foreignIdFor(\STS\Beankeep\Laravel\Models\Transaction::class);
