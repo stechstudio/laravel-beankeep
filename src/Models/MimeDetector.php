@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Laravel\Models;
+namespace STS\Beankeep\Models;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
