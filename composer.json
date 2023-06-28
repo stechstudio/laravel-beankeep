@@ -23,12 +23,15 @@
         "php": "^8.2",
         "illuminate/support": "^10.0",
         "illuminate/database": "^10.0",
-        "stechstudio/beankeep": "dev-initial-sketches"
+        "stechstudio/beankeep": "@dev"
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "git@github.com:stechstudio/beankeep.git"
+            "type": "path",
+            "url": "../beankeep",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "extra": {
