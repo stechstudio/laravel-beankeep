@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('beankeep_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\STS\Beankeep\Laravel\Models\SourceDocument::class);
+            $table->foreignIdFor(\STS\Beankeep\Models\SourceDocument::class);
 
             $table->date('date');
 

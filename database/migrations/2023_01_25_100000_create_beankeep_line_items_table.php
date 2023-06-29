@@ -14,8 +14,8 @@ return new class extends Migration {
     {
         Schema::create('beankeep_line_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\STS\Beankeep\Laravel\Models\Account::class);
-            $table->foreignIdFor(\STS\Beankeep\Laravel\Models\Transaction::class);
+            $table->foreignIdFor(\STS\Beankeep\Models\Account::class);
+            $table->foreignIdFor(\STS\Beankeep\Models\Transaction::class);
 
             $table->integer('debit');
             $table->integer('credit');
