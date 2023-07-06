@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(\STS\Beankeep\Models\Account::class);
             $table->foreignIdFor(\STS\Beankeep\Models\Transaction::class);
+            $table->nullableMorphs('keepable');
 
             $table->integer('debit');
             $table->integer('credit');
@@ -31,6 +32,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('journal_line_items');
+        Schema::dropIfExists('beankeep_line_items');
     }
 };

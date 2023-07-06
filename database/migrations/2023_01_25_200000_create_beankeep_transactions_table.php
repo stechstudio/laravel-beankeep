@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('beankeep_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\STS\Beankeep\Models\SourceDocument::class);
+            $table->nullableMorphs('keepable');
 
             $table->date('date');
 

@@ -14,6 +14,7 @@ return new class extends Migration {
     {
         Schema::create('beankeep_source_documents', function (Blueprint $table) {
             $table->id();
+            $table->nullableMorphs('keepable');
 
             $table->date('date');
             $table->string('memo');
