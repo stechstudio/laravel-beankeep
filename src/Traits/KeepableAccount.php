@@ -14,4 +14,3 @@ trait KeepableAccount
         return $this->morphOne(Account::class, 'keepable');
     }
 }
-
