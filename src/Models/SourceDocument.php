@@ -23,4 +23,9 @@ class SourceDocument extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function keepable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }

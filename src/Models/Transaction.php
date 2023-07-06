@@ -35,4 +35,9 @@ class Transaction extends Model
     {
         return $this->date->format('m/d/Y');
     }
+
+    public function keepable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }

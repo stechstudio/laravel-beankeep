@@ -6,6 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use STS\Beankeep\Enums\AccountType;
 
 class Account extends Model
@@ -22,9 +23,13 @@ class Account extends Model
         'type' => AccountType::class,
     ];
 
-
     public function lineItems(): HasMany
     {
         return $this->hasMany(LineItem::class);
+    }
+
+    public function keepable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

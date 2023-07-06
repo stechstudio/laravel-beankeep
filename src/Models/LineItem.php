@@ -68,4 +68,9 @@ class LineItem extends Model
 
         return number_format($amountInDollars, 2, '.', ',');
     }
+
+    public function keepable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }
