@@ -19,6 +19,10 @@ class SourceDocument extends Model
         'mime_type',
     ];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
@@ -27,5 +31,10 @@ class SourceDocument extends Model
     public function keepable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function formattedDate(): string
+    {
+        return $this->date->format('m/d/Y');
     }
 }
