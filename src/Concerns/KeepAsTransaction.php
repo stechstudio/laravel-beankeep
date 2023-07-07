@@ -13,4 +13,11 @@ trait KeepAsTransaction
     {
         return $this->morphOne(Transaction::class, 'keepable');
     }
+
+    public function keepAttributes(): array
+    {
+        return [
+            'date' => $this->getKeepableDate(),
+        ];
+    }
 }
