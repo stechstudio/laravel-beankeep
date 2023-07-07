@@ -13,11 +13,4 @@ trait KeepableAccount
     {
         return $this->morphOne(Account::class, 'keepable');
     }
-
-    public function bootKeepableAccount(): void
-    {
-        // TODO(zmd): boot the keepable account model (hooks to ensure data
-        //   integrity, calculating checksum based on IsKeepable interface
-        //   (TBD), // etc.)
-    }
 }
