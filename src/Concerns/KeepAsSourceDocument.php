@@ -13,4 +13,15 @@ trait KeepAsSourceDocument
     {
         return $this->morphOne(SourceDocument::class, 'keepable');
     }
+
+    public function keepAttributes(): array
+    {
+        return [
+            'date' => $this->getKeepableDate(),
+            'memo' => $this->getKeepableMemo(),
+            'attachment' => $this->getKeepableAttachment(),
+            'filename' => $this->getKeepableFilename(),
+            'mime_type' => $this->getKeepableMimeType(),
+        ];
+    }
 }

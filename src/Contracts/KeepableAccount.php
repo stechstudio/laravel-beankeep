@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use STS\Beankeep\Enums\AccountType;
 
 interface KeepableAccount extends Keepable
 {
-    public function getKeepableType(): string;
+    public function getKeepableType(): AccountType|string;
 
     public function getKeepableName(): string;
 
