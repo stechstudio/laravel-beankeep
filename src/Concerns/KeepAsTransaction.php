@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Traits;
+namespace STS\Beankeep\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use STS\Beankeep\Models\Transaction;
 
-trait KeepableTransaction
+trait KeepAsTransaction
 {
-    public function transaction(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'keepable');
     }

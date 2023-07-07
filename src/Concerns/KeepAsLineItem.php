@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Traits;
+namespace STS\Beankeep\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use STS\Beankeep\Models\LineItem;
 
-trait KeepableLineItem
+trait KeepAsLineItem
 {
-    public function lineItem(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(LineItem::class, 'keepable');
     }
