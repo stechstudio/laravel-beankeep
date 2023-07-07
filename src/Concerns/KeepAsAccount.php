@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use STS\Beankeep\Contracts\Keepable;
 use STS\Beankeep\Models\Account;
 
 trait KeepAsAccount
@@ -21,5 +22,15 @@ trait KeepAsAccount
             'name' => $this->getKeepableName(),
             'number' => $this->getKeepableNumber(),
         ];
+    }
+
+    public static function bootKeepAsAccount(): void
+    {
+        self::created(function (Keepable $model) {
+            $account = new Account($model->keepAttributes());
+            $account->keepable()->associate($model);
+
+            $account->save();
+        });
     }
 }
