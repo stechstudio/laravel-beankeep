@@ -13,4 +13,12 @@ trait KeepAsLineItem
     {
         return $this->morphOne(LineItem::class, 'keepable');
     }
+
+    public function keepAttributes(): array
+    {
+        return [
+            'debit' => $this->getKeepableDebit(),
+            'credit' => $this->getKeepableCredit(),
+        ];
+    }
 }
