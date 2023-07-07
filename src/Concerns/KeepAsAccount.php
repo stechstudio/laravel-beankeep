@@ -13,4 +13,13 @@ trait KeepAsAccount
     {
         return $this->morphOne(Account::class, 'keepable');
     }
+
+    public function keepAttributes(): array
+    {
+        return [
+            'type' => $this->getKeepableType(),
+            'name' => $this->getKeepableName(),
+            'number' => $this->getKeepableNumber(),
+        ];
+    }
 }
