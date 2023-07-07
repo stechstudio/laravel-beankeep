@@ -31,13 +31,13 @@ class Transaction extends Model
         return $this->hasMany(LineItem::class);
     }
 
-    public function formattedDate(): string
-    {
-        return $this->date->format('m/d/Y');
-    }
-
     public function keepable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function formattedDate(): string
+    {
+        return $this->date->format('m/d/Y');
     }
 }
