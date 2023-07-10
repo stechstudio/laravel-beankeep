@@ -31,5 +31,19 @@
             ],
             "aliases": {}
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.5",
+        "pestphp/pest": "^2.8"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
