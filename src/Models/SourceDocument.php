@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SourceDocument extends Model
 {
     protected $table = 'beankeep_source_documents';
 
     protected $fillable = [
-        'date',
+        'transaction_id',
         'memo',
         'attachment',
         'filename',
@@ -23,9 +23,9 @@ class SourceDocument extends Model
         'date' => 'date',
     ];
 
-    public function transactions(): HasMany
+    public function transaction(): BelongsTo
     {
-        return $this->hasMany(Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 
     public function keepable(): MorphTo

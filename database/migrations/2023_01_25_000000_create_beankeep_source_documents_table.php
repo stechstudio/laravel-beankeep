@@ -14,9 +14,9 @@ return new class extends Migration {
     {
         Schema::create('beankeep_source_documents', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\STS\Beankeep\Models\Transaction::class);
             $table->nullableMorphs('keepable');
 
-            $table->date('date');
             $table->string('memo');
             $table->string('attachment')->nullable();
             $table->string('filename')->nullable();
