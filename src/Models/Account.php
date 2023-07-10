@@ -15,8 +15,8 @@ class Account extends Model
 
     protected $fillable = [
         'type',
-        'name',
         'number',
+        'name',
     ];
 
     protected $casts = [

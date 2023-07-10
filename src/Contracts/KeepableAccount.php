@@ -10,7 +10,7 @@ interface KeepableAccount extends Keepable
 {
     public function getKeepableType(): AccountType|string;
 
-    public function getKeepableName(): string;
-
     public function getKeepableNumber(): string;
+
+    public function getKeepableName(): string;
 }

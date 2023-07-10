@@ -16,9 +16,9 @@ return new class extends Migration {
             $table->id();
             $table->nullableMorphs('keepable');
 
-            $table->string('name');
             $table->string('type');
             $table->string('number')->unique();
+            $table->string('name');
 
             $table->timestamps();
         });
