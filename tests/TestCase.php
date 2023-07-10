@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests;
+namespace STS\Beankeep\Tests;
 
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {

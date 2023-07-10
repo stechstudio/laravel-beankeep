@@ -32,6 +32,11 @@
             "aliases": {}
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "STS\\Beankeep\\Tests\\": "tests/"
+        }
+    },
     "require-dev": {
         "orchestra/testbench": "^8.5",
         "pestphp/pest": "^2.8"
