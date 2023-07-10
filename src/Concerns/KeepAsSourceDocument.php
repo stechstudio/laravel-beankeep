@@ -18,7 +18,7 @@ trait KeepAsSourceDocument
     public function keepAttributes(): array
     {
         return [
-            'date' => $this->getKeepableDate(),
+            'transaction_id' => $this->getKeepableTransaction()->id;
             'memo' => $this->getKeepableMemo(),
             'attachment' => $this->getKeepableAttachment(),
             'filename' => $this->getKeepableFilename(),

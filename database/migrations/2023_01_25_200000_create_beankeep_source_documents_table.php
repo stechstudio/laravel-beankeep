@@ -15,10 +15,10 @@ return new class extends Migration {
             $table->foreignIdFor(\STS\Beankeep\Models\Transaction::class);
             $table->nullableMorphs('keepable');
 
-            $table->string('memo');
-            $table->string('attachment')->nullable();
-            $table->string('filename')->nullable();
-            $table->string('mime_type')->nullable();
+            $table->string('memo')->nullable();
+            $table->string('attachment');
+            $table->string('filename');
+            $table->string('mime_type');
 
             $table->timestamps();
         });

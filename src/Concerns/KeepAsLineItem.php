@@ -17,9 +17,9 @@ trait KeepAsLineItem
 
     public function keepAttributes(): array
     {
-        // TODO(zmd): required account foreign id
-        // TODO(zmd): required transaction foreign id
         return [
+            'account_id' => $this->getKeepableAccount()->id,
+            'transaction_id' => $this->getKeepableTransaction()->id,
             'debit' => $this->getKeepableDebit(),
             'credit' => $this->getKeepableCredit(),
         ];
