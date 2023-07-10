@@ -11,4 +11,8 @@ use STS\Beankeep\Enums\AccountType;
 interface KeepableTransaction extends Keepable
 {
     public function getKeepableDate(): string|Carbon|CarbonImmutable;
+
+    public function getKeepablePosted(): bool
+
+    public function getKeepableMemo(): string
 }

@@ -17,9 +17,10 @@ trait KeepAsTransaction
 
     public function keepAttributes(): array
     {
-        // TODO(zmd): required source document foreign id
         return [
             'date' => $this->getKeepableDate(),
+            'posted' => $this->getKeepablePosted(),
+            'memo' => $this->getKeepableMemo(),
         ];
     }
 

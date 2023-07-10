@@ -12,12 +12,14 @@ class Transaction extends Model
     protected $table = 'beankeep_transactions';
 
     protected $fillable = [
-        'memo',
         'date',
+        'posted',
+        'memo',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'posted' => 'boolean',
     ];
 
     public function lineItems(): HasMany
