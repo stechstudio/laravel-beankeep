@@ -22,18 +22,8 @@
     "require": {
         "php": "^8.2",
         "illuminate/support": "^10.0",
-        "illuminate/database": "^10.0",
-        "stechstudio/beankeep": "@dev"
+        "illuminate/database": "^10.0"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../beankeep",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
     "extra": {
         "laravel": {
             "providers": [
