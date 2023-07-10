@@ -28,6 +28,11 @@ class LineItem extends Model
         return $this->belongsTo(Transaction::class);
     }
 
+    public function keepable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
     public function isDebit(): bool
     {
         return $this->debit > 0;
@@ -67,10 +72,5 @@ class LineItem extends Model
         $amountInDollars = $amount / 100;
 
         return number_format($amountInDollars, 2, '.', ',');
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }
