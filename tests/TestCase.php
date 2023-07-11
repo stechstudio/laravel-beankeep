@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature;
+namespace STS\Beankeep\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use STS\Beankeep\BeankeepServiceProvider;
