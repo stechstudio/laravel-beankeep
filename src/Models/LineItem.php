@@ -67,7 +67,7 @@ class LineItem extends Model
             : '';
     }
 
-    public static function formattedAmount(int $amount): string
+    protected static function formattedAmount(int $amount): string
     {
         $amountInDollars = $amount / 100;
 
