@@ -32,9 +32,9 @@ it('can convert debit amount from cents to dollars', function (
     int $amountInCents,
     float $amountInDollars,
 ) {
-    $lineItem = new LineItem(['debit' => 133742, 'credit' => 0]);
+    $lineItem = new LineItem(['debit' => $amountInCents, 'credit' => 0]);
 
-    expect($lineItem->debitInDollars())->toBe(1337.42);
+    expect($lineItem->debitInDollars())->toBe($amountInDollars);
 })->with([
     [100, 1.0],
     [133742, 1337.42],
