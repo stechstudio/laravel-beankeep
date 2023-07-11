@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use STS\Beankeep\Tests\TestCase;
-use STS\Beankeep\Tests\FeatureTestCase;
+use STS\Beankeep\Tests\Unit\TestCase as UnitTestCase;
+use STS\Beankeep\Tests\Feature\TestCase as FeatureTestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +16,7 @@ use STS\Beankeep\Tests\FeatureTestCase;
 |
 */
 
-uses(TestCase::class)->in('Unit');
+uses(UnitTestCase::class)->in('Unit');
 uses(FeatureTestCase::class)->in('Feature');
 
 /*

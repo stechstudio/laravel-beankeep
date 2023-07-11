@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests;
+namespace STS\Beankeep\Tests\Feature;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use STS\Beankeep\BeankeepServiceProvider;
 
-abstract class FeatureTestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
