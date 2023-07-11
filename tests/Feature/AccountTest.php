@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 

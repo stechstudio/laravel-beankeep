@@ -1,6 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 use STS\Beankeep\Tests\TestCase;
+use STS\Beankeep\Tests\FeatureTestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +16,8 @@ use STS\Beankeep\Tests\TestCase;
 |
 */
 
-uses(TestCase::class)->in('.');
+uses(TestCase::class)->in('Unit');
+uses(FeatureTestCase::class)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------
