@@ -52,25 +52,4 @@ class LineItem extends Model
     {
         return $this->credit / 100;
     }
-
-    public function formattedDebit(): string
-    {
-        return $this->isDebit()
-            ? static::formattedAmount($this->debit)
-            : '';
-    }
-
-    public function formattedCredit(): string
-    {
-        return $this->isCredit()
-            ? static::formattedAmount($this->credit)
-            : '';
-    }
-
-    protected static function formattedAmount(int $amount): string
-    {
-        $amountInDollars = $amount / 100;
-
-        return number_format($amountInDollars, 2, '.', ',');
-    }
 }

@@ -32,9 +32,4 @@ class SourceDocument extends Model
     {
         return $this->morphTo();
     }
-
-    public function formattedDate(): string
-    {
-        return $this->date->format('m/d/Y');
-    }
 }

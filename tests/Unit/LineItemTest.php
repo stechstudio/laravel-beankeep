@@ -45,25 +45,3 @@ it('can convert credit amount from cents to dollars', function (
 
     expect($lineItem->creditInDollars())->toBe($amountInDollars);
 })->with('centToDollarAmounts');
-
-it('can format its debit amount as a string', function (
-    int $amountInCents,
-    string $amountFormatted,
-) {
-    $lineItem = new LineItem(['debit' => $amountInCents, 'credit' => 0]);
-
-    expect($lineItem->formattedDebit())
-        ->toBeString()
-        ->toBe($amountFormatted);
-})->with('centToDollarFormatted');
-
-it('can format its credit amount as a string', function (
-    int $amountInCents,
-    string $amountFormatted,
-) {
-    $lineItem = new LineItem(['debit' => 0, 'credit' => $amountInCents]);
-
-    expect($lineItem->formattedCredit())
-        ->toBeString()
-        ->toBe($amountFormatted);
-})->with('centToDollarFormatted');
