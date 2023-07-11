@@ -35,8 +35,13 @@ it('can convert debit amount from cents to dollars', function (
     $lineItem = new LineItem(['debit' => $amountInCents, 'credit' => 0]);
 
     expect($lineItem->debitInDollars())->toBe($amountInDollars);
-})->with([
-    [100, 1.0],
-    [133742, 1337.42],
-    [0, 0.0],
-]);
+})->with('centToDollarAmounts');
+
+it('can convert credit amount from cents to dollars', function (
+    int $amountInCents,
+    float $amountInDollars,
+) {
+    $lineItem = new LineItem(['debit' => 0, 'credit' => $amountInCents]);
+
+    expect($lineItem->creditInDollars())->toBe($amountInDollars);
+})->with('centToDollarAmounts');
