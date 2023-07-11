@@ -97,3 +97,47 @@ function accountAttributes(): array
         ['5000',  'Expenses',          AccountType::Expense],
     ];
 }
+
+function transaction(
+    string $memo,
+    Carbon|string|null $date,
+    bool $posted = true,
+): Transaction {
+    if (is_string($date)) {
+        $date = Carbon::parse($date);
+    } elseif (is_null($date)) {
+        $date = Carbon::now();
+    }
+
+    // TODO(zmd): finish implementing me
+}
+
+function debit(
+    Account $account,
+    Transaction $transaction,
+    int $amount,
+): LineItem {
+    // TODO(zmd): implement me
+}
+
+function credit(
+    Account $account,
+    Transaction $transaction,
+    int $amount,
+): LineItem {
+    // TODO(zmd): implement me
+}
+
+function sourceDocument(
+    Transaction $transaction,
+    string $filename,
+    string $mimeType,
+    string? $attachment = null,
+    string? $memo = null,
+): SourceDocument {
+    if (is_null($attachment)) {
+        $attachment = Str::uuid()->toString();
+    }
+
+    // TODO(zmd): finish implementing me
+}
