@@ -46,6 +46,12 @@ it('can record a transaction to the journal', function () {
     ]);
     $sourceDoc->transaction()->associate($transaction)->save();
 
+    $transaction->refresh();
+
+    expect($transaction->date)->toEqual(Carbon::parse('2022-01-01'));
+    expect($transaction->posted)->toBeTrue();
+    expect($transaction->memo)->toBe('initial owner contribution');
+
     expect($transaction->lineItems()->count())->toBe(2);
     expect($transaction->lineItems[0]->debit)->toBe(1000000);
     expect($transaction->lineItems[0]->account)->toEqual($accounts['cash']);
