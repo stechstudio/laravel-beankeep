@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use STS\Beankeep\Enums\AccountType;
@@ -54,6 +55,14 @@ it('can record a transaction to the journal', function () {
         ->toBe($sourceDoc->mime_type);
 });
 
+it('can model a journal with many transactions', function () {
+    $transact = simpleTransactor();
+    $transact('2022-01-01', 'initial owner contribution', 10000.00, dr: 'cash', cr: 'capital');
+
+    // TODO(zmd): finish adding transactions, then set expectations around
+    //    account debits and credits all balancing correctly
+});
+
 function createAccounts(): array
 {
     foreach (accountAttributes() as [$number, $name, $type]) {
@@ -83,6 +92,33 @@ function accountAttributes(): array
         ['4000',  'Income',            AccountType::Revenue],
         ['5000',  'Expenses',          AccountType::Expense],
     ];
+}
+
+function simpleTransactor(?array $accounts = null): Closure
+{
+    if (is_null($accounts)) {
+        $accounts = createAccounts();
+    }
+
+    return function (
+        string|Carbon $date,
+        string $memo,
+        int|float $amount = null,
+        string $dr,
+        string $cr,
+    ) use ($accounts): Transaction {
+        if (is_float($amount)) {
+            $amount = (int) ($amount * 100);
+        }
+
+        $transaction = transaction($memo, $date, posted: true);
+
+        debit($accounts[$dr], $transaction, $amount);
+        credit($accounts[$cr], $transaction, $amount);
+        doc($transaction, Str::kebab($memo) . '.pdf');
+
+        return $transaction;
+    };
 }
 
 function transaction(
