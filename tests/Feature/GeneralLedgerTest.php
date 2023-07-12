@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use STS\Beankeep\Enums\AccountType;
@@ -57,10 +56,29 @@ it('can record a transaction to the journal', function () {
 
 it('can model a journal with many transactions', function () {
     $transact = simpleTransactor();
-    $transact('2022-01-01', 'initial owner contribution', 10000.00, dr: 'cash', cr: 'capital');
 
-    // TODO(zmd): finish adding transactions, then set expectations around
-    //    account debits and credits all balancing correctly
+    //
+    //      Date | Account            |        Dr |        Cr | Memo
+    // ==========+====================+===========+===========+======================
+    //  01/01/22 | Cash               |  10000.00 |           | initial owner con...
+    //           |   Capital          |           |  10000.00 |
+    // ----------+--------------------+-----------+-----------+----------------------
+    //  10/15/22 | Equipment          |   5000.00 |           | 2 computers from ...
+    //           |   Accounts Payable |           |   5000.00 |
+    // ----------+--------------------+-----------+-----------+----------------------
+    //  10/16/22 | Accounts Payable   |   5000.00 |           | ck no. 1337
+    //           |   Cash             |           |   5000.00 |
+    // ==========+====================+===========+===========+======================
+    //           | TOTAL (Dr)         |  20000.00 |           |
+    //           |   TOTAL (Cr)       |           |  20000.00 |
+    //
+    $transact('2022-01-01', 'initial owner contribution', 10000.00, dr: 'cash', cr: 'capital');
+    $transact('2022-10-10', '2 computers from computers-r-us', 5000.00, dr: 'equipment', cr: 'accounts-payable');
+    $transact('2022-10-16', 'ck no. 1337', 5000.00, dr: 'accounts-payable', cr: 'cash');
+
+    // NOTE(zmd): later we'll *also* check individual account balances here,
+    //   once we have created helpers for doing such in the package.
+    expect(LineItem::sum('debit') - LineItem::sum('credit'))->toBe(0);
 });
 
 function createAccounts(): array
