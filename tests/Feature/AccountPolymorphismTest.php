@@ -4,27 +4,25 @@ declare(strict_types=1);
 
 use STS\Beankeep\Models\Account as BeankeepAccount;
 use STS\Beankeep\Enums\AccountType;
-use STS\Beankeep\Tests\TestSupport\Models\AccountsReceivable;
+use STS\Beankeep\Tests\TestSupport\Models\SimpleAccountsReceivable as AccountsReceivable;
 
-// TODO(zmd): write a useful test (once we get the plumbing figured out)
-it('will eventually test something useful', function () {
-    //
-    // TODO(zmd): just checking that we can use the package models as well as
-    //   the test models which simulate models created by the users of our packages.
-    //   Not yet actually testing the polymorphic relations at all.
-    //
-
-    $beankeepAccount = BeankeepAccount::create([
-        'number' => '1000',
-        'type' => AccountType::Asset,
-        'name' => 'Assets',
+it("can be associated with a package consumer's account model", function () {
+    $accountsReceivable = AccountsReceivable::create([
+        'number' => '1110',
+        'name' => 'Accounts Receivable',
     ]);
 
-    expect($beankeepAccount->number)->toBe('1000');
-    expect($beankeepAccount->type)->toBe(AccountType::Asset);
-    expect($beankeepAccount->name)->toBe('Assets');
+    $beankeepAccount = BeankeepAccount::create([
+        'number' => '1110',
+        'type' => AccountType::Asset,
+        'name' => 'Accounts Receivable',
+    ]);
 
-    $ar = AccountsReceivable::create(['number' => '1000']);
+    $accountsReceivable->keeper()->save($beankeepAccount);
 
-    expect($ar->number)->toBe('1000');
+    expect($beankeepAccount->keepable->name)->toBe('Accounts Receivable');
+
+    expect($accountsReceivable->keeper->number)->toBe('1110');
+    expect($accountsReceivable->keeper->type)->toBe(AccountType::Asset);
+    expect($accountsReceivable->keeper->name)->toBe('Accounts Receivable');
 });

@@ -10,9 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('accounts_receivables', function (Blueprint $table) {
+        Schema::create('accounts_receivable', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts_receivables');
+        Schema::dropIfExists('accounts_receivable');
     }
 };
