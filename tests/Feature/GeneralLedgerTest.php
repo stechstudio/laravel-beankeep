@@ -73,7 +73,7 @@ it('can model a journal with many transactions', function () {
     //           |   TOTAL (Cr)       |           |  20000.00 |
     //
     $transact('2022-01-01', 'initial owner contribution', 10000.00, dr: 'cash', cr: 'capital');
-    $transact('2022-10-10', '2 computers from computers-r-us', 5000.00, dr: 'equipment', cr: 'accounts-payable');
+    $transact('2022-10-15', '2 computers from computers-r-us', 5000.00, dr: 'equipment', cr: 'accounts-payable');
     $transact('2022-10-16', 'ck no. 1337', 5000.00, dr: 'accounts-payable', cr: 'cash');
 
     // NOTE(zmd): later we'll *also* check individual account balances here,
