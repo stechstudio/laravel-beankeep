@@ -2,46 +2,70 @@
 
 declare(strict_types=1);
 
+namespace STS\Beankeep\Tests\Unit;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Models\LineItem;
 
-it('can correctly determine when it is a debit', function () {
-    $lineItem = new LineItem(['debit' => 100, 'credit' => 0]);
+final class LineItemTest extends TestCase
+{
+    public function testItCanCorrectlyDetermineWhenItIsADebit(): void
+    {
+        $lineItem = new LineItem(['debit' => 100, 'credit' => 0]);
 
-    expect($lineItem->isDebit())->toBeTrue();
-});
+        $this->assertTrue($lineItem->isDebit());
+    }
 
-it('can correctly determine when it is not a debit', function () {
-    $lineItem = new LineItem(['debit' => 0, 'credit' => 100]);
+    public function testItCanCorrectlyDetermineWhenItIsNotADebit(): void
+    {
+        $lineItem = new LineItem(['debit' => 0, 'credit' => 100]);
 
-    expect($lineItem->isDebit())->toBeFalse();
-});
+        $this->assertFalse($lineItem->isDebit());
+    }
 
-it('can correctly determine when it is a credit', function () {
-    $lineItem = new LineItem(['debit' => 0, 'credit' => 100]);
+    public function testItCanCorrectlyDetermineWhenItIsACredit(): void
+    {
+        $lineItem = new LineItem(['debit' => 0, 'credit' => 100]);
 
-    expect($lineItem->isCredit())->toBeTrue();
-});
+        $this->assertTrue($lineItem->isCredit());
+    }
 
-it('can correctly determine when it is not a credit', function () {
-    $lineItem = new LineItem(['debit' => 100, 'credit' => 0]);
+    public function testItCanCorrectlyDetermineWhenItIsNotACredit(): void
+    {
+        $lineItem = new LineItem(['debit' => 100, 'credit' => 0]);
 
-    expect($lineItem->isCredit())->toBeFalse();
-});
+        $this->assertFalse($lineItem->isCredit());
+    }
 
-it('can convert debit amount from cents to dollars', function (
-    int $amountInCents,
-    float $amountInDollars,
-) {
-    $lineItem = new LineItem(['debit' => $amountInCents, 'credit' => 0]);
+    #[DataProvider('centToDollarAmountsProducer')]
+    public function testItCanConvertDebitAmountFromCentsToDollars(
+        int $amountInCents,
+        float $amountInDollars,
+    ): void {
+        $lineItem = new LineItem(['debit' => $amountInCents, 'credit' => 0]);
 
-    expect($lineItem->debitInDollars())->toBe($amountInDollars);
-})->with('centToDollarAmounts');
+        $this->assertEquals($amountInDollars, $lineItem->debitInDollars());
+    }
 
-it('can convert credit amount from cents to dollars', function (
-    int $amountInCents,
-    float $amountInDollars,
-) {
-    $lineItem = new LineItem(['debit' => 0, 'credit' => $amountInCents]);
+    #[DataProvider('centToDollarAmountsProducer')]
+    public function testItCanConvertCreditAmountFromCentsToDollars(
+        int $amountInCents,
+        float $amountInDollars,
+    ): void {
+        $lineItem = new LineItem(['debit' => 0, 'credit' => $amountInCents]);
 
-    expect($lineItem->creditInDollars())->toBe($amountInDollars);
-})->with('centToDollarAmounts');
+        $this->assertEquals($amountInDollars, $lineItem->creditInDollars());
+    }
+
+    // ------------------------------------------------------------------------
+
+    public static function centToDollarAmountsProducer(): array
+    {
+        return [
+            [100, 1.0],
+            [133742, 1337.42],
+            [0, 0.0],
+        ];
+    }
+}
