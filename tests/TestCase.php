@@ -18,4 +18,9 @@ abstract class TestCase extends BaseTestCase
             BeankeepServiceProvider::class,
         ];
     }
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/TestSupport/database/migrations');
+    }
 }
