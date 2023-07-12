@@ -23,34 +23,21 @@ it('can model a chart of accounts', function () {
 it('can record a transaction to the journal', function () {
     $accounts = createAccounts();
 
-    $transaction = Transaction::create([
-        'date' => Carbon::parse('2022-01-01'),
-        'posted' => true,
-        'memo' => 'initial owner contribution',
-    ]);
+    $transaction = transaction(
+        'initial owner contribution',
+        '2022-01-01',
+        posted: true,
+    );
 
-    $debit = new LineItem(['debit' => 1000000, 'credit' => 0]);
-    $debit->account()->associate($accounts['cash'])
-        ->transaction()->associate($transaction)
-        ->save();
-
-    $credit = new LineItem(['debit' => 0, 'credit' => 1000000]);
-    $credit->account()->associate($accounts['capital'])
-        ->transaction()->associate($transaction)
-        ->save();
-
-    $sourceDoc = new SourceDocument([
-        'attachment' => Str::uuid()->toString(),
-        'filename' => 'contribution-moa.pdf',
-        'mime_type' => 'appliction/pdf',
-    ]);
-    $sourceDoc->transaction()->associate($transaction)->save();
+    $debit = debit($accounts['cash'], $transaction, 1000000);
+    $credit = credit($accounts['capital'], $transaction, 1000000);
+    $sourceDoc = doc($transaction, 'contribution-moa.pdf');
 
     $transaction->refresh();
 
-    expect($transaction->date)->toEqual(Carbon::parse('2022-01-01'));
-    expect($transaction->posted)->toBeTrue();
     expect($transaction->memo)->toBe('initial owner contribution');
+    expect($transaction->date)->toEqual(d('2022-01-01'));
+    expect($transaction->posted)->toBeTrue();
 
     expect($transaction->lineItems()->count())->toBe(2);
     expect($transaction->lineItems[0]->debit)->toBe(1000000);
@@ -100,16 +87,25 @@ function accountAttributes(): array
 
 function transaction(
     string $memo,
-    Carbon|string|null $date,
+    Carbon|string|null $date = null,
     bool $posted = true,
 ): Transaction {
+    return Transaction::create([
+        'date' => d($date),
+        'posted' => $posted,
+        'memo' => $memo,
+    ]);
+}
+
+function d(Carbon|string|null $date = null): Carbon
+{
     if (is_string($date)) {
         $date = Carbon::parse($date);
     } elseif (is_null($date)) {
         $date = Carbon::now();
     }
 
-    // TODO(zmd): finish implementing me
+    return $date;
 }
 
 function debit(
@@ -117,7 +113,7 @@ function debit(
     Transaction $transaction,
     int $amount,
 ): LineItem {
-    // TODO(zmd): implement me
+    return item($account, $transaction, debitAmount: $amount);
 }
 
 function credit(
@@ -125,19 +121,77 @@ function credit(
     Transaction $transaction,
     int $amount,
 ): LineItem {
-    // TODO(zmd): implement me
+    return item($account, $transaction, creditAmount: $amount);
 }
 
-function sourceDocument(
+function item(
+    Account $account,
+    Transaction $transaction,
+    int $debitAmount = 0,
+    int $creditAmount = 0,
+): LineItem {
+    $lineItem = new LineItem([
+        'debit' => $debitAmount,
+        'credit' => $creditAmount,
+    ]);
+
+    $lineItem->account()->associate($account)
+        ->transaction()->associate($transaction)
+        ->save();
+
+    return $lineItem;
+}
+
+function doc(
     Transaction $transaction,
     string $filename,
-    string $mimeType,
-    string? $attachment = null,
-    string? $memo = null,
+    ?string $memo = null,
+    ?string $mimeType = null,
+    ?string $attachment = null,
 ): SourceDocument {
+    if (is_null($mimeType)) {
+        $mimeType = mime($filename);
+    }
+
     if (is_null($attachment)) {
         $attachment = Str::uuid()->toString();
     }
 
-    // TODO(zmd): finish implementing me
+    $sourceDoc = new SourceDocument([
+        'attachment' => $attachment,
+        'filename' => $filename,
+        'mime_type' => $mimeType,
+    ]);
+
+    $sourceDoc->transaction()->associate($transaction)->save();
+
+    return $sourceDoc;
+}
+
+function mime(string $filename): string
+{
+    $parts = explode('.', $filename);
+    $extension = end($parts);
+
+    return match($extension) {
+        'bmp' => 'image/bmp',
+        'csv' => 'text/csv',
+        'doc' => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'gif' => 'image/gif',
+        'htm', 'html' => 'text/html',
+        'jpg', 'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'pdf' => 'application/pdf',
+        'rtf' => 'application/rtf',
+        'svg' => 'image/svg+xml',
+        'tif', 'tiff' => 'image/tiff',
+        'txt' => 'text/plain',
+        'webp' => 'image/webp',
+        'xhtml' => 'application/xhtml+xml',
+        'xls' => 'application/vnd.ms-excel',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'xml' => 'application/xml',
+        default => 'application/octet-stream',
+    };
 }
