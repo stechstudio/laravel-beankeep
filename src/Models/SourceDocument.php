@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SourceDocument extends Model
+class SourceDocument extends Beankept
 {
     protected $table = 'beankeep_source_documents';
 

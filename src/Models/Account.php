@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use STS\Beankeep\Enums\AccountType;
 
-class Account extends Model
+class Account extends Beankept
 {
     protected $table = 'beankeep_accounts';
 

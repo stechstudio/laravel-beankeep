@@ -8,7 +8,5 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 interface Keepable
 {
-    public function keeper(): MorphOne;
-
-    public function keepAttributes(): array;
+    public function kept(): MorphOne;
 }

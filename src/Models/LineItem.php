@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LineItem extends Model
+class LineItem extends Beankept
 {
     protected $table = 'beankeep_line_items';
 
