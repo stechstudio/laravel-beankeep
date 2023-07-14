@@ -11,6 +11,14 @@ use STS\Beankeep\Tests\TestSupport\Models\Augmented\Account;
 
 final class HasAccountTest extends TestCase
 {
+    public function testItKnowsItsBeankeepClass(): void
+    {
+        $this->assertEquals(
+            BeankeepAccount::class,
+            Account::beankeeperClass(),
+        );
+    }
+
     public function testItCanBeAssociatedWithAPackageConsumersAccountModel(): void
     {
         $accountsReceivable = BeankeepAccount::create([
