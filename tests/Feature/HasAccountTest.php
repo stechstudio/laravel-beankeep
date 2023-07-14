@@ -24,9 +24,8 @@ final class HasAccountTest extends TestCase
 
     public function testItCanBeAssociatedWithAnEndUserAccountModel(): void
     {
-        $accounts = $this->createAccounts();
-        $ar = $accounts['accounts-receivable'];
-        $ap = $accounts['accounts-payable'];
+        $ar = $this->account('accounts-receivable');
+        $ap = $this->account('accounts-payable');
 
         $arDescription = "It's an account, where other people owe us monies! \o/";
         $ar->keep(Account::create(['description' => $arDescription]));

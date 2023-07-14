@@ -15,6 +15,18 @@ use STS\Beankeep\Models\Transaction;
 
 trait BeanConstructors
 {
+    protected array $accounts;
+
+    protected function account(string $accountIndex): Account
+    {
+        return $this->accounts()[$accountIndex];
+    }
+
+    protected function accounts(): array
+    {
+        return $this->accounts ??= $this->createAccounts();
+    }
+
     protected function createAccounts(): array
     {
         foreach ($this->accountAttributes() as [$number, $name, $type]) {
