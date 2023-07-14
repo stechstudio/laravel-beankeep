@@ -20,7 +20,6 @@ abstract class Beankeeper extends Model
     {
         $account = static::create($model->serializeToBeankeep());
 
-        // TODO(zmd): save, or attach, or ?
         $account->keepable()->save($model);
     }
 }
