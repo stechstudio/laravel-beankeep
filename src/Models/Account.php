@@ -7,7 +7,7 @@ namespace STS\Beankeep\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Enums\AccountType;
 
-class Account extends Beankeeper
+final class Account extends Beankeeper
 {
     protected $table = 'beankeep_accounts';
 

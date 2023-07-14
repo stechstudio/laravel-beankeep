@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Transaction extends Beankeeper
+final class Transaction extends Beankeeper
 {
     protected $table = 'beankeep_transactions';
 

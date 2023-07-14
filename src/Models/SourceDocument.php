@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SourceDocument extends Beankeeper
+final class SourceDocument extends Beankeeper
 {
     protected $table = 'beankeep_source_documents';
 
