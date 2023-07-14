@@ -9,7 +9,7 @@ use STS\Beankeep\Models\Transaction;
 
 trait HasTransaction
 {
-    public function kept(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'keepable');
     }

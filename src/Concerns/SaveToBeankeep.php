@@ -12,8 +12,8 @@ trait SaveToBeankeep
     public static function bootSaveToBeankeep(): void
     {
         self::created(function (Savable $model) {
-            $kept = $model->convertToBeankeep();
-            $model->kept()->associate($kept);
+            $keeper = $model->convertToBeankeep();
+            $model->keeper()->associate($keeper);
 
             $kept->save();
         });

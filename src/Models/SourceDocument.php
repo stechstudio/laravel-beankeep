@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SourceDocument extends Beankept
+class SourceDocument extends Beankeeper
 {
     protected $table = 'beankeep_source_documents';
 
@@ -25,10 +25,5 @@ class SourceDocument extends Beankept
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }

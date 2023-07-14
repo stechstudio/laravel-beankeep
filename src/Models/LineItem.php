@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LineItem extends Beankept
+class LineItem extends Beankeeper
 {
     protected $table = 'beankeep_line_items';
 
@@ -25,11 +25,6 @@ class LineItem extends Beankept
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 
     public function isDebit(): bool

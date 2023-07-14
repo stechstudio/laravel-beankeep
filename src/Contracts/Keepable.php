@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 interface Keepable
 {
-    public function kept(): MorphOne;
+    public function keeper(): MorphOne;
 }

@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Transaction extends Beankept
+class Transaction extends Beankeeper
 {
     protected $table = 'beankeep_transactions';
 
@@ -29,10 +29,5 @@ class Transaction extends Beankept
     public function sourceDocuments(): HasMany
     {
         return $this->hasMany(SourceDocument::class);
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }

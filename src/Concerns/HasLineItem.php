@@ -9,7 +9,7 @@ use STS\Beankeep\Models\LineItem;
 
 trait HasLineItem
 {
-    public function kept(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(LineItem::class, 'keepable');
     }

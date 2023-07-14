@@ -9,7 +9,7 @@ use STS\Beankeep\Models\SourceDocument;
 
 trait HasSourceDocument
 {
-    public function kept(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(SourceDocument::class, 'keepable');
     }

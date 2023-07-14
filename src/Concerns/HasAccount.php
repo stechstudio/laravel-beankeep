@@ -9,7 +9,7 @@ use STS\Beankeep\Models\Account;
 
 trait HasAccount
 {
-    public function kept(): MorphOne
+    public function keeper(): MorphOne
     {
         return $this->morphOne(Account::class, 'keepable');
     }
