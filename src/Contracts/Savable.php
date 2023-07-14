@@ -6,5 +6,5 @@ namespace STS\Beankeep\Contracts;
 
 interface Savable extends Keepable
 {
-    public function getBeankeepSavableAttributes(): array;
+    public function serializeToBeankeep(): array;
 }

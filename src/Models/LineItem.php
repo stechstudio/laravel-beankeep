@@ -6,7 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LineItem extends Beankeeper
+final class LineItem extends Beankeeper
 {
     protected $table = 'beankeep_line_items';
 

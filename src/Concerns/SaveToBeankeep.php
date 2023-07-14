@@ -9,20 +9,12 @@ use STS\Beankeep\Contracts\Savable;
 
 trait SaveToBeankeep
 {
-    public function getBeankeepSavableAttributes(): array;
-
     public static function bootSaveToBeankeep(): void
     {
+        // TODO(zmd): refactor around stand-alone event and event-handler
+        //   classes
         self::created(function (Savable $model) {
             $this->getBeankeeperClass()::keepableCreated($model);
-        });
-
-        self::updated(function (Savable $model) {
-            $this->getBeankeeperClass()::keepableUpdated($model);
-        });
-
-        self::saved(function (Savable $model) {
-            $this->getBeankeeperClass()::keepableSaved($model);
         });
     }
 }
