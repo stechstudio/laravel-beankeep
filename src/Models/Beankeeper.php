@@ -14,12 +14,4 @@ abstract class Beankeeper extends Model
     {
         return $this->morphTo();
     }
-
-    // TODO(zmd): refactor around stand-alone event and event-handler classes
-    public static function keepableCreated(Savable $model): void
-    {
-        $account = static::create($model->serializeToBeankeep());
-
-        $account->keepable()->save($model);
-    }
 }

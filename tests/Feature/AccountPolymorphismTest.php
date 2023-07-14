@@ -13,23 +13,23 @@ final class AccountPolymorphismTest extends TestCase
 {
     public function testItCanBeAssociatedWithAPackageConsumersAccountModel(): void
     {
-        $accountsReceivable = AccountsReceivable::create([
+        $keepable = AccountsReceivable::create([
             'number' => '1110',
             'name' => 'Accounts Receivable',
         ]);
 
-        $beankeepAccount = BeankeepAccount::create([
+        $keeper = BeankeepAccount::create([
             'number' => '1110',
             'type' => AccountType::Asset,
             'name' => 'Accounts Receivable',
         ]);
 
-        $accountsReceivable->keeper()->save($beankeepAccount);
+        $keepable->keeper()->save($keeper);
 
-        $this->assertEquals('Accounts Receivable', $beankeepAccount->keepable->name);
+        $this->assertEquals('Accounts Receivable', $keeper->keepable->name);
 
-        $this->assertEquals('1110', $accountsReceivable->keeper->number);
-        $this->assertEquals(AccountType::Asset, $accountsReceivable->keeper->type);
-        $this->assertEquals('Accounts Receivable', $accountsReceivable->keeper->name);
+        $this->assertEquals('1110', $keepable->keeper->number);
+        $this->assertEquals(AccountType::Asset, $keepable->keeper->type);
+        $this->assertEquals('Accounts Receivable', $keepable->keeper->name);
     }
 }

@@ -9,13 +9,13 @@ use STS\Beankeep\Models\Account;
 
 trait HasAccount
 {
-    public function getBeankeeperClass(): string
+    public static function beankeeperClass(): string
     {
         return Account::class;
     }
 
     public function keeper(): MorphOne
     {
-        return $this->morphOne($this->getBeankeeperClass(), 'keepable');
+        return $this->morphOne(static::beankeeperClass(), 'keepable');
     }
 }
