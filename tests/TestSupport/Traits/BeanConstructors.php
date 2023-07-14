@@ -34,15 +34,16 @@ trait BeanConstructors
     protected function accountAttributes(): array
     {
         return [
-            ['1000',  'Assets',            AccountType::Asset],
-            ['1100',  'Cash',              AccountType::Asset],
-            ['1200',  'Equipment',         AccountType::Asset],
-            ['2000',  'Liabilities',       AccountType::Liability],
-            ['2100',  'Accounts Payable',  AccountType::Liability],
-            ['3000',  'Equity',            AccountType::Equity],
-            ['3100',  'Capital',           AccountType::Equity],
-            ['4000',  'Income',            AccountType::Revenue],
-            ['5000',  'Expenses',          AccountType::Expense],
+            ['1000',  'Assets',              AccountType::Asset],
+            ['1100',  'Cash',                AccountType::Asset],
+            ['1200',  'Accounts Receivable', AccountType::Asset],
+            ['1300',  'Equipment',           AccountType::Asset],
+            ['2000',  'Liabilities',         AccountType::Liability],
+            ['2100',  'Accounts Payable',    AccountType::Liability],
+            ['3000',  'Equity',              AccountType::Equity],
+            ['3100',  'Capital',             AccountType::Equity],
+            ['4000',  'Income',              AccountType::Revenue],
+            ['5000',  'Expenses',            AccountType::Expense],
         ];
     }
 
