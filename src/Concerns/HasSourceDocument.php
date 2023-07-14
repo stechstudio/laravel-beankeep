@@ -9,8 +9,13 @@ use STS\Beankeep\Models\SourceDocument;
 
 trait HasSourceDocument
 {
+    public function getBeankeeperClass(): string
+    {
+        return SourceDocument::class;
+    }
+
     public function keeper(): MorphOne
     {
-        return $this->morphOne(SourceDocument::class, 'keepable');
+        return $this->morphOne($this->getBeankeeperClass(), 'keepable');
     }
 }

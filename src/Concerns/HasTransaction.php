@@ -9,8 +9,13 @@ use STS\Beankeep\Models\Transaction;
 
 trait HasTransaction
 {
+    public function getBeankeeperClass(): string
+    {
+        return Transaction::class;
+    }
+
     public function keeper(): MorphOne
     {
-        return $this->morphOne(Transaction::class, 'keepable');
+        return $this->morphOne($this->getBeankeeperClass(), 'keepable');
     }
 }

@@ -8,5 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 interface Keepable
 {
+    public function getBeankeeperClass(): string;
+
     public function keeper(): MorphOne;
 }

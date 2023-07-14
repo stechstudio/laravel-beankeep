@@ -9,13 +9,20 @@ use STS\Beankeep\Contracts\Savable;
 
 trait SaveToBeankeep
 {
+    public function getBeankeepSavableAttributes(): array;
+
     public static function bootSaveToBeankeep(): void
     {
         self::created(function (Savable $model) {
-            $keeper = $model->convertToBeankeep();
-            $model->keeper()->associate($keeper);
+            $this->getBeankeeperClass()::keepableCreated($model);
+        });
 
-            $kept->save();
+        self::updated(function (Savable $model) {
+            $this->getBeankeeperClass()::keepableUpdated($model);
+        });
+
+        self::saved(function (Savable $model) {
+            $this->getBeankeeperClass()::keepableSaved($model);
         });
     }
 }
