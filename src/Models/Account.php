@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use STS\Beankeep\Enums\AccountType;
 
-class Account extends Model
+final class Account extends Beankeeper
 {
     protected $table = 'beankeep_accounts';
 
     protected $fillable = [
         'type',
-        'name',
         'number',
+        'name',
     ];
 
     protected $casts = [
@@ -26,10 +24,5 @@ class Account extends Model
     public function lineItems(): HasMany
     {
         return $this->hasMany(LineItem::class);
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }

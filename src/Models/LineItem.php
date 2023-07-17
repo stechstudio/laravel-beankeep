@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LineItem extends Model
+final class LineItem extends Beankeeper
 {
     protected $table = 'beankeep_line_items';
 
@@ -46,31 +45,5 @@ class LineItem extends Model
     public function creditInDollars(): float
     {
         return $this->credit / 100;
-    }
-
-    public function formattedDebit(): string
-    {
-        return $this->isDebit()
-            ? static::formattedAmount($this->debit)
-            : '';
-    }
-
-    public function formattedCredit(): string
-    {
-        return $this->isCredit()
-            ? static::formattedAmount($this->credit)
-            : '';
-    }
-
-    public static function formattedAmount(int $amount): string
-    {
-        $amountInDollars = $amount / 100;
-
-        return number_format($amountInDollars, 2, '.', ',');
-    }
-
-    public function keepable(): MorphTo
-    {
-        return $this->morphTo();
     }
 }

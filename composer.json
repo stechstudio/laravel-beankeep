@@ -20,26 +20,41 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "illuminate/support": "^10.0",
         "illuminate/database": "^10.0",
-        "stechstudio/beankeep": "@dev"
+        "nunomaduro/collision": "^7.7"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../beankeep",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
+
     "extra": {
         "laravel": {
             "providers": [
                 "STS\\Beankeep\\BeankeepServiceProvider"
             ],
             "aliases": {}
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.5",
+        "phpunit/phpunit": "^10.2"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "STS\\Beankeep\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": [
+            "@putenv COLLISION_PRINTER=DefaultPrinter",
+            "@php vendor/bin/phpunit --no-output"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }

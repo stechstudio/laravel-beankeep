@@ -10,14 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('beankeep_accounts', function (Blueprint $table) {
+        Schema::create('augmented_source_documents', function (Blueprint $table) {
             $table->id();
-            $table->nullableMorphs('keepable');
-
-            $table->string('type');
-            $table->string('number')->unique();
-            $table->string('name');
-
+            $table->integer('rating')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('beankeep_accounts');
+        Schema::dropIfExists('augmented_source_documents');
     }
 };

@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('beankeep_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\STS\Beankeep\Models\SourceDocument::class);
             $table->nullableMorphs('keepable');
 
             $table->date('date');
+            $table->boolean('posted')->default(false);
+            $table->string('memo');
 
             $table->timestamps();
         });
@@ -25,10 +24,8 @@ return new class extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('beankeep_transactions');
     }
