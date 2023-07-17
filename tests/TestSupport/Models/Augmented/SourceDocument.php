@@ -21,7 +21,7 @@ class SourceDocument extends Model implements Keepable
     protected $table = 'augmented_source_documents';
 
     protected $fillable = [
-        'rating'
+        'rating',
     ];
 
     public function oneStar(): self

@@ -20,4 +20,19 @@ final class HasTransactionTest extends TestCase
             Transaction::beankeeperClass(),
         );
     }
+
+    public function testItCanBeAssociatedWithAnEndUserTransactionModel(): void
+    {
+        $transaction = $this->simpleTransactor()(
+            '2022-10-15',
+            '2 computers from computers-r-us',
+            5000.00,
+            dr: 'equipment',
+            cr: 'accounts-payable',
+        );
+
+        $transaction->keep(Transaction::create(['flag_for_review' => true]));
+
+        $this->assertTrue($transaction->keepable->flag_for_review);
+    }
 }

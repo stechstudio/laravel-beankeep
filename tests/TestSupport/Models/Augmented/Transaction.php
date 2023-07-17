@@ -12,9 +12,13 @@ class Transaction extends Model implements Keepable
 {
     use HasTransaction;
 
-    protected $table = 'augmented_transaction';
+    protected $table = 'augmented_transactions';
 
     protected $fillable = [
-        //
+        'flag_for_review',
+    ];
+
+    protected $casts = [
+        'flag_for_review' => 'boolean',
     ];
 }

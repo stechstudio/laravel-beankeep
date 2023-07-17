@@ -15,6 +15,6 @@ class LineItem extends Model implements Keepable
     protected $table = 'augmented_line_items';
 
     protected $fillable = [
-        'narration'
+        'narration',
     ];
 }
