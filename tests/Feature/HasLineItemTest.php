@@ -23,8 +23,23 @@ final class HasLineItemTest extends TestCase
 
     public function testItCanBeAssociatedWithAnEndUserLineItemModel(): void
     {
-        $accounts = $this->createAccounts();
+        $transaction = $this->simpleTransactor()(
+            '2022-10-15',
+            '2 computers from computers-r-us',
+            5000.00,
+            dr: 'equipment',
+            cr: 'accounts-payable',
+        );
 
-        $this->assertTrue(false, 'TODO(zmd): finish me!');
+        $debit = $transaction->lineItems()->where('debit', '>', 0)->first();
+        $debitNarration = "On the 15th of October, 2023 (AD), we did debit our Equipment account in the amount of $5000.00 for the acquisition of 2 new computers from Computers-R-Us";
+        $debit->keep(LineItem::create(['narration' => $debitNarration]));
+
+        $credit = $transaction->lineItems()->where('credit', '>', 0)->first();
+        $creditNarration = "On the 15th of October, 2023 (AD), we did credit our Accounts Payable account in the amount of $5000.00 for the acquisition of equipment from Computers-R-Us on 30 day terms; we await the invoice.";
+        $credit->keep(LineItem::create(['narration' => $creditNarration]));
+
+        $this->assertEquals($debitNarration, $debit->keepable->narration);
+        $this->assertEquals($creditNarration, $credit->keepable->narration);
     }
 }
