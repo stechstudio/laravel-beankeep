@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
-use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account as BeankeepAccount;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Models\Augmented\Account;
