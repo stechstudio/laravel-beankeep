@@ -13,7 +13,7 @@ use STS\Beankeep\Tests\TestCase;
 
 final class TransactionPostingTest extends TestCase
 {
-    public function testItAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
+    public function testPostAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
     {
         $debit = $this->debit('accountsReceivable', 40000);
         $credit = $this->credit('revenue', 40000);
@@ -30,6 +30,25 @@ final class TransactionPostingTest extends TestCase
 
         $this->assertTrue($postSuccess);
         $this->assertTrue($transaction->posted);
+    }
+
+    public function testPostDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
+    {
+        $debit = $this->debit('accountsReceivable', 40000);
+        $credit = $this->credit('revenue', 30000);
+
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($debit);
+        $transaction->lineItems()->save($credit);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertFalse($postSuccess);
+        $this->assertFalse($transaction->posted);
     }
 
     // ------------------------------------------------------------------------
