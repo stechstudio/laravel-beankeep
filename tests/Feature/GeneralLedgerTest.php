@@ -30,7 +30,6 @@ final class GeneralLedgerTest extends TestCase
         $transaction = $this->transaction(
             'initial owner contribution',
             '2022-01-01',
-            posted: true,
         );
 
         $debit = $this->debit($accounts['cash'], $transaction, 1000000);
@@ -41,7 +40,7 @@ final class GeneralLedgerTest extends TestCase
 
         $this->assertEquals('initial owner contribution', $transaction->memo);
         $this->assertEquals($this->date('2022-01-01'), $transaction->date);
-        $this->assertTrue($transaction->posted);
+        $this->assertFalse($transaction->posted);
 
         $this->assertEquals(2, $transaction->lineItems()->count());
         $this->assertEquals(1000000, $transaction->lineItems[0]->debit);

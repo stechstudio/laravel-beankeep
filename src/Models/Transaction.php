@@ -12,7 +12,6 @@ final class Transaction extends Beankeeper
 
     protected $fillable = [
         'date',
-        'posted',
         'memo',
     ];
 

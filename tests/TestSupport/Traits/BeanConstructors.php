@@ -62,11 +62,9 @@ trait BeanConstructors
     protected function transaction(
         string $memo,
         Carbon|string|null $date = null,
-        bool $posted = true,
     ): Transaction {
         return Transaction::create([
             'date' => $this->date($date),
-            'posted' => $posted,
             'memo' => $memo,
         ]);
     }
@@ -187,7 +185,7 @@ trait BeanConstructors
                 $amount = (int) ($amount * 100);
             }
 
-            $transaction = $this->transaction($memo, $date, posted: true);
+            $transaction = $this->transaction($memo, $date);
 
             $this->debit($accounts[$dr], $transaction, $amount);
             $this->credit($accounts[$cr], $transaction, $amount);
