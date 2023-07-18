@@ -26,7 +26,9 @@ final class TransactionPostingTest extends TestCase
         $transaction->lineItems()->save($debit);
         $transaction->lineItems()->save($credit);
 
-        $transaction->post();
+        $postSuccess = $transaction->post();
+
+        $this->assertTrue($postSuccess);
         $this->assertTrue($transaction->posted);
     }
 
