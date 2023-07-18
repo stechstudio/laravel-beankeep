@@ -29,4 +29,12 @@ final class Transaction extends Beankeeper
     {
         return $this->hasMany(SourceDocument::class);
     }
+
+    public function post(): self
+    {
+        $this->posted = true;
+        $this->save();
+
+        return $this;
+    }
 }

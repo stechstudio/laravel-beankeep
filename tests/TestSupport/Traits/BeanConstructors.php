@@ -54,7 +54,9 @@ trait BeanConstructors
             ['2100',  'Accounts Payable',    AccountType::Liability],
             ['3000',  'Equity',              AccountType::Equity],
             ['3100',  'Capital',             AccountType::Equity],
-            ['4000',  'Income',              AccountType::Revenue],
+            ['4000',  'Revenue',             AccountType::Revenue],
+            ['4100',  'Sales Income',        AccountType::Revenue],
+            ['4200',  'Consulting Income',   AccountType::Revenue],
             ['5000',  'Expenses',            AccountType::Expense],
         ];
     }
