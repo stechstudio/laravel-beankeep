@@ -63,6 +63,24 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->posted);
     }
 
+    public function testPostAllowsPostingSplitDebitsWithSplitCredits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-05-05'),
+            'memo' => 'buy netbook with extended damage insurance (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('equipment', 20000));
+        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 20000));
+
+        $postSuccess = $transaction->post();
+
+        $this->assertTrue($postSuccess);
+        $this->assertTrue($transaction->posted);
+    }
+
     public function testPostDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $transaction = Transaction::create([
@@ -166,6 +184,8 @@ final class TransactionPostingTest extends TestCase
 
     private Account $equipment;
 
+    private Account $prepaidInsurance;
+
     private Account $accountsPayable;
 
     private Account $interestPayable;
@@ -223,6 +243,15 @@ final class TransactionPostingTest extends TestCase
             'number' => '1300',
             'type' => AccountType::Asset,
             'name' => 'Equipment',
+        ]);
+    }
+
+    private function prepaidInsurance(): Account
+    {
+        return $this->prepaidInsurance ??= Account::create([
+            'number' => '1400',
+            'type' => AccountType::Asset,
+            'name' => 'Prepaid Insurance',
         ]);
     }
 
