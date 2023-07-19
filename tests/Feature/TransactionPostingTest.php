@@ -196,21 +196,7 @@ final class TransactionPostingTest extends TestCase
 
     // ------------------------------------------------------------------------
 
-    private Account $cash;
-
-    private Account $accountsReceivable;
-
-    private Account $equipment;
-
-    private Account $prepaidInsurance;
-
-    private Account $accountsPayable;
-
-    private Account $interestPayable;
-
-    private Account $revenue;
-
-    private Account $interestExpense;
+    private array $memoizedAccounts = [];
 
     private function debit(Account|string $account, int $amount): LineItem
     {
@@ -239,7 +225,7 @@ final class TransactionPostingTest extends TestCase
 
     private function cash(): Account
     {
-        return $this->cash ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '1100',
             'type' => AccountType::Asset,
             'name' => 'Cash',
@@ -248,7 +234,7 @@ final class TransactionPostingTest extends TestCase
 
     private function accountsReceivable(): Account
     {
-        return $this->accountsRecievable ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '1200',
             'type' => AccountType::Asset,
             'name' => 'Accounts Receivable',
@@ -257,7 +243,7 @@ final class TransactionPostingTest extends TestCase
 
     private function equipment(): Account
     {
-        return $this->equipment ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '1300',
             'type' => AccountType::Asset,
             'name' => 'Equipment',
@@ -266,7 +252,7 @@ final class TransactionPostingTest extends TestCase
 
     private function prepaidInsurance(): Account
     {
-        return $this->prepaidInsurance ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '1400',
             'type' => AccountType::Asset,
             'name' => 'Prepaid Insurance',
@@ -275,7 +261,7 @@ final class TransactionPostingTest extends TestCase
 
     private function accountsPayable(): Account
     {
-        return $this->accountsPayable ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '2100',
             'type' => AccountType::Liability,
             'name' => 'Accounts Payable',
@@ -284,7 +270,7 @@ final class TransactionPostingTest extends TestCase
 
     private function interestPayable(): Account
     {
-        return $this->interestPayable ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '2200',
             'type' => AccountType::Liability,
             'name' => 'Interest Payable',
@@ -293,7 +279,7 @@ final class TransactionPostingTest extends TestCase
 
     private function revenue(): Account
     {
-        return $this->revenue ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '4000',
             'type' => AccountType::Revenue,
             'name' => 'Revenue',
@@ -302,7 +288,7 @@ final class TransactionPostingTest extends TestCase
 
     private function interestExpense(): Account
     {
-        return $this->interestExpense ??= Account::create([
+        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
             'number' => '5100',
             'type' => AccountType::Expense,
             'name' => 'Interest Expense',
