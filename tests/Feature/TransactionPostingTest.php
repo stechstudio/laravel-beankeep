@@ -53,6 +53,27 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->posted);
     }
 
+    public function testPostAllowsPostingSplitCredits(): void
+    {
+        $debit = $this->debit('equipment', 40000);
+        $credit1 = $this->credit('accountsPayable', 20000);
+        $credit2 = $this->credit('cash', 20000);
+
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'buy netbook (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($debit);
+        $transaction->lineItems()->save($credit1);
+        $transaction->lineItems()->save($credit2);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertTrue($postSuccess);
+        $this->assertTrue($transaction->posted);
+    }
+
     public function testPostDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $debit = $this->debit('accountsReceivable', 40000);
@@ -129,6 +150,10 @@ final class TransactionPostingTest extends TestCase
 
     private Account $accountsReceivable;
 
+    private Account $equipment;
+
+    private Account $accountsPayable;
+
     private Account $interestPayable;
 
     private Account $revenue;
@@ -175,6 +200,24 @@ final class TransactionPostingTest extends TestCase
             'number' => '1200',
             'type' => AccountType::Asset,
             'name' => 'Accounts Receivable',
+        ]);
+    }
+
+    private function equipment(): Account
+    {
+        return $this->equipment ??= Account::create([
+            'number' => '1300',
+            'type' => AccountType::Asset,
+            'name' => 'Equipment',
+        ]);
+    }
+
+    private function accountsPayable(): Account
+    {
+        return $this->accountsPayable ??= Account::create([
+            'number' => '2100',
+            'type' => AccountType::Liability,
+            'name' => 'Accounts Payable',
         ]);
     }
 
