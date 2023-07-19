@@ -79,6 +79,30 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->posted);
     }
 
+    public function testPostDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40002));
+
+        $postSuccess = $transaction->post();
+
+        $this->assertFalse($postSuccess);
+        $this->assertFalse($transaction->posted);
+    }
+
+    /*
+    public function testPostDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
+    {
+        // TODO(zmd): implement me
+    }
+    */
+
     public function testPostDisallowsPostingWithoutLineItems(): void
     {
         $transaction = Transaction::create([
