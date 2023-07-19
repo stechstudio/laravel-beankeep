@@ -51,12 +51,31 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->posted);
     }
 
-    public function testPostDisallowsPostingWhenWithoutLineItems(): void
+    public function testPostDisallowsPostingWithoutLineItems(): void
     {
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-07-18'),
             'memo' => 'perform services',
         ]);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertFalse($postSuccess);
+        $this->assertFalse($transaction->posted);
+    }
+
+    public function testPostDisallowsPostingWithoutAtLeastOneDebit(): void
+    {
+        $credit1 = $this->credit('accountsReceivable', 40000);
+        $credit2 = $this->credit('revenue', 40000);
+
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($credit1);
+        $transaction->lineItems()->save($credit2);
 
         $postSuccess = $transaction->post();
 
