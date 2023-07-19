@@ -51,6 +51,19 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->posted);
     }
 
+    public function testPostDisallowsPostingWhenWithoutLineItems(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertFalse($postSuccess);
+        $this->assertFalse($transaction->posted);
+    }
+
     // ------------------------------------------------------------------------
 
     private Account $accountsReceivable;

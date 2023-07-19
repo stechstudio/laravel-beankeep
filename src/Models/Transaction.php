@@ -45,7 +45,17 @@ final class Transaction extends Beankeeper
         return $this->save();
     }
 
-    public function lineItemsValid(): bool
+    private function lineItemsValid(): bool
+    {
+        return $this->lineItemsPresent() && $this->lineItemsBalance();
+    }
+
+    private function lineItemsPresent(): bool
+    {
+        return $this->lineItems()->count() !== 0;
+    }
+
+    private function lineItemsBalance(): bool
     {
         $debitTotal = $this->lineItems()->sum('debit');
         $creditTotal = $this->lineItems()->sum('credit');
