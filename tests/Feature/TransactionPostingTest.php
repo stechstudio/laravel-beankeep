@@ -13,6 +13,9 @@ use STS\Beankeep\Tests\TestCase;
 
 final class TransactionPostingTest extends TestCase
 {
+
+    // -- post via ::post() --------------------------------------------------
+
     public function testPostAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
     {
         $transaction = Transaction::create([
@@ -193,6 +196,44 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($postSuccess);
         $this->assertFalse($transaction->posted);
     }
+
+    // -- post via ::save() ---------------------------------------------------
+
+    public function testSaveAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
+
+        $transaction->posted = true;
+
+        $this->assertTrue($transaction->save());
+        $this->assertTrue($transaction->refresh()->posted);
+    }
+
+    // TODO(zmd): public function testSaveAllowsPostingSplitDebits(): void
+
+    // TODO(zmd): public function testSaveAllowsPostingSplitCredits(): void
+
+    // TODO(zmd): public function testSaveAllowsPostingSplitDebitsWithSplitCredits(): void
+
+    // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
+
+    // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
+
+    // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
+
+    // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
+
+    // TODO(zmd): public function testSaveDisallowsPostingWithoutLineItems(): void
+
+    // TODO(zmd): public function testSaveRequiresAtLeastOneDebit(): void
+
+    // TODO(zmd): public function testSaveRequiresAtLeastOneCredit(): void
 
     // ------------------------------------------------------------------------
 
