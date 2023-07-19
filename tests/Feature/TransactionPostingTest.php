@@ -215,7 +215,22 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->refresh()->posted);
     }
 
-    // TODO(zmd): public function testSaveAllowsPostingSplitDebits(): void
+    public function testSaveAllowsPostingSplitDebits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40000));
+
+        $transaction->posted = true;
+
+        $this->assertTrue($transaction->save());
+        $this->assertTrue($transaction->refresh()->posted);
+    }
 
     // TODO(zmd): public function testSaveAllowsPostingSplitCredits(): void
 
