@@ -20,6 +20,10 @@ final class Transaction extends Beankeeper
         'posted' => 'boolean',
     ];
 
+    protected $attributes = [
+        'posted' => false,
+    ];
+
     public function lineItems(): HasMany
     {
         return $this->hasMany(LineItem::class);
@@ -32,8 +36,20 @@ final class Transaction extends Beankeeper
 
     public function post(): bool
     {
+        if (!$this->lineItemsValid()) {
+            return false;
+        }
+
         $this->posted = true;
 
         return $this->save();
+    }
+
+    public function lineItemsValid(): bool
+    {
+        $debitTotal = $this->lineItems()->sum('debit');
+        $creditTotal = $this->lineItems()->sum('credit');
+
+        return $debitTotal === $creditTotal;
     }
 }
