@@ -64,7 +64,7 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->posted);
     }
 
-    public function testPostDisallowsPostingWithoutAtLeastOneDebit(): void
+    public function testPostRequiresAtLeastOneDebit(): void
     {
         $credit1 = $this->credit('accountsReceivable', 40000);
         $credit2 = $this->credit('revenue', 40000);
@@ -76,6 +76,25 @@ final class TransactionPostingTest extends TestCase
 
         $transaction->lineItems()->save($credit1);
         $transaction->lineItems()->save($credit2);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertFalse($postSuccess);
+        $this->assertFalse($transaction->posted);
+    }
+
+    public function testPostRequiresAtLeastOneCredit(): void
+    {
+        $debit1 = $this->debit('accountsReceivable', 40000);
+        $debit2 = $this->debit('revenue', 40000);
+
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($debit1);
+        $transaction->lineItems()->save($debit2);
 
         $postSuccess = $transaction->post();
 
