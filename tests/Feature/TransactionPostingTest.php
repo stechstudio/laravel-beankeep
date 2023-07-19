@@ -15,16 +15,13 @@ final class TransactionPostingTest extends TestCase
 {
     public function testPostAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
     {
-        $debit = $this->debit('accountsReceivable', 40000);
-        $credit = $this->credit('revenue', 40000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-07-18'),
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($debit);
-        $transaction->lineItems()->save($credit);
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $postSuccess = $transaction->post();
 
@@ -34,18 +31,14 @@ final class TransactionPostingTest extends TestCase
 
     public function testPostAllowsPostingSplitDebits(): void
     {
-        $debit1 = $this->debit('interestPayable', 20000);
-        $debit2 = $this->debit('interestExpense', 20000);
-        $credit = $this->credit('cash', 40000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-03-31'),
             'memo' => 'pay interest on loan (including accrued interest from prior year)',
         ]);
 
-        $transaction->lineItems()->save($debit1);
-        $transaction->lineItems()->save($debit2);
-        $transaction->lineItems()->save($credit);
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40000));
 
         $postSuccess = $transaction->post();
 
@@ -55,18 +48,14 @@ final class TransactionPostingTest extends TestCase
 
     public function testPostAllowsPostingSplitCredits(): void
     {
-        $debit = $this->debit('equipment', 40000);
-        $credit1 = $this->credit('accountsPayable', 20000);
-        $credit2 = $this->credit('cash', 20000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-03-31'),
             'memo' => 'buy netbook (50% cash, 50% 30-day terms)',
         ]);
 
-        $transaction->lineItems()->save($debit);
-        $transaction->lineItems()->save($credit1);
-        $transaction->lineItems()->save($credit2);
+        $transaction->lineItems()->save($this->debit('equipment', 40000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $postSuccess = $transaction->post();
 
@@ -76,16 +65,13 @@ final class TransactionPostingTest extends TestCase
 
     public function testPostDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
-        $debit = $this->debit('accountsReceivable', 40000);
-        $credit = $this->credit('revenue', 30000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-07-18'),
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($debit);
-        $transaction->lineItems()->save($credit);
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 30000));
 
         $postSuccess = $transaction->post();
 
@@ -108,16 +94,13 @@ final class TransactionPostingTest extends TestCase
 
     public function testPostRequiresAtLeastOneDebit(): void
     {
-        $credit1 = $this->credit('accountsReceivable', 40000);
-        $credit2 = $this->credit('revenue', 40000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-07-18'),
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($credit1);
-        $transaction->lineItems()->save($credit2);
+        $transaction->lineItems()->save($this->credit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $postSuccess = $transaction->post();
 
@@ -127,16 +110,13 @@ final class TransactionPostingTest extends TestCase
 
     public function testPostRequiresAtLeastOneCredit(): void
     {
-        $debit1 = $this->debit('accountsReceivable', 40000);
-        $debit2 = $this->debit('revenue', 40000);
-
         $transaction = Transaction::create([
             'date' => Carbon::parse('2023-07-18'),
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($debit1);
-        $transaction->lineItems()->save($debit2);
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('revenue', 40000));
 
         $postSuccess = $transaction->post();
 
