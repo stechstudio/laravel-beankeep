@@ -32,6 +32,27 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->posted);
     }
 
+    public function testPostAllowsPostingSplitDebits(): void
+    {
+        $debit1 = $this->debit('interestPayable', 20000);
+        $debit2 = $this->debit('interestExpense', 20000);
+        $credit = $this->credit('cash', 40000);
+
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($debit1);
+        $transaction->lineItems()->save($debit2);
+        $transaction->lineItems()->save($credit);
+
+        $postSuccess = $transaction->post();
+
+        $this->assertTrue($postSuccess);
+        $this->assertTrue($transaction->posted);
+    }
+
     public function testPostDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $debit = $this->debit('accountsReceivable', 40000);
@@ -104,9 +125,15 @@ final class TransactionPostingTest extends TestCase
 
     // ------------------------------------------------------------------------
 
+    private Account $cash;
+
     private Account $accountsReceivable;
 
+    private Account $interestPayable;
+
     private Account $revenue;
+
+    private Account $interestExpense;
 
     private function debit(Account|string $account, int $amount): LineItem
     {
@@ -133,6 +160,15 @@ final class TransactionPostingTest extends TestCase
         return $account;
     }
 
+    private function cash(): Account
+    {
+        return $this->cash ??= Account::create([
+            'number' => '1100',
+            'type' => AccountType::Asset,
+            'name' => 'Cash',
+        ]);
+    }
+
     private function accountsReceivable(): Account
     {
         return $this->accountsRecievable ??= Account::create([
@@ -142,12 +178,30 @@ final class TransactionPostingTest extends TestCase
         ]);
     }
 
+    private function interestPayable(): Account
+    {
+        return $this->interestPayable ??= Account::create([
+            'number' => '2200',
+            'type' => AccountType::Liability,
+            'name' => 'Interest Payable',
+        ]);
+    }
+
     private function revenue(): Account
     {
         return $this->revenue ??= Account::create([
             'number' => '4000',
             'type' => AccountType::Revenue,
             'name' => 'Revenue',
+        ]);
+    }
+
+    private function interestExpense(): Account
+    {
+        return $this->interestExpense ??= Account::create([
+            'number' => '5100',
+            'type' => AccountType::Expense,
+            'name' => 'Interest Expense',
         ]);
     }
 }
