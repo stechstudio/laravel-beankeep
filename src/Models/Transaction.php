@@ -43,17 +43,6 @@ final class Transaction extends Beankeeper
         return $this->hasMany(SourceDocument::class);
     }
 
-    public function post(): bool
-    {
-        if (!$this->lineItemsValid()) {
-            return false;
-        }
-
-        $this->posted = true;
-
-        return $this->save();
-    }
-
     private function lineItemsValid(): bool
     {
         return $this->lineItemsPresent() && $this->lineItemsBalance();
