@@ -14,6 +14,156 @@ use STS\Beankeep\Tests\TestCase;
 final class TransactionPostingTest extends TestCase
 {
 
+    // -- ::canPost() --------------------------------------------------
+
+    public function testCanPostReturnsTrueWhenDebitsAndCreditsBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
+
+        $this->assertTrue($transaction->canPost());
+    }
+
+    public function testCanPostReturnsTrueWithSplitDebits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40000));
+
+        $this->assertTrue($transaction->canPost());
+    }
+
+    public function testCanPostReturnsTrueWithSplitCredits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'buy netbook (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('equipment', 40000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 20000));
+
+        $this->assertTrue($transaction->canPost());
+    }
+
+    public function testCanPostReturnsTrueWithSplitDebitsAndSplitCredits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-05-05'),
+            'memo' => 'buy netbook with extended damage insurance (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('equipment', 20000));
+        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 20000));
+
+        $this->assertTrue($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWhenDebitsAndCreditsDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 30000));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWhenSplitDebitsAndCreditDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40002));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWhenDebitAndSplitCreditsDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'buy netbook (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('equipment', 40000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 19999));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWhenSplitDebitsAndSplitCreditDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-05-05'),
+            'memo' => 'buy netbook with extended damage insurance (50% cash, 50% 30-day terms)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('equipment', 20000));
+        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
+        $transaction->lineItems()->save($this->credit('accountsPayable', 20010));
+        $transaction->lineItems()->save($this->credit('cash', 20000));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWithoutLineItems(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWithoutAnyDebits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->credit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
+    public function testCanPostReturnsFalseWithoutAnyCredits(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('revenue', 40000));
+
+        $this->assertFalse($transaction->canPost());
+    }
+
     // -- post via ::save() ---------------------------------------------------
 
     public function testSaveAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void

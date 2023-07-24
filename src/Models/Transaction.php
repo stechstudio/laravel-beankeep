@@ -28,7 +28,7 @@ final class Transaction extends Beankeeper
     {
         static::saving(function (Transaction $transaction) {
             if ($transaction->posted) {
-                return $transaction->lineItemsValid();
+                return $transaction->canPost();
             }
         });
     }
@@ -43,7 +43,7 @@ final class Transaction extends Beankeeper
         return $this->hasMany(SourceDocument::class);
     }
 
-    private function lineItemsValid(): bool
+    public function canPost(): bool
     {
         return $this->lineItemsPresent() && $this->lineItemsBalance();
     }
