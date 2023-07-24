@@ -283,6 +283,22 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    public function testSaveNotDisallowedForUnbalancedLineItemsAsLongAsPostedRemainsFalse(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 30000));
+
+        $transaction->memo = 'perform PREMIUM services';
+
+        $this->assertTrue($transaction->save());
+        $this->assertFalse($transaction->refresh()->posted);
+    }
+
     // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
 
     // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
