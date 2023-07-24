@@ -13,6 +13,58 @@ use STS\Beankeep\Tests\TestCase;
 
 final class LineItemDataIntegrityTest extends TestCase
 {
+    public function testCreatingWithJustADebitSucceeds(): void
+    {
+        $lineItem = LineItem::create([
+            'account_id' => $this->account()->id,
+            'transaction_id' => $this->transaction()->id,
+            'debit' => 10000,
+        ]);
+
+        $this->assertTrue($lineItem->exists);
+        $this->assertTrue($lineItem->isDebit());
+        $this->assertFalse($lineItem->isCredit());
+    }
+
+    public function testCreatingWithJustACreditSucceeds(): void
+    {
+        $lineItem = LineItem::create([
+            'account_id' => $this->account()->id,
+            'transaction_id' => $this->transaction()->id,
+            'credit' => 10000,
+        ]);
+
+        $this->assertTrue($lineItem->exists);
+        $this->assertFalse($lineItem->isDebit());
+        $this->assertTrue($lineItem->isCredit());
+    }
+
+    public function testSavingWithJustADebitSucceeds(): void
+    {
+        $lineItem = new LineItem([
+            'account_id' => $this->account()->id,
+            'transaction_id' => $this->transaction()->id,
+            'debit' => 10000,
+        ]);
+
+        $this->assertTrue($lineItem->save());
+        $this->assertTrue($lineItem->isDebit());
+        $this->assertFalse($lineItem->isCredit());
+    }
+
+    public function testSavingWithJustACreditSucceeds(): void
+    {
+        $lineItem = new LineItem([
+            'account_id' => $this->account()->id,
+            'transaction_id' => $this->transaction()->id,
+            'credit' => 10000,
+        ]);
+
+        $this->assertTrue($lineItem->save());
+        $this->assertFalse($lineItem->isDebit());
+        $this->assertTrue($lineItem->isCredit());
+    }
+
     public function testRefusesToCreateWithBothCreditAndDebitAmount(): void
     {
         $lineItem = LineItem::create([

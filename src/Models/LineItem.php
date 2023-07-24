@@ -17,6 +17,11 @@ final class LineItem extends Beankeeper
         'credit',
     ];
 
+    protected $attributes = [
+        'debit' => 0,
+        'credit' => 0,
+    ];
+
     protected static function booted(): void
     {
         static::saving(function (LineItem $lineItem) {
