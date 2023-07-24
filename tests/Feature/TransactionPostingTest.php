@@ -267,19 +267,6 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->refresh()->posted);
     }
 
-    public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
-    {
-        $transaction = new Transaction([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
-
-        $transaction->posted = true;
-
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->exists);
-    }
-
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $transaction = Transaction::create([
@@ -312,13 +299,41 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
-    // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
+    public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-03-31'),
+            'memo' => 'pay interest on loan (including accrued interest from prior year)',
+        ]);
+
+        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
+        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->credit('cash', 40002));
+
+        $transaction->posted = true;
+
+        $this->assertFalse($transaction->save());
+        $this->assertFalse($transaction->refresh()->posted);
+    }
 
     // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
 
     // TODO(zmd): public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
 
     // TODO(zmd): public function testSaveDisallowsPostingWithoutLineItems(): void
+
+    public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
+    {
+        $transaction = new Transaction([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->posted = true;
+
+        $this->assertFalse($transaction->save());
+        $this->assertFalse($transaction->exists);
+    }
 
     // TODO(zmd): public function testSaveRequiresAtLeastOneDebit(): void
 
