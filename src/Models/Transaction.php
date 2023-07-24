@@ -26,13 +26,7 @@ final class Transaction extends Beankeeper
 
     protected static function booted(): void
     {
-        // TODO(zmd): if we play our cards right, we should be able to combine
-        //   the creating and updating hook callbacks into a single saving
-        static::creating(function (Transaction $transaction) {
-            return $transaction->posted === false;
-        });
-
-        static::updating(function (Transaction $transaction) {
+        static::saving(function (Transaction $transaction) {
             if ($transaction->posted) {
                 return $transaction->lineItemsValid();
             }
