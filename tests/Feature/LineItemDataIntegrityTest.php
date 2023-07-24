@@ -13,6 +13,18 @@ use STS\Beankeep\Tests\TestCase;
 
 final class LineItemDataIntegrityTest extends TestCase
 {
+    public function testRefusesToCreateWithBothCreditAndDebitAmount(): void
+    {
+        $lineItem = LineItem::create([
+            'account_id' => $this->account()->id,
+            'transaction_id' => $this->transaction()->id,
+            'debit' => 10000,
+            'credit' => 10000,
+        ]);
+
+        $this->assertFalse($lineItem->exists);
+    }
+
     public function testRefusesToSaveWithBothCreditAndDebitAmount(): void
     {
         $lineItem = new LineItem(['debit' => 10000, 'credit' => 10000]);
