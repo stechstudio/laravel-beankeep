@@ -24,6 +24,17 @@ final class Transaction extends Beankeeper
         'posted' => false,
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Transaction $transaction) {
+            return $transaction->posted === false;
+        });
+
+        static::updating(function (Transaction $transaction) {
+            return $transaction->lineItemsValid();
+        });
+    }
+
     public function lineItems(): HasMany
     {
         return $this->hasMany(LineItem::class);
