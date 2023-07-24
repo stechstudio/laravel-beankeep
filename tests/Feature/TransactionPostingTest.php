@@ -267,6 +267,19 @@ final class TransactionPostingTest extends TestCase
         $this->assertTrue($transaction->refresh()->posted);
     }
 
+    public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
+    {
+        $transaction = new Transaction([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->posted = true;
+
+        $this->assertFalse($transaction->save());
+        $this->assertFalse($transaction->exists);
+    }
+
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $transaction = Transaction::create([
