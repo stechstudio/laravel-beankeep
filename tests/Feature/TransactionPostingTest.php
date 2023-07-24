@@ -351,7 +351,18 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
-    // TODO(zmd): public function testSaveDisallowsPostingWithoutLineItems(): void
+    public function testSaveDisallowsPostingWithoutLineItems(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->posted = true;
+
+        $this->assertFalse($transaction->save());
+        $this->assertFalse($transaction->refresh()->posted);
+    }
 
     public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
     {
