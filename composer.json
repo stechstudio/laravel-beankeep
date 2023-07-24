@@ -1,6 +1,6 @@
 {
     "name": "stechstudio/laravel-beankeep",
-    "description": "A Laravel wrapper for stechstudio/beankeep",
+    "description": "Laravel package to facilitate double-entry bookkeeping",
     "type": "library",
     "version": "0.1.0-dev",
     "license": "MIT",

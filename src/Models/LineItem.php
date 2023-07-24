@@ -17,6 +17,18 @@ final class LineItem extends Beankeeper
         'credit',
     ];
 
+    protected $attributes = [
+        'debit' => 0,
+        'credit' => 0,
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (LineItem $lineItem) {
+            return $lineItem->isDebit() xor $lineItem->isCredit();
+        });
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);

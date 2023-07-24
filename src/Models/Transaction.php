@@ -12,7 +12,6 @@ final class Transaction extends Beankeeper
 
     protected $fillable = [
         'date',
-        'posted',
         'memo',
     ];
 
@@ -20,6 +19,19 @@ final class Transaction extends Beankeeper
         'date' => 'date',
         'posted' => 'boolean',
     ];
+
+    protected $attributes = [
+        'posted' => false,
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Transaction $transaction) {
+            if ($transaction->posted) {
+                return $transaction->canPost();
+            }
+        });
+    }
 
     public function lineItems(): HasMany
     {
@@ -29,5 +41,23 @@ final class Transaction extends Beankeeper
     public function sourceDocuments(): HasMany
     {
         return $this->hasMany(SourceDocument::class);
+    }
+
+    public function canPost(): bool
+    {
+        return $this->lineItemsPresent() && $this->lineItemsBalance();
+    }
+
+    private function lineItemsPresent(): bool
+    {
+        return $this->lineItems()->count() !== 0;
+    }
+
+    private function lineItemsBalance(): bool
+    {
+        $debitTotal = $this->lineItems()->sum('debit');
+        $creditTotal = $this->lineItems()->sum('credit');
+
+        return $debitTotal === $creditTotal;
     }
 }
