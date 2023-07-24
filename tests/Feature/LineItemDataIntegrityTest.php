@@ -35,6 +35,21 @@ final class LineItemDataIntegrityTest extends TestCase
         $this->assertFalse($lineItem->exists);
     }
 
+    public function testRefusesToUpdateWithBothCreditAndDebitAmount(): void
+    {
+        $lineItem = new LineItem(['debit' => 10000, 'credit' => 0]);
+        $lineItem->account_id = $this->account()->id;
+        $lineItem->transaction_id = $this->transaction()->id;
+
+        $this->assertTrue($lineItem->save());
+        $this->assertTrue($lineItem->exists);
+
+        $lineItem->credit = 10000;
+
+        $this->assertFalse($lineItem->save());
+        $this->assertEquals(0, $lineItem->refresh()->credit);
+    }
+
     public function testRefusesToCreateWithoutEitherCreditOrDebitAmount(): void
     {
         $lineItem = LineItem::create([
