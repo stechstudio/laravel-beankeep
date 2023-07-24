@@ -377,7 +377,21 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->exists);
     }
 
-    // TODO(zmd): public function testSaveRequiresAtLeastOneDebit(): void
+    public function testSaveRequiresAtLeastOneDebit(): void
+    {
+        $transaction = Transaction::create([
+            'date' => Carbon::parse('2023-07-18'),
+            'memo' => 'perform services',
+        ]);
+
+        $transaction->lineItems()->save($this->credit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('revenue', 40000));
+
+        $transaction->posted = true;
+
+        $this->assertFalse($transaction->save());
+        $this->assertFalse($transaction->refresh()->posted);
+    }
 
     // TODO(zmd): public function testSaveRequiresAtLeastOneCredit(): void
 
