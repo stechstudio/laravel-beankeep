@@ -6,7 +6,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "STS\\Beankeep\\": "src/"
+            "STS\\Beankeep\\": "src/",
+            "STS\\Beankeep\\Database\\Factories\\": "database/factories/"
         }
     },
     "authors": [
@@ -25,7 +26,6 @@
         "illuminate/database": "^10.0",
         "nunomaduro/collision": "^7.7"
     },
-
     "extra": {
         "laravel": {
             "providers": [
