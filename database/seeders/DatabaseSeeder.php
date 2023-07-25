@@ -7,12 +7,14 @@ namespace STS\Beankeep\Database\Seeders;
 use Illuminate\Database\Seeder;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\Transaction;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         Account::factory()->createMany($this->accountsAttributes());
+        Transaction::factory()->count(100)->create();
     }
 
     protected function accountsAttributes(): array
