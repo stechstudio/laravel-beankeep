@@ -7,7 +7,8 @@
     "autoload": {
         "psr-4": {
             "STS\\Beankeep\\": "src/",
-            "STS\\Beankeep\\Database\\Factories\\": "database/factories/"
+            "STS\\Beankeep\\Database\\Factories\\": "database/factories/",
+            "STS\\Beankeep\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "authors": [
