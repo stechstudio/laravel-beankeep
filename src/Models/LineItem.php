@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use STS\Beankeep\Database\Factories\LineItemFactory;
 
 final class LineItem extends Beankeeper
 {
+    use HasFactory;
+
     protected $table = 'beankeep_line_items';
 
     protected $fillable = [
@@ -27,6 +31,11 @@ final class LineItem extends Beankeeper
         static::saving(function (LineItem $lineItem) {
             return $lineItem->isDebit() xor $lineItem->isCredit();
         });
+    }
+
+    protected static function newFactory()
+    {
+        return LineItemFactory::new();
     }
 
     public function account(): BelongsTo
