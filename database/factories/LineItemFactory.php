@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\LineItem;
 
-class AccountFactory extends Factory
+class LineItemFactory extends Factory
 {
-    protected $model = Account::class;
+    protected $model = LineItem::class;
 
     public function definition(): array
     {

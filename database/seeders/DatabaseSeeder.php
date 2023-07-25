@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Database\Seeders;
 
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use STS\Beankeep\Enums\AccountType;
@@ -13,6 +15,13 @@ use STS\Beankeep\Models\Transaction;
 
 class DatabaseSeeder extends Seeder
 {
+    protected Generator $faker;
+
+    public function __construct()
+    {
+        $this->faker = Factory::create();
+    }
+
     public function run(): void
     {
         Account::factory()->createMany($this->accountsAttributes());
@@ -34,14 +43,12 @@ class DatabaseSeeder extends Seeder
     {
         $accounts = Account::all();
 
-        [$debitAccount, $creditAccount] = $accounts->random(2)
+        [$debitAccount, $creditAccount] = $accounts->random(2);
         $amount = $this->amount();
 
-        // TODO(zmd): implement the actual line item factory so this works
         $debitLineItem = LineItem::factory()->make([ 'debit' => $amount ]);
         $debitLineItem->account()->associate($debitAccount);
 
-        // TODO(zmd): implement the actual line item factory so this works
         $creditLineItem = LineItem::factory()->make([ 'credit' => $amount ]);
         $creditLineItem->account()->associate($creditAccount);
 
@@ -50,12 +57,12 @@ class DatabaseSeeder extends Seeder
 
     public function amount(): int
     {
-        return $this->numberBetween(1, 1500) * 100;
+        return $this->faker->numberBetween(1, 1500) * 100;
     }
 
     public function shouldPostTransaction(): bool
     {
-        return $this->randomNumber(1, 5) % 5 == 0;
+        return $this->faker->numberBetween(1, 5) % 5 == 0;
     }
 
     protected function accountsAttributes(): array
