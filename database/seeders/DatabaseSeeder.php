@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +17,46 @@ class DatabaseSeeder extends Seeder
     {
         Account::factory()->createMany($this->accountsAttributes());
         Transaction::factory()->count(100)->create();
+
+        Transaction::all()->each(function (Transaction $transaction) {
+            foreach ($this->randomUnsavedLineItems() as $lineItem) {
+                $transaction->lineItems()->save($lineItem);
+            }
+
+            if ($this->shouldPostTransaction()) {
+                $transaction->posted = true;
+                $transaction->save();
+            }
+        });
+    }
+
+    public function randomUnsavedLineItems(): array
+    {
+        $accounts = Account::all();
+
+        [$debitAccount, $creditAccount] = $accounts->random(2)
+        $amount = $this->amount();
+
+        // TODO(zmd): implement the actual line item factory so this works
+        $debitLineItem = LineItem::factory()->make([ 'debit' => $amount ]);
+        $debitLineItem->account()->associate($debitAccount);
+
+        // TODO(zmd): implement the actual line item factory so this works
+        $creditLineItem = LineItem::factory()->make([ 'credit' => $amount ]);
+        $creditLineItem->account()->associate($creditAccount);
+
+        return [$debitLineItem, $creditLineItem];
+    }
+
+    public function amount(): int
+    {
+        return $this->numberBetween(1, 1500) * 100;
+    }
+
+    public function shouldPostTransaction(): bool
+    {
+        // TODO(zmd):: randomly decide whether to actually post the transaction
+        return true;
     }
 
     protected function accountsAttributes(): array
