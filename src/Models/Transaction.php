@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use STS\Beankeep\Database\Factories\TransactionFactory;
 
 final class Transaction extends Beankeeper
 {
+    use HasFactory;
+
     protected $table = 'beankeep_transactions';
 
     protected $fillable = [
@@ -31,6 +35,11 @@ final class Transaction extends Beankeeper
                 return $transaction->canPost();
             }
         });
+    }
+
+    protected static function newFactory()
+    {
+        return TransactionFactory::new();
     }
 
     public function lineItems(): HasMany

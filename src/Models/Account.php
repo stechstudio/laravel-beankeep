@@ -25,13 +25,13 @@ final class Account extends Beankeeper
         'type' => AccountType::class,
     ];
 
-    public function lineItems(): HasMany
-    {
-        return $this->hasMany(LineItem::class);
-    }
-
     protected static function newFactory()
     {
         return AccountFactory::new();
+    }
+
+    public function lineItems(): HasMany
+    {
+        return $this->hasMany(LineItem::class);
     }
 }
