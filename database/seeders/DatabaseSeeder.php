@@ -55,8 +55,7 @@ class DatabaseSeeder extends Seeder
 
     public function shouldPostTransaction(): bool
     {
-        // TODO(zmd):: randomly decide whether to actually post the transaction
-        return true;
+        return $this->randomNumber(1, 5) % 5 == 0;
     }
 
     protected function accountsAttributes(): array
