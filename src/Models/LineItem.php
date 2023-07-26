@@ -8,6 +8,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
 
 final class LineItem extends Beankeeper
@@ -40,6 +41,14 @@ final class LineItem extends Beankeeper
         return LineItemFactory::new();
     }
 
+    public static function defaultPeriod(): CarbonPeriod
+    {
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
+
+        return $startOfYear->daysUntil($endOfYear);
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -50,30 +59,32 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
-    public function scopePosted(Builder $query): void
-    {
-        $query->whereHas('transaction', function (Builder $query) {
-            $query->where('posted', true);
-        });
+    public function scopeLedger(
+        Builder $query,
+        ?iterable $period = null,
+    ): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->whereBetween('date', $period ?? self::defaultPeriod())
+            ->where('posted', true));
+    }
+
+    public function scopePeriod(
+        Builder $query,
+        ?iterable $period = null,
+    ): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->whereBetween('date', $period ?? self::defaultPeriod()));
+    }
+
+    public function scopePosted(Builder $query): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('posted', true));
     }
 
     public function scopePending(Builder $query): void
     {
-        $query->whereHas('transaction', function (Builder $query) {
-            $query->where('posted', false);
-        });
-    }
-
-    public function scopePeriod(Builder $query, CarbonPeriod $period): void
-    {
-        $query->whereHas('transaction', function (Builder $query) use ($period) {
-            $query->whereBetween('date', $period);
-        });
-    }
-
-    public function scopeAccount(Builder $query, Account $account): void
-    {
-        // TODO(zmd): implement me
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('posted', false));
     }
 
     public function scopeDebits(Builder $query): void
