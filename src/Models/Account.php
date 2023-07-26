@@ -34,4 +34,9 @@ final class Account extends Beankeeper
     {
         return $this->hasMany(LineItem::class);
     }
+
+    public function ledger(): HasMany
+    {
+        return $this->lineItems()->ledger();
+    }
 }
