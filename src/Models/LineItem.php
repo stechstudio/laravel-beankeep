@@ -89,12 +89,14 @@ final class LineItem extends Beankeeper
 
     public function scopeDebits(Builder $query): void
     {
-        // TODO(zmd): implement me
+        $query->where('debit', '>', 0)
+            ->where('credit', 0);
     }
 
     public function scopeCredits(Builder $query): void
     {
-        // TODO(zmd): implement me
+        $query->where('credit', '>', 0)
+            ->where('debit', 0);
     }
 
     public function isDebit(): bool
