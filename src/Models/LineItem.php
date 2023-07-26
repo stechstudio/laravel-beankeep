@@ -66,7 +66,9 @@ final class LineItem extends Beankeeper
 
     public function scopePeriod(Builder $query, CarbonPeriod $period): void
     {
-        // TODO(zmd): implement me
+        $query->whereHas('transaction', function (Builder $query) use ($period) {
+            $query->whereBetween('date', $period);
+        });
     }
 
     public function scopeAccount(Builder $query, Account $account): void
