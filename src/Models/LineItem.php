@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Models;
 
 use Carbon\CarbonPeriod;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use STS\Beankeep\Database\Factories\LineItemFactory;
@@ -51,7 +52,16 @@ final class LineItem extends Beankeeper
 
     public function scopePosted(Builder $query): void
     {
-        // TODO(zmd): implement me
+        $query->whereHas('transaction', function (Builder $query) {
+            $query->where('posted', true);
+        });
+    }
+
+    public function scopePending(Builder $query): void
+    {
+        $query->whereHas('transaction', function (Builder $query) {
+            $query->where('posted', false);
+        });
     }
 
     public function scopePeriod(Builder $query, CarbonPeriod $period): void
@@ -59,7 +69,7 @@ final class LineItem extends Beankeeper
         // TODO(zmd): implement me
     }
 
-    public function scopeLedger(Builder $query, Account $account): void
+    public function scopeAccount(Builder $query, Account $account): void
     {
         // TODO(zmd): implement me
     }
