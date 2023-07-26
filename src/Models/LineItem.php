@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use STS\Beankeep\Database\Factories\LineItemFactory;
@@ -46,6 +47,21 @@ final class LineItem extends Beankeeper
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    public function scopePosted(Builder $query): void
+    {
+        // TODO(zmd): implement me
+    }
+
+    public function scopePeriod(Builder $query, CarbonPeriod $period): void
+    {
+        // TODO(zmd): implement me
+    }
+
+    public function scopeLedger(Builder $query, Account $account): void
+    {
+        // TODO(zmd): implement me
     }
 
     public function isDebit(): bool
