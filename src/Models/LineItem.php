@@ -74,6 +74,16 @@ final class LineItem extends Beankeeper
         // TODO(zmd): implement me
     }
 
+    public function scopeDebits(Builder $query): void
+    {
+        // TODO(zmd): implement me
+    }
+
+    public function scopeCredits(Builder $query): void
+    {
+        // TODO(zmd): implement me
+    }
+
     public function isDebit(): bool
     {
         return $this->debit > 0;
