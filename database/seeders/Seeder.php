@@ -8,7 +8,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Database\Seeder as BaseSeeder;
 
-class RandomSeeder extends BaseSeeder
+class Seeder extends BaseSeeder
 {
     protected Generator $faker;
 
