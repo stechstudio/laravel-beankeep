@@ -6,6 +6,7 @@ namespace STS\Beankeep\Database\Seeders;
 
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
@@ -14,6 +15,10 @@ use STS\Beankeep\Models\Transaction;
 
 class StaticSeeder extends Seeder
 {
+    protected Carbon $lastYear;
+
+    protected Carbon $thisYear;
+
     protected CarbonPeriod $lastYearRange;
 
     protected CarbonPeriod $thisYearRange;
@@ -35,8 +40,49 @@ class StaticSeeder extends Seeder
     protected function seedLastYearIfNeeded(): void
     {
         if (Transaction::whereBetween('date', $this->lastYearRange())->count() == 0) {
-            // TODO(zmd): implement me
-            echo "NOTHING FOR LAST YEAR, YET.\n";
+            // TODO(zmd): implement $this->lastYear()->pop() to use for date
+            // TODO(zmd): compute a lookup table to get accounts symbolically
+            // TODO(zmd): create DSL for making this easier to manage
+
+            // Scenario: Owners start business with initial capital contribution
+            $transaction = Transaction::factory()->create([
+                'date' => Carbon::now(),
+                'memo' => 'initial owner contribution',
+            ]);
+
+            $transaction->lineItems()->save(LineItem::factory()->make([
+                'account_id' => Account::firstWhere(['number' => '1100'])->id,
+                'debit' => 1000000,
+            ]));
+
+            $transaction->lineItems()->save(LineItem::factory()->make([
+                'account_id' => Account::firstWhere(['number' => '3100'])->id,
+                'credit' => 1000000,
+            ]));
+
+            $transaction->sourceDocuments()->save(SourceDocument::factory()->make([
+                'attachment' => Str::uuid()->toString(),
+                'filename' => 'contribution-moa.pdf',
+                'mime_type' => 'application/pdf',
+            ]));
+
+            // TODO(zmd): Scenario: We buy 2 computers from Computers-R-Us on credit for $5,000.00,
+            /********************************************
+             *                  |       Dr |       Cr   *
+             *  ----------------+----------+----------  *
+             *  Equipment       |   500000 |            *
+             *    Accounts Pay. |          |   500000   *
+             *                                          *
+             ********************************************/
+
+            // TODO(zmd): Scenario: We pay the Computers-R-Us invoice in full ($5,000.00)
+            /********************************************
+             *                  |       Dr |       Cr   *
+             *  ----------------+----------+----------  *
+             *  Accounts Payab. |   500000 |            *
+             *    Cash          |          |   500000   *
+             *                                          *
+             ********************************************/
         }
     }
 
