@@ -34,20 +34,18 @@ class StaticSeeder extends Seeder
 
     protected function seedLastYearIfNeeded(): void
     {
-        // TODO(zmd): implement me
-        dump([
-            'last year start' => (string) $this->lastYearRange()->startDate,
-            'last year end' => (string) $this->lastYearRange()->endDate,
-        ]);
+        if (Transaction::whereBetween('date', $this->lastYearRange())->count() == 0) {
+            // TODO(zmd): implement me
+            echo "NOTHING FOR LAST YEAR, YET.\n";
+        }
     }
 
     protected function seedThisYearIfNeeded(): void
     {
-        // TODO(zmd): implement me
-        dump([
-            'this year start' => (string) $this->thisYearRange()->startDate,
-            'this year end' => (string) $this->thisYearRange()->endDate,
-        ]);
+        if (Transaction::whereBetween('date', $this->thisYearRange())->count() == 0) {
+            // TODO(zmd): implement me
+            echo "NOTHING FOR THIS YEAR, YET.\n";
+        }
     }
 
     protected function lastYearRange(): CarbonPeriod
