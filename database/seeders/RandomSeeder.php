@@ -14,30 +14,35 @@ class RandomSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([
-            AccountSeeder::class,
-        ]);
+        $this->seedAccountsIfNeeded();
 
-        Transaction::factory()->count(100)->create();
+        Transaction::factory()
+            ->count(100)->create()
+            ->each(function (Transaction $transaction) {
+                foreach ($this->randomUnsavedLineItems() as $lineItem) {
+                    $transaction->lineItems()->save($lineItem);
+                }
 
-        Transaction::all()->each(function (Transaction $transaction) {
-            foreach ($this->randomUnsavedLineItems() as $lineItem) {
-                $transaction->lineItems()->save($lineItem);
-            }
+                if ($this->shouldHaveSourceDocument()) {
+                    $sourceDocument = SourceDocument::factory()->make();
+                    $transaction->sourceDocuments()->save($sourceDocument);
+                }
 
-            if ($this->shouldHaveSourceDocument()) {
-                $sourceDocument = SourceDocument::factory()->make();
-                $transaction->sourceDocuments()->save($sourceDocument);
-            }
-
-            if ($this->shouldPostTransaction()) {
-                $transaction->posted = true;
-                $transaction->save();
-            }
-        });
+                if ($this->shouldPostTransaction()) {
+                    $transaction->posted = true;
+                    $transaction->save();
+                }
+            });
     }
 
-    public function randomUnsavedLineItems(): array
+    protected function seedAccountsIfNeeded(): void
+    {
+        if (!Account::count()) {
+            $this->call([AccountSeeder::class]);
+        }
+    }
+
+    protected function randomUnsavedLineItems(): array
     {
         $accounts = Account::all();
 
@@ -53,18 +58,28 @@ class RandomSeeder extends Seeder
         return [$debitLineItem, $creditLineItem];
     }
 
-    public function amount(): int
+    protected function amount(): int
     {
         return $this->faker->numberBetween(1, 1500) * 100;
     }
 
-    public function shouldHaveSourceDocument(): bool
+    protected function shouldHaveSourceDocument(): bool
     {
-        return $this->faker->numberBetween(1, 5) % 5 != 0;
+        return $this->fiftyFifty();
     }
 
-    public function shouldPostTransaction(): bool
+    protected function shouldPostTransaction(): bool
     {
-        return $this->faker->numberBetween(1, 5) % 5 == 0;
+        return $this->fourTimesOutOfFive();
+    }
+
+    protected function fiftyFifty(): bool
+    {
+        return (bool) $this->faker->numberBetween(0, 1);
+    }
+
+    protected function fourTimesOutOfFive(): bool
+    {
+        return $this->faker->numberBetween(1, 5) % 5 != 0;
     }
 }
