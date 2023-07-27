@@ -14,7 +14,7 @@ use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
 
-class DatabaseSeeder extends Seeder
+class RandomSeeder extends Seeder
 {
     protected Generator $faker;
 
