@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders;
 
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
@@ -15,9 +15,9 @@ use STS\Beankeep\Models\Transaction;
 
 class StaticSeeder extends Seeder
 {
-    protected Carbon $lastYear;
+    protected $lastYear;
 
-    protected Carbon $thisYear;
+    protected $thisYear;
 
     protected CarbonPeriod $lastYearRange;
 
@@ -40,13 +40,12 @@ class StaticSeeder extends Seeder
     protected function seedLastYearIfNeeded(): void
     {
         if (Transaction::whereBetween('date', $this->lastYearRange())->count() == 0) {
-            // TODO(zmd): implement $this->lastYear()->pop() to use for date
             // TODO(zmd): compute a lookup table to get accounts symbolically
             // TODO(zmd): create DSL for making this easier to manage
 
             // Scenario: Owners start business with initial capital contribution
             $transaction = Transaction::factory()->create([
-                'date' => Carbon::now(),
+                'date' => $this->lastYear()->get('1/1'),
                 'memo' => 'initial owner contribution',
             ]);
 
@@ -94,11 +93,49 @@ class StaticSeeder extends Seeder
         }
     }
 
+    protected function lastYear()
+    {
+        // TODO(zmd): extract this prototype to something more usable and more
+        //   reusable
+        return $this->lastYear ??= (new class {
+            private string $year;
+
+            public function __construct()
+            {
+                $this->year = CarbonImmutable::now()->startOfYear()->subYear()->format('Y');
+            }
+
+            public function get(string $monthAndDay): CarbonImmutable
+            {
+                return CarbonImmutable::parse($monthAndDay . '/' . $this->year);
+            }
+        });
+    }
+
+    protected function thisYear(): CarbonImmutable
+    {
+        // TODO(zmd): extract this prototype to something more usable and more
+        //   reusable
+        return $this->thisYear ??= (new class {
+            private string $year;
+
+            public function __construct()
+            {
+                $this->year = CarbonImmutable::now()->startOfYear()->format('Y');
+            }
+
+            public function get(string $monthAndDay): CarbonImmutable
+            {
+                return CarbonImmutable::parse($monthAndDay . '/' . $this->year);
+            }
+        });
+    }
+
     protected function lastYearRange(): CarbonPeriod
     {
         return $this->lastYearRange ??= (function () {
-            $start = Carbon::now()->startOfYear()->subYear();
-            $end = $start->copy()->endOfYear();
+            $start = CarbonImmutable::now()->startOfYear()->subYear();
+            $end = $start->endOfYear();
 
             return $start->daysUntil($end);
         })();
@@ -107,8 +144,8 @@ class StaticSeeder extends Seeder
     protected function thisYearRange(): CarbonPeriod
     {
         return $this->thisYearRange ??= (function () {
-            $start = Carbon::now()->startOfYear();
-            $end = $start->copy()->endOfYear();
+            $start = CarbonImmutable::now()->startOfYear();
+            $end = $start->endOfYear();
 
             return $start->daysUntil($end);
         })();
