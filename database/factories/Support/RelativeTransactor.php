@@ -6,15 +6,10 @@ namespace STS\Beankeep\Database\Factories\Support;
 
 use ArrayAccess;
 
-/**
- * Relative to dates within a given year, build transactions (with line items
- * and source documents) to (maybe) post to accounts.
- */
 final class RelativeTransactor implements ArrayAccess
 {
     public function __construct(
         private RelativeToYear $dates,
-        private AccountLookup $accounts,
     ) {
     }
 
@@ -25,10 +20,7 @@ final class RelativeTransactor implements ArrayAccess
 
     public function offsetGet(mixed $offset): mixed
     {
-        return new Transactor(
-            date: $this->dates->offsetGet($offset),
-            accounts: $this->accounts,
-        );
+        return new Transactor($this->dates->offsetGet($offset));
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
