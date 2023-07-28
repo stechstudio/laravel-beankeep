@@ -5,23 +5,39 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders;
 
 use Carbon\CarbonPeriod;
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
-use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
+use STS\Beankeep\Database\Seeders\Support\RelativeDate;
+use STS\Beankeep\Database\Seeders\Support\RelativeToYear;
 
 class StaticSeeder extends Seeder
 {
-    protected $lastYear;
+    protected readonly RelativeToYear $lastYear;
 
-    protected $thisYear;
+    protected readonly RelativeToYear $thisYear;
 
-    protected CarbonPeriod $lastYearRange;
+    protected readonly CarbonPeriod $lastYearRange;
 
-    protected CarbonPeriod $thisYearRange;
+    protected readonly CarbonPeriod $thisYearRange;
+
+    public function __construct()
+    {
+        $date = new RelativeDate();
+
+        $this->lastYear = $date->lastYear;
+        $this->thisYear = $date->thisYear;
+
+        $this->lastYearRange = $date->lastYear['1/1']->daysUntil(
+            $date->lastYear['12/31'],
+        );
+
+        $this->thisYearRange = $date->thisYear['1/1']->daysUntil(
+            $date->thisYear['12/31'],
+        );
+    }
 
     public function run(): void
     {
@@ -39,13 +55,13 @@ class StaticSeeder extends Seeder
 
     protected function seedLastYearIfNeeded(): void
     {
-        if (Transaction::whereBetween('date', $this->lastYearRange())->count() == 0) {
+        if (Transaction::whereBetween('date', $this->lastYearRange)->count() == 0) {
             // TODO(zmd): compute a lookup table to get accounts symbolically
             // TODO(zmd): create DSL for making this easier to manage
 
             // Scenario: Owners start business with initial capital contribution
             $transaction = Transaction::factory()->create([
-                'date' => $this->lastYear()->get('1/1'),
+                'date' => $this->lastYear['1/1'],
                 'memo' => 'initial owner contribution',
             ]);
 
@@ -87,67 +103,9 @@ class StaticSeeder extends Seeder
 
     protected function seedThisYearIfNeeded(): void
     {
-        if (Transaction::whereBetween('date', $this->thisYearRange())->count() == 0) {
+        if (Transaction::whereBetween('date', $this->thisYearRange)->count() == 0) {
             // TODO(zmd): implement me
             echo "NOTHING FOR THIS YEAR, YET.\n";
         }
-    }
-
-    protected function lastYear()
-    {
-        // TODO(zmd): extract this prototype to something more usable and more
-        //   reusable
-        return $this->lastYear ??= (new class {
-            private string $year;
-
-            public function __construct()
-            {
-                $this->year = CarbonImmutable::now()->startOfYear()->subYear()->format('Y');
-            }
-
-            public function get(string $monthAndDay): CarbonImmutable
-            {
-                return CarbonImmutable::parse($monthAndDay . '/' . $this->year);
-            }
-        });
-    }
-
-    protected function thisYear(): CarbonImmutable
-    {
-        // TODO(zmd): extract this prototype to something more usable and more
-        //   reusable
-        return $this->thisYear ??= (new class {
-            private string $year;
-
-            public function __construct()
-            {
-                $this->year = CarbonImmutable::now()->startOfYear()->format('Y');
-            }
-
-            public function get(string $monthAndDay): CarbonImmutable
-            {
-                return CarbonImmutable::parse($monthAndDay . '/' . $this->year);
-            }
-        });
-    }
-
-    protected function lastYearRange(): CarbonPeriod
-    {
-        return $this->lastYearRange ??= (function () {
-            $start = CarbonImmutable::now()->startOfYear()->subYear();
-            $end = $start->endOfYear();
-
-            return $start->daysUntil($end);
-        })();
-    }
-
-    protected function thisYearRange(): CarbonPeriod
-    {
-        return $this->thisYearRange ??= (function () {
-            $start = CarbonImmutable::now()->startOfYear();
-            $end = $start->endOfYear();
-
-            return $start->daysUntil($end);
-        })();
     }
 }
