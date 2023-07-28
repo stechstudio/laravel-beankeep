@@ -12,6 +12,7 @@ use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Database\Seeders\Support\RelativeDate;
 use STS\Beankeep\Database\Seeders\Support\RelativeToYear;
+use STS\Beankeep\Database\Seeders\Support\AccountLookup;
 
 class StaticSeeder extends Seeder
 {
@@ -22,6 +23,8 @@ class StaticSeeder extends Seeder
     protected readonly CarbonPeriod $lastYearRange;
 
     protected readonly CarbonPeriod $thisYearRange;
+
+    protected readonly AccountLookup $accounts;
 
     public function __construct()
     {
@@ -37,6 +40,8 @@ class StaticSeeder extends Seeder
         $this->thisYearRange = $date->thisYear['1/1']->daysUntil(
             $date->thisYear['12/31'],
         );
+
+        $this->accounts = new AccountLookup();
     }
 
     public function run(): void
@@ -50,13 +55,13 @@ class StaticSeeder extends Seeder
     {
         if (!Account::count()) {
             $this->call([AccountSeeder::class]);
+            $this->accounts->refresh();
         }
     }
 
     protected function seedLastYearIfNeeded(): void
     {
         if (Transaction::whereBetween('date', $this->lastYearRange)->count() == 0) {
-            // TODO(zmd): compute a lookup table to get accounts symbolically
             // TODO(zmd): create DSL for making this easier to manage
 
             // Scenario: Owners start business with initial capital contribution
@@ -66,12 +71,12 @@ class StaticSeeder extends Seeder
             ]);
 
             $transaction->lineItems()->save(LineItem::factory()->make([
-                'account_id' => Account::firstWhere(['number' => '1100'])->id,
+                'account_id' => $this->accounts['cash']->id,
                 'debit' => 1000000,
             ]));
 
             $transaction->lineItems()->save(LineItem::factory()->make([
-                'account_id' => Account::firstWhere(['number' => '3100'])->id,
+                'account_id' => $this->accounts['capital']->id,
                 'credit' => 1000000,
             ]));
 

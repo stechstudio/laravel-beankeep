@@ -7,12 +7,13 @@ namespace STS\Beankeep\Tests\TestSupport\Traits;
 use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use STS\Beankeep\Database\Factories\SourceDocumentFactory;
+use STS\Beankeep\Database\Seeders\Support\AccountLookup;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
-use STS\Beankeep\Database\Factories\SourceDocumentFactory;
 
 trait BeanConstructors
 {
@@ -38,10 +39,7 @@ trait BeanConstructors
             ]);
         }
 
-        return Account::all()
-            ->mapWithKeys(fn (Account $account) =>
-                [Str::kebab($account->name) => $account])
-            ->all();
+        return AccountLookup::lookupTable();
     }
 
     protected function accountAttributes(): array

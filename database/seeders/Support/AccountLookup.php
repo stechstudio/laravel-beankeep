@@ -5,30 +5,39 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders\Support;
 
 use ArrayAccess;
+use Illuminate\Support\Str;
 use STS\Beankeep\Models\Account;
 
 final class AccountLookup implements ArrayAccess
 {
-    private readonly array $accounts;
+    private array $accounts;
 
     public function __construct()
+    {
+        $this->refresh();
+    }
+
+    public function refresh(): void
     {
         $this->accounts = self::lookupTable();
     }
 
     public static function lookupTable(): array
     {
-        // TODO(zmd): implement me
+        return Account::all()
+            ->mapWithKeys(fn (Account $account) =>
+                [Str::kebab($account->name) => $account])
+            ->all();
     }
 
     public function offsetExists(mixed $offset): bool
     {
-        // TODO(zmd): implement me
+        return isset($this->accounts[$offset]);
     }
 
     public function offsetGet(mixed $offset): mixed
     {
-        // TODO(zmd): implement me
+        return $this->accounts[$offset];
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
