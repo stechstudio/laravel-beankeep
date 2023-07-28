@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Database\Seeders\Support;
+namespace STS\Beankeep\Database\Factories\Support;
 
 use ArrayAccess;
 

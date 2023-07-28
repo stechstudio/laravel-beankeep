@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Database\Seeders\Support;
+namespace STS\Beankeep\Database\Factories\Support;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
@@ -80,7 +80,10 @@ final class Transactor
 
     public function save(bool $posted = false): Transaction
     {
-        $transaction = Transaction::factory()->create([]);
+        $transaction = Transaction::factory()->create(array_filter([
+            'date' => $this->date,
+            'memo' => $this->memo,
+        ]));
 
         foreach ($this->lineItems as $lineItem) {
             $transaction->lineItems()->save($lineItem);

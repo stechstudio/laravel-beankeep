@@ -10,9 +10,9 @@ use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
-use STS\Beankeep\Database\Seeders\Support\RelativeDate;
-use STS\Beankeep\Database\Seeders\Support\AccountLookup;
-use STS\Beankeep\Database\Seeders\Support\RelativeTransactor;
+use STS\Beankeep\Database\Factories\Support\RelativeDate;
+use STS\Beankeep\Database\Factories\Support\AccountLookup;
+use STS\Beankeep\Database\Factories\Support\RelativeTransactor;
 
 class StaticSeeder extends Seeder
 {
