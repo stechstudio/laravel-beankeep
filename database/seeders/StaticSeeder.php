@@ -62,29 +62,13 @@ class StaticSeeder extends Seeder
     protected function seedLastYearIfNeeded(): void
     {
         if (Transaction::whereBetween('date', $this->lastYearRange)->count() == 0) {
-            // TODO(zmd): create DSL for making this easier to manage
-
             // Scenario: Owners start business with initial capital contribution
-            $transaction = Transaction::factory()->create([
-                'date' => $this->lastYear['1/1'],
-                'memo' => 'initial owner contribution',
-            ]);
-
-            $transaction->lineItems()->save(LineItem::factory()->make([
-                'account_id' => $this->accounts['cash']->id,
-                'debit' => 1000000,
-            ]));
-
-            $transaction->lineItems()->save(LineItem::factory()->make([
-                'account_id' => $this->accounts['capital']->id,
-                'credit' => 1000000,
-            ]));
-
-            $transaction->sourceDocuments()->save(SourceDocument::factory()->make([
-                'attachment' => Str::uuid()->toString(),
-                'filename' => 'contribution-moa.pdf',
-                'mime_type' => 'application/pdf',
-            ]));
+            // TODO(zmd): implement below DSL for making this easier to manage
+            $this->transact($this->lastYear['1/1'], 'initial owner contribution')
+                ->line($this->accounts['cash'], dr: 10000.00)
+                ->line($this->accounts['capital'], cr: 10000.00)
+                ->doc('contribution-moa.pdf')
+                ->post();
 
             // TODO(zmd): Scenario: We buy 2 computers from Computers-R-Us on credit for $5,000.00,
             /********************************************
