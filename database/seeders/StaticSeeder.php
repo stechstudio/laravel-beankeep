@@ -20,6 +20,8 @@ class StaticSeeder extends Seeder
 
     protected readonly RelativeTransactor $thisYear;
 
+    protected readonly AccountLookup $accounts;
+
     protected readonly CarbonPeriod $lastYearRange;
 
     protected readonly CarbonPeriod $thisYearRange;
@@ -27,17 +29,10 @@ class StaticSeeder extends Seeder
     public function __construct()
     {
         $date = new RelativeDate();
-        $accounts = new AccountLookup();
+        $this->accounts = $accounts = new AccountLookup();
 
-        $this->lastYear = new RelativeTransactor(
-            for: $date->lastYear,
-            using: $accounts,
-        );
-
-        $this->thisYear = new RelativeTransactor(
-            for: $date->thisYear,
-            using: $accounts,
-        );
+        $this->lastYear = new RelativeTransactor($date->lastYear, $accounts);
+        $this->thisYear = new RelativeTransactor($date->thisYear, $accounts);
 
         $this->lastYearRange = $date->lastYear['1/1']->daysUntil(
             $date->lastYear['12/31'],
