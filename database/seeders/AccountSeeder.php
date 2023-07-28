@@ -11,10 +11,10 @@ class AccountSeeder extends Seeder
 {
     public function run(): void
     {
-        Account::factory()->createMany($this->accountsAttributes());
+        Account::factory()->createMany(static::accountsAttributes());
     }
 
-    protected function accountsAttributes(): array
+    public static function accountsAttributes(): array
     {
         return [
             ['number' => '1000', 'name' => 'Assets',              'type' => AccountType::Asset],

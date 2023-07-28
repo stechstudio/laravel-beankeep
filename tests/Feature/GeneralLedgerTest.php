@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use STS\Beankeep\Database\Seeders\AccountSeeder;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
@@ -16,10 +17,10 @@ final class GeneralLedgerTest extends TestCase
     {
         $accounts = array_values($this->createAccounts());
 
-        foreach ($this->accountAttributes() as $index => [$number, $name, $type]) {
-            $this->assertEquals($number, $accounts[$index]->number);
-            $this->assertEquals($type, $accounts[$index]->type);
-            $this->assertEquals($name, $accounts[$index]->name);
+        foreach (AccountSeeder::accountsAttributes() as $index => $attributes) {
+            $this->assertEquals($attributes['number'], $accounts[$index]->number);
+            $this->assertEquals($attributes['type'], $accounts[$index]->type);
+            $this->assertEquals($attributes['name'], $accounts[$index]->name);
         }
     }
 

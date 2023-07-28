@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use STS\Beankeep\Database\Factories\SourceDocumentFactory;
+use STS\Beankeep\Database\Seeders\AccountSeeder;
 use STS\Beankeep\Database\Seeders\Support\AccountLookup;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
@@ -31,33 +32,15 @@ trait BeanConstructors
 
     protected function createAccounts(): array
     {
-        foreach ($this->accountAttributes() as [$number, $name, $type]) {
+        foreach (AccountSeeder::accountsAttributes() as $attributes) {
             Account::create([
-                'number' => $number,
-                'type' => $type,
-                'name' => $name,
+                'number' => $attributes['number'],
+                'type' => $attributes['type'],
+                'name' => $attributes['name'],
             ]);
         }
 
         return AccountLookup::lookupTable();
-    }
-
-    protected function accountAttributes(): array
-    {
-        return [
-            ['1000',  'Assets',              AccountType::Asset],
-            ['1100',  'Cash',                AccountType::Asset],
-            ['1200',  'Accounts Receivable', AccountType::Asset],
-            ['1300',  'Equipment',           AccountType::Asset],
-            ['2000',  'Liabilities',         AccountType::Liability],
-            ['2100',  'Accounts Payable',    AccountType::Liability],
-            ['3000',  'Equity',              AccountType::Equity],
-            ['3100',  'Capital',             AccountType::Equity],
-            ['4000',  'Revenue',             AccountType::Revenue],
-            ['4100',  'Sales Income',        AccountType::Revenue],
-            ['4200',  'Consulting Income',   AccountType::Revenue],
-            ['5000',  'Expenses',            AccountType::Expense],
-        ];
     }
 
     protected function transaction(
