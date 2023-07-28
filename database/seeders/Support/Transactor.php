@@ -6,9 +6,11 @@ namespace STS\Beankeep\Database\Seeders\Support;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
+use STS\Beankeep\Models\LineItem;
+use STS\Beankeep\Models\SourceDocument;
 use STS\Beankeep\Models\Transaction;
 
-final class Transactor implements ArrayAccess
+final class Transactor
 {
     protected ?string $memo = null;
 
@@ -78,6 +80,21 @@ final class Transactor implements ArrayAccess
 
     public function save(bool $posted = false): Transaction
     {
-        // TODO(zmd): implement me
+        $transaction = Transaction::factory()->create([]);
+
+        foreach ($this->lineItems as $lineItem) {
+            $transaction->lineItems()->save($lineItem);
+        }
+
+        foreach ($this->sourceDocuments as $sourceDocument) {
+            $transaction->sourceDocuments()->save($sourceDocument);
+        }
+
+        if ($posted) {
+            $transaction->posted = true;
+            $transaction->save();
+        }
+
+        return $transaction;
     }
 }
