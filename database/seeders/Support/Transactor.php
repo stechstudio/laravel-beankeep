@@ -10,6 +10,14 @@ use STS\Beankeep\Models\Transaction;
 
 final class Transactor implements ArrayAccess
 {
+    protected ?string $memo = null;
+
+    protected Transaction $transaction;
+
+    protected array $lineItems = [];
+
+    protected array $sourceDocuments = [];
+
     public function __construct(
         private Carbon|CarbonImmutable $date,
         private AccountLookup $accounts,
@@ -23,7 +31,8 @@ final class Transactor implements ArrayAccess
 
     public function memo(string $memo): self
     {
-        // TODO(zmd): implement me
+        $this->memo = $memo;
+
         return $this;
     }
 
@@ -32,25 +41,42 @@ final class Transactor implements ArrayAccess
         float $dr = 0.0,
         float $cr = 0.0,
     ): self {
-        // TODO(zmd): implement me
+        $this->lineItems[] = LineItem::factory()->make([
+            'account_id' => $this->accounts[$accountKey]->id,
+            'debit' => (int) ($dr * 100),
+            'credit' => (int) ($cr * 100),
+        ]);
+
         return $this;
     }
 
     public function doc(
         string $filename,
-        ?string $mime = null,
+        ?string $mimeType = null,
         ?string $attachment = null,
     ): self {
-        // TODO(zmd): implement me
+        $this->sourceDocuments[] = SourceDocument::factory()
+            ->make(array_filter([
+                'memo' => $this->memo,
+                'attachment' => $attachment,
+                'filename' => $filename,
+                'mime_type' => $mimeType,
+            ]));
+
         return $this;
     }
 
     public function post(): Transaction
     {
-        // TODO(zmd): implement me
+        return $this->save(posted: true);
     }
 
     public function draft(): Transaction
+    {
+        return $this->save();
+    }
+
+    public function save(bool $posted = false): Transaction
     {
         // TODO(zmd): implement me
     }
