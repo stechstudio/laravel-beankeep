@@ -5,36 +5,13 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders;
 
 use Carbon\CarbonPeriod;
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\Transaction;
-use STS\Beankeep\Database\Factories\Support\RelativeDate;
-use STS\Beankeep\Database\Factories\Support\RelativeTransactor;
 
 class StaticSeeder extends Seeder
 {
-    protected readonly RelativeTransactor $lastYear;
-
-    protected readonly RelativeTransactor $thisYear;
-
-    protected readonly CarbonPeriod $lastYearRange;
-
-    protected readonly CarbonPeriod $thisYearRange;
-
-    public function __construct()
-    {
-        $date = new RelativeDate();
-
-        $this->lastYear = new RelativeTransactor($date->lastYear);
-        $this->thisYear = new RelativeTransactor($date->thisYear);
-
-        $this->lastYearRange = $date->lastYear['1/1']->daysUntil(
-            $date->lastYear['12/31'],
-        );
-
-        $this->thisYearRange = $date->thisYear['1/1']->daysUntil(
-            $date->thisYear['12/31'],
-        );
-    }
+    use HasRelativeTransactor;
 
     public function run(): void
     {
@@ -52,10 +29,12 @@ class StaticSeeder extends Seeder
 
     protected function seedLastYearIfNeeded(): void
     {
-        if (Transaction::whereBetween('date', $this->lastYearRange)->count() == 0) {
+        if (Transaction::whereBetween(
+            'date',
+            $this->lastYearRange(),
+        )->count() == 0) {
             // Scenario: Owners start business with initial capital contribution
-            // TODO(zmd): implement below DSL for making this easier to manage
-            $this->lastYear['1/1']->transact('initial owner contribution')
+            $this->lastYear('1/1')->transact('initial owner contribution')
                 ->line('cash', dr: 10000.00)
                 ->line('capital', cr: 10000.00)
                 ->doc('contribution-moa.pdf')
@@ -83,7 +62,10 @@ class StaticSeeder extends Seeder
 
     protected function seedThisYearIfNeeded(): void
     {
-        if (Transaction::whereBetween('date', $this->thisYearRange)->count() == 0) {
+        if (Transaction::whereBetween(
+            'date',
+            $this->thisYearRange(),
+        )->count() == 0) {
             // TODO(zmd): implement me
             echo "NOTHING FOR THIS YEAR, YET.\n";
         }
