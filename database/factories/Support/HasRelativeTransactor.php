@@ -17,7 +17,7 @@ trait HasRelativeTransactor
 
     protected function lastYear(
         ?string $dateLookup = null,
-    ): Transactor|CarbonImmutable {
+    ): Transactor|RelativeTransactor {
         return $dateLookup
             ? $this->getLastYear()[$dateLookup]
             : $this->getLastYear();
@@ -25,7 +25,7 @@ trait HasRelativeTransactor
 
     protected function thisYear(
         ?string $dateLookup = null,
-    ): Transactor|CarbonImmutable {
+    ): Transactor|RelativeTransactor {
         return $dateLookup
             ? $this->getThisYear()[$dateLookup]
             : $this->getThisYear();
