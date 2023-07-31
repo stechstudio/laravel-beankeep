@@ -31,21 +31,21 @@ final class Transactor
         string $memo,
         Carbon|CarbonImmutable|null $date = null,
     ): self {
-        $this->memo = $memo;
+        $this->memo($memo);
 
         if ($date) {
-            $this->date = $date;
+            return $this->date($date);
         }
 
         return $this;
     }
 
-    public function on(string|Carbon|CarbonImmutable $date): self
+    public function on(Carbon|CarbonImmutable $date): self
     {
         return $this->date($date);
     }
 
-    public function date(string|Carbon|CarbonImmutable $date): self
+    public function date(Carbon|CarbonImmutable $date): self
     {
         $this->date = $date;
 

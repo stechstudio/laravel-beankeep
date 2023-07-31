@@ -41,6 +41,21 @@ trait HasRelativeTransactor
         return $this->getRelativeDate()->thisYearRange();
     }
 
+    protected function getDate(
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): CarbonImmutable {
+        if ($lastYear) {
+            return $this->getRelativeDate()->lastYear[$lastYear];
+        }
+
+        if ($thisYear) {
+            return $this->getRelativeDate()->thisYear[$thisYear];
+        }
+
+        return CarbonImmutable::now();
+    }
+
     protected function getRelativeDate(): RelativeDate
     {
         return $this->relativeDate ??= new RelativeDate();

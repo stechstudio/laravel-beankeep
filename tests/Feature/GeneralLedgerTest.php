@@ -36,9 +36,6 @@ final class GeneralLedgerTest extends TestCase
         //   setUp?
         $accounts = $this->createAccounts();
 
-        // TODO(zmd): generate via DSL
-        $expectedDate = Carbon::parse('1/1');
-
         $transaction = $this->thisYear('1/1')->transact('initial owner contribution')
             ->line('cash', dr: 10000.00)
             ->line('capital', cr: 10000.00)
@@ -46,7 +43,7 @@ final class GeneralLedgerTest extends TestCase
             ->draft();
 
         $this->assertEquals('initial owner contribution', $transaction->memo);
-        $this->assertEquals($expectedDate, $transaction->date);
+        $this->assertEquals($this->getDate(thisYear: '1/1'), $transaction->date);
         $this->assertFalse($transaction->posted);
 
         $this->assertEquals(2, $transaction->lineItems()->count());
