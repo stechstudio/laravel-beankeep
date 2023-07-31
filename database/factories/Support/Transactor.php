@@ -12,6 +12,8 @@ use STS\Beankeep\Models\Transaction;
 
 final class Transactor
 {
+    use CanLookupAccount;
+
     private ?string $memo = null;
 
     private Transaction $transaction;
@@ -19,8 +21,6 @@ final class Transactor
     private array $lineItems = [];
 
     private array $sourceDocuments = [];
-
-    private AccountLookup $accounts;
 
     public function __construct(
         private Carbon|CarbonImmutable|null $date = null,
@@ -65,7 +65,7 @@ final class Transactor
         float $cr = 0.0,
     ): self {
         $this->lineItems[] = LineItem::factory()->make([
-            'account_id' => $this->getAccounts()[$accountKey]->id,
+            'account_id' => $this->accounts($accountKey)->id,
             'debit' => (int) ($dr * 100),
             'credit' => (int) ($cr * 100),
         ]);
@@ -120,10 +120,5 @@ final class Transactor
         }
 
         return $transaction;
-    }
-
-    private function getAccounts(): AccountLookup
-    {
-        return $this->accounts ??= new AccountLookup();
     }
 }

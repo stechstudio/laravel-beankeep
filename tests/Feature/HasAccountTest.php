@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use STS\Beankeep\Database\Factories\Support\CanLookupAccount;
 use STS\Beankeep\Models\Account as BeankeepAccount;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Models\Augmented\Account;
@@ -12,6 +13,7 @@ use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
 final class HasAccountTest extends TestCase
 {
     use BeanConstructors;
+    use CanLookupAccount;
 
     public function testItKnowsItsBeankeepClass(): void
     {
@@ -23,6 +25,8 @@ final class HasAccountTest extends TestCase
 
     public function testItCanBeAssociatedWithAnEndUserAccountModel(): void
     {
+        $this->createAccounts();
+
         $ar = $this->account('accounts-receivable');
         $ap = $this->account('accounts-payable');
 

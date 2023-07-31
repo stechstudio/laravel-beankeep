@@ -8,9 +8,6 @@ use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use STS\Beankeep\Database\Factories\SourceDocumentFactory;
-use STS\Beankeep\Database\Factories\Support\AccountLookup;
-use STS\Beankeep\Database\Seeders\AccountSeeder;
-use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
@@ -18,30 +15,7 @@ use STS\Beankeep\Models\Transaction;
 
 trait BeanConstructors
 {
-    protected array $accounts;
-
-    protected function account(string $accountIndex): Account
-    {
-        return $this->accounts()[$accountIndex];
-    }
-
-    protected function accounts(): array
-    {
-        return $this->accounts ??= $this->createAccounts();
-    }
-
-    protected function createAccounts(): array
-    {
-        foreach (AccountSeeder::accountsAttributes() as $attributes) {
-            Account::create([
-                'number' => $attributes['number'],
-                'type' => $attributes['type'],
-                'name' => $attributes['name'],
-            ]);
-        }
-
-        return AccountLookup::lookupTable();
-    }
+    use CanCreateAccounts;
 
     protected function transaction(
         string $memo,
