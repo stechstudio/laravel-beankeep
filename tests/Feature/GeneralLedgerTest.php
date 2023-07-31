@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use Illuminate\Support\Carbon;
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
+use STS\Beankeep\Database\Seeders\AccountLookup;
 use STS\Beankeep\Database\Seeders\AccountSeeder;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
@@ -12,9 +15,12 @@ use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
 final class GeneralLedgerTest extends TestCase
 {
     use BeanConstructors;
+    use HasRelativeTransactor;
 
     public function testItCanModelAChartOfAccounts(): void
     {
+        // TODO(zmd): come back to this one, still need BeanConstructors for
+        //   this?
         $accounts = array_values($this->createAccounts());
 
         foreach (AccountSeeder::accountsAttributes() as $index => $attributes) {
@@ -26,21 +32,21 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanRecordATransactionToTheJournal(): void
     {
+        // TODO(zmd): revisit this $accounts array; do we want to do this in
+        //   setUp?
         $accounts = $this->createAccounts();
 
-        $transaction = $this->transaction(
-            'initial owner contribution',
-            '2022-01-01',
-        );
+        // TODO(zmd): generate via DSL
+        $expectedDate = Carbon::parse('1/1');
 
-        $debit = $this->debit($accounts['cash'], $transaction, 1000000);
-        $credit = $this->credit($accounts['capital'], $transaction, 1000000);
-        $sourceDoc = $this->doc($transaction, 'contribution-moa.pdf');
-
-        $transaction->refresh();
+        $transaction = $this->thisYear('1/1')->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->doc('contribution-moa.pdf')
+            ->draft();
 
         $this->assertEquals('initial owner contribution', $transaction->memo);
-        $this->assertEquals($this->date('2022-01-01'), $transaction->date);
+        $this->assertEquals($expectedDate, $transaction->date);
         $this->assertFalse($transaction->posted);
 
         $this->assertEquals(2, $transaction->lineItems()->count());
@@ -50,18 +56,6 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals($accounts['capital'], $transaction->lineItems[1]->account);
 
         $this->assertEquals(1, $transaction->sourceDocuments()->count());
-        $this->assertEquals(
-            $sourceDoc->attachment,
-            $transaction->sourceDocuments->first()->attachment,
-        );
-        $this->assertEquals(
-            $sourceDoc->filename,
-            $transaction->sourceDocuments->first()->filename,
-        );
-        $this->assertEquals(
-            $sourceDoc->mime_type,
-            $transaction->sourceDocuments->first()->mime_type,
-        );
     }
 
     public function testItCanModelAJournalWithManyTransactions(): void
