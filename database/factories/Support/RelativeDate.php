@@ -39,4 +39,19 @@ final class RelativeDate
         return $this->lastYearRange ??= $this->lastYear['1/1']
             ->daysUntil($this->lastYear['12/31']);
     }
+
+    public function getDate(
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): CarbonImmutable {
+        if ($lastYear) {
+            return $this->lastYear[$lastYear];
+        }
+
+        if ($thisYear) {
+            return $this->thisYear[$thisYear];
+        }
+
+        return CarbonImmutable::now();
+    }
 }
