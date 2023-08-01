@@ -339,22 +339,4 @@ final class TransactionPostingTest extends TestCase
         $this->assertFalse($transaction->save());
         $this->assertFalse($transaction->refresh()->posted);
     }
-
-    // ------------------------------------------------------------------------
-
-    private function debit(string $account, int $amount): LineItem
-    {
-        $debit = new LineItem(['debit' => $amount, 'credit' => 0]);
-        $debit->account()->associate($this->account($account));
-
-        return $debit;
-    }
-
-    private function credit(string $account, int $amount): LineItem
-    {
-        $credit = new LineItem(['debit' => 0, 'credit' => $amount]);
-        $credit->account()->associate($this->account($account));
-
-        return $credit;
-    }
 }
