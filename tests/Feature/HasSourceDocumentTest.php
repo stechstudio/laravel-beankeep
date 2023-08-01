@@ -26,7 +26,6 @@ final class HasSourceDocumentTest extends TestCase
     public function testItCanBeAssociatedWithAnEndUserSourceDocumentModel(): void
     {
         $this->createAccounts();
-
         $transaction = $this->thisYear('10/15')
             ->transact('2 computers from computers-r-us')
             ->line('equipment', dr: 5000.00)

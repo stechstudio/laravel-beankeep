@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Models\Transaction as BeankeepTransaction;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Models\Augmented\Transaction;
-use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
+use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 
 final class HasTransactionTest extends TestCase
 {
-    use BeanConstructors;
+    use CanCreateAccounts;
+    use HasRelativeTransactor;
 
     public function testItKnowsItsBeankeepClass(): void
     {
@@ -23,13 +25,12 @@ final class HasTransactionTest extends TestCase
 
     public function testItCanBeAssociatedWithAnEndUserTransactionModel(): void
     {
-        $transaction = $this->simpleTransactor()(
-            '2022-10-15',
-            '2 computers from computers-r-us',
-            5000.00,
-            dr: 'equipment',
-            cr: 'accounts-payable',
-        );
+        $this->createAccounts();
+        $transaction = $this->thisYear('10/15')
+            ->transact('2 computers from computers-r-us')
+            ->line('equipment', dr: 5000.00)
+            ->line('accounts-payable', cr: 5000.00)
+            ->post();
 
         $transaction->keep(Transaction::create(['flag_for_review' => true]));
 
