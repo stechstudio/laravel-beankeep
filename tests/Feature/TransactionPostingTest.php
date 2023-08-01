@@ -289,10 +289,9 @@ final class TransactionPostingTest extends TestCase
 
     public function testSaveDisallowsPostingWithoutLineItems(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
+        $transaction = $this->thisYear('07/18')
+            ->transact('perform services')
+            ->draft();
 
         $transaction->posted = true;
 
