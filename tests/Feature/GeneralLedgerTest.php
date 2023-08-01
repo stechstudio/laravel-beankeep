@@ -6,7 +6,6 @@ namespace STS\Beankeep\Tests\Feature;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
-use STS\Beankeep\Database\Factories\Support\CanLookupAccounts;
 use STS\Beankeep\Database\Seeders\AccountLookup;
 use STS\Beankeep\Database\Seeders\AccountSeeder;
 use STS\Beankeep\Models\LineItem;
@@ -16,7 +15,6 @@ use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 final class GeneralLedgerTest extends TestCase
 {
     use CanCreateAccounts;
-    use CanLookupAccounts;
     use HasRelativeTransactor;
 
     public function setUp(): void
