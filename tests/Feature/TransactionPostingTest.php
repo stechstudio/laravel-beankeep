@@ -229,13 +229,11 @@ final class TransactionPostingTest extends TestCase
 
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
-
-        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
-        $transaction->lineItems()->save($this->credit('revenue', 30000));
+        $transaction = $this->thisYear('07/18')
+            ->transact('perform services')
+            ->line('accounts-receivable', dr: 400.00)
+            ->line('revenue', cr: 300.00)
+            ->draft();
 
         $transaction->posted = true;
 
