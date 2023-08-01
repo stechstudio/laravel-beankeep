@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
-use STS\Beankeep\Database\Factories\Support\CanLookupAccount;
+use STS\Beankeep\Database\Factories\Support\CanLookupAccounts;
 use STS\Beankeep\Models\Account as BeankeepAccount;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Models\Augmented\Account;
@@ -13,7 +13,7 @@ use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
 final class HasAccountTest extends TestCase
 {
     use BeanConstructors;
-    use CanLookupAccount;
+    use CanLookupAccounts;
 
     public function testItKnowsItsBeankeepClass(): void
     {

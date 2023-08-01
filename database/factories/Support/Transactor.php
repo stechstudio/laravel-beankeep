@@ -12,7 +12,7 @@ use STS\Beankeep\Models\Transaction;
 
 final class Transactor
 {
-    use CanLookupAccount;
+    use CanLookupAccounts;
 
     private ?string $memo = null;
 

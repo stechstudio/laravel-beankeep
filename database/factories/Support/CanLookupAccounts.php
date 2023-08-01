@@ -6,7 +6,7 @@ namespace STS\Beankeep\Database\Factories\Support;
 
 use STS\Beankeep\Models\Account;
 
-trait CanLookupAccount
+trait CanLookupAccounts
 {
     protected AccountLookup $accountLookup;
 
