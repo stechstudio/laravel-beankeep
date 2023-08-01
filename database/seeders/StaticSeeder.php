@@ -33,30 +33,27 @@ class StaticSeeder extends Seeder
             'date',
             $this->lastYearRange(),
         )->count() == 0) {
-            // Scenario: Owners start business with initial capital contribution
-            $this->lastYear('1/1')->transact('initial owner contribution')
+            $this->lastYear('1/1')
+                ->transact('initial owner contribution')
                 ->line('cash', dr: 10000.00)
                 ->line('capital', cr: 10000.00)
                 ->doc('contribution-moa.pdf')
                 ->post();
 
-            // TODO(zmd): Scenario: We buy 2 computers from Computers-R-Us on credit for $5,000.00,
-            /********************************************
-             *                  |       Dr |       Cr   *
-             *  ----------------+----------+----------  *
-             *  Equipment       |   500000 |            *
-             *    Accounts Pay. |          |   500000   *
-             *                                          *
-             ********************************************/
+            $this->lastYear('10/10')
+                ->transact('2 computers from computers-r-us')
+                ->line('equipment', dr: 5000.00)
+                ->line('accounts-payable', cr: 5000.00)
+                ->doc('computers-r-us-receipt.pdf')
+                ->post();
 
-            // TODO(zmd): Scenario: We pay the Computers-R-Us invoice in full ($5,000.00)
-            /********************************************
-             *                  |       Dr |       Cr   *
-             *  ----------------+----------+----------  *
-             *  Accounts Payab. |   500000 |            *
-             *    Cash          |          |   500000   *
-             *                                          *
-             ********************************************/
+            $this->lastYear('10/16')
+                ->transact('ck no. 1337 - pay computers-r-us invoice')
+                ->line('accounts-payable', dr: 5000.00)
+                ->line('cash', cr: 5000.00)
+                ->doc('ck-no-1337-scan.pdf')
+                ->doc('computers-r-us-invoice-no-4242.pdf')
+                ->post();
         }
     }
 
