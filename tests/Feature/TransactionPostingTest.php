@@ -50,14 +50,12 @@ final class TransactionPostingTest extends TestCase
 
     public function testCanPostReturnsTrueWithSplitCredits(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-03-31'),
-            'memo' => 'buy netbook (50% cash, 50% 30-day terms)',
-        ]);
-
-        $transaction->lineItems()->save($this->debit('equipment', 40000));
-        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
-        $transaction->lineItems()->save($this->credit('cash', 20000));
+        $transaction = $this->thisYear('03/31')
+            ->transact('buy netbook (50% cash, 50% 30-day terms)')
+            ->line('equipment', dr: 400.00)
+            ->line('accounts-payable', cr: 200.00)
+            ->line('cash', cr: 200.00)
+            ->draft();
 
         $this->assertTrue($transaction->canPost());
     }
