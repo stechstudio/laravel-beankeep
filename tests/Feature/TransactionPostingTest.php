@@ -169,14 +169,12 @@ final class TransactionPostingTest extends TestCase
 
     public function testSaveAllowsPostingSplitDebits(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-03-31'),
-            'memo' => 'pay interest on loan (including accrued interest from prior year)',
-        ]);
-
-        $transaction->lineItems()->save($this->debit('interest-payable', 20000));
-        $transaction->lineItems()->save($this->debit('interest-expense', 20000));
-        $transaction->lineItems()->save($this->credit('cash', 40000));
+        $transaction = $this->thisYear('03/31')
+            ->transact('pay interest on loan (including accrued interest from prior year)')
+            ->line('interest-payable', dr: 200.00)
+            ->line('interest-expense', dr: 200.00)
+            ->line('cash', cr: 400.00)
+            ->draft();
 
         $transaction->posted = true;
 
