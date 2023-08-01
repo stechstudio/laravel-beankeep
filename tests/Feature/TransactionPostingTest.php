@@ -10,9 +10,17 @@ use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
+use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 
 final class TransactionPostingTest extends TestCase
 {
+    use CanCreateAccounts;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->createAccounts();
+    }
 
     // -- ::canPost() --------------------------------------------------
 
@@ -23,7 +31,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $this->assertTrue($transaction->canPost());
@@ -36,8 +44,8 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'pay interest on loan (including accrued interest from prior year)',
         ]);
 
-        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
-        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->debit('interest-payable', 20000));
+        $transaction->lineItems()->save($this->debit('interest-expense', 20000));
         $transaction->lineItems()->save($this->credit('cash', 40000));
 
         $this->assertTrue($transaction->canPost());
@@ -51,7 +59,7 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 40000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $this->assertTrue($transaction->canPost());
@@ -65,8 +73,8 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 20000));
-        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->debit('prepaid-insurance', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $this->assertTrue($transaction->canPost());
@@ -79,7 +87,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 30000));
 
         $this->assertFalse($transaction->canPost());
@@ -92,8 +100,8 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'pay interest on loan (including accrued interest from prior year)',
         ]);
 
-        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
-        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->debit('interest-payable', 20000));
+        $transaction->lineItems()->save($this->debit('interest-expense', 20000));
         $transaction->lineItems()->save($this->credit('cash', 40002));
 
         $this->assertFalse($transaction->canPost());
@@ -107,7 +115,7 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 40000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 19999));
 
         $this->assertFalse($transaction->canPost());
@@ -121,8 +129,8 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 20000));
-        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20010));
+        $transaction->lineItems()->save($this->debit('prepaid-insurance', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20010));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $this->assertFalse($transaction->canPost());
@@ -145,7 +153,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->credit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $this->assertFalse($transaction->canPost());
@@ -158,7 +166,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->debit('revenue', 40000));
 
         $this->assertFalse($transaction->canPost());
@@ -173,7 +181,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $transaction->posted = true;
@@ -189,8 +197,8 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'pay interest on loan (including accrued interest from prior year)',
         ]);
 
-        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
-        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->debit('interest-payable', 20000));
+        $transaction->lineItems()->save($this->debit('interest-expense', 20000));
         $transaction->lineItems()->save($this->credit('cash', 40000));
 
         $transaction->posted = true;
@@ -207,7 +215,7 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 40000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $transaction->posted = true;
@@ -224,8 +232,8 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 20000));
-        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->debit('prepaid-insurance', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $transaction->posted = true;
@@ -241,7 +249,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 30000));
 
         $transaction->memo = 'perform PREMIUM services';
@@ -257,7 +265,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 30000));
 
         $transaction->posted = true;
@@ -273,8 +281,8 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'pay interest on loan (including accrued interest from prior year)',
         ]);
 
-        $transaction->lineItems()->save($this->debit('interestPayable', 20000));
-        $transaction->lineItems()->save($this->debit('interestExpense', 20000));
+        $transaction->lineItems()->save($this->debit('interest-payable', 20000));
+        $transaction->lineItems()->save($this->debit('interest-expense', 20000));
         $transaction->lineItems()->save($this->credit('cash', 40002));
 
         $transaction->posted = true;
@@ -291,7 +299,7 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 40000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20000));
         $transaction->lineItems()->save($this->credit('cash', 19999));
 
         $transaction->posted = true;
@@ -308,8 +316,8 @@ final class TransactionPostingTest extends TestCase
         ]);
 
         $transaction->lineItems()->save($this->debit('equipment', 20000));
-        $transaction->lineItems()->save($this->debit('prepaidInsurance', 20000));
-        $transaction->lineItems()->save($this->credit('accountsPayable', 20010));
+        $transaction->lineItems()->save($this->debit('prepaid-insurance', 20000));
+        $transaction->lineItems()->save($this->credit('accounts-payable', 20010));
         $transaction->lineItems()->save($this->credit('cash', 20000));
 
         $transaction->posted = true;
@@ -351,7 +359,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->credit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->credit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->credit('revenue', 40000));
 
         $transaction->posted = true;
@@ -367,7 +375,7 @@ final class TransactionPostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->lineItems()->save($this->debit('accountsReceivable', 40000));
+        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
         $transaction->lineItems()->save($this->debit('revenue', 40000));
 
         $transaction->posted = true;
@@ -378,102 +386,19 @@ final class TransactionPostingTest extends TestCase
 
     // ------------------------------------------------------------------------
 
-    private array $memoizedAccounts = [];
-
-    private function debit(Account|string $account, int $amount): LineItem
+    private function debit(string $account, int $amount): LineItem
     {
         $debit = new LineItem(['debit' => $amount, 'credit' => 0]);
-        $debit->account()->associate($this->lookupAccount($account));
+        $debit->account()->associate($this->account($account));
 
         return $debit;
     }
 
-    private function credit(Account|string $account, int $amount): LineItem
+    private function credit(string $account, int $amount): LineItem
     {
         $credit = new LineItem(['debit' => 0, 'credit' => $amount]);
-        $credit->account()->associate($this->lookupAccount($account));
+        $credit->account()->associate($this->account($account));
 
         return $credit;
-    }
-
-    private function lookupAccount(Account|string $account): Account
-    {
-        if (is_string($account)) {
-            return $this->$account();
-        }
-
-        return $account;
-    }
-
-    private function cash(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '1100',
-            'type' => AccountType::Asset,
-            'name' => 'Cash',
-        ]);
-    }
-
-    private function accountsReceivable(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '1200',
-            'type' => AccountType::Asset,
-            'name' => 'Accounts Receivable',
-        ]);
-    }
-
-    private function equipment(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '1300',
-            'type' => AccountType::Asset,
-            'name' => 'Equipment',
-        ]);
-    }
-
-    private function prepaidInsurance(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '1400',
-            'type' => AccountType::Asset,
-            'name' => 'Prepaid Insurance',
-        ]);
-    }
-
-    private function accountsPayable(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '2100',
-            'type' => AccountType::Liability,
-            'name' => 'Accounts Payable',
-        ]);
-    }
-
-    private function interestPayable(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '2200',
-            'type' => AccountType::Liability,
-            'name' => 'Interest Payable',
-        ]);
-    }
-
-    private function revenue(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '4000',
-            'type' => AccountType::Revenue,
-            'name' => 'Revenue',
-        ]);
-    }
-
-    private function interestExpense(): Account
-    {
-        return $this->memoizedAccounts[__FUNCTION__] ??= Account::create([
-            'number' => '5100',
-            'type' => AccountType::Expense,
-            'name' => 'Interest Expense',
-        ]);
     }
 }
