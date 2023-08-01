@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Tests\Feature;
 
 use Illuminate\Support\Carbon;
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
@@ -15,6 +16,7 @@ use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 final class TransactionPostingTest extends TestCase
 {
     use CanCreateAccounts;
+    use HasRelativeTransactor;
 
     public function setUp(): void
     {
@@ -26,13 +28,10 @@ final class TransactionPostingTest extends TestCase
 
     public function testCanPostReturnsTrueWhenDebitsAndCreditsBalance(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
-
-        $transaction->lineItems()->save($this->debit('accounts-receivable', 40000));
-        $transaction->lineItems()->save($this->credit('revenue', 40000));
+        $transaction = $this->thisYear('07/18')->transact('perform services')
+            ->line('accounts-receivable', dr: 400.00)
+            ->line('revenue', cr: 400.00)
+            ->draft();
 
         $this->assertTrue($transaction->canPost());
     }
