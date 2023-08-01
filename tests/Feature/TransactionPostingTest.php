@@ -131,13 +131,11 @@ final class TransactionPostingTest extends TestCase
 
     public function testCanPostReturnsFalseWithoutAnyDebits(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
-
-        $transaction->lineItems()->save($this->credit('accounts-receivable', 40000));
-        $transaction->lineItems()->save($this->credit('revenue', 40000));
+        $transaction = $this->thisYear('07/18')
+            ->transact('perform services')
+            ->line('accounts-receivable', cr: 400.00)
+            ->line('revenue', cr: 400.00)
+            ->draft();
 
         $this->assertFalse($transaction->canPost());
     }
