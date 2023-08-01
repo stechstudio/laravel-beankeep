@@ -122,10 +122,9 @@ final class TransactionPostingTest extends TestCase
 
     public function testCanPostReturnsFalseWithoutLineItems(): void
     {
-        $transaction = Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
+        $transaction = $this->thisYear('07/18')
+            ->transact('perform services')
+            ->draft();
 
         $this->assertFalse($transaction->canPost());
     }
