@@ -53,8 +53,13 @@ class StaticSeeder extends Seeder
                 ->draft();
 
             // TODO(zmd): finish me
+            $this->lastYear('2/1')
+                ->transact('pay office space rent - feb')
+                ->draft();
+
+            // TODO(zmd): finish me
             $this->lastYear('2/12')
-                ->transact('provide technical consulting services (30 days payable)')
+                ->transact('provide 2 hours technical consulting services (inv. 100)')
                 ->draft();
 
             $this->lastYear('2/16')
@@ -67,17 +72,47 @@ class StaticSeeder extends Seeder
 
             // TODO(zmd): finish me
             $this->lastYear('2/26')
-                ->transact('bill for 4 hours design services')
+                ->transact('bill for 4 hours design services (inv. 101)')
                 ->draft();
 
             // TODO(zmd): finish me
-            $this->lastYear('3/8')
-                ->transact('bill for 12 hours development services')
+            $this->lastYear('3/1')
+                ->transact('pay office space rent - mar')
                 ->draft();
 
             // TODO(zmd): finish me
             $this->lastYear('3/1')
                 ->transact('receive invoice for web hosting')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('3/5')
+                ->transact('pay web hosting fees')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('3/8')
+                ->transact('bill for 12 hours development services (inv. 102)')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('3/8')
+                ->transact('receive payment for inv. 100')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('3/12')
+                ->transact('receive payment for inv. 101')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('4/1')
+                ->transact('pay office space rent - mar')
+                ->draft();
+
+            // TODO(zmd): finish me
+            $this->lastYear('4/2')
+                ->transact('receive payment for inv. 102')
                 ->draft();
         }
     }
