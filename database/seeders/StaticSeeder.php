@@ -47,15 +47,19 @@ class StaticSeeder extends Seeder
                 ->doc('computers-r-us-receipt.pdf')
                 ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('1/20')
                 ->transact('register domain')
-                ->draft();
+                ->line('cost-of-services', dr: 15.00)
+                ->line('cash', cr: 15.00)
+                ->doc('namecheap-receipt.pdf')
+                ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('2/1')
                 ->transact('pay office space rent - feb')
-                ->draft();
+                ->line('rent-expense', dr: 450.00)
+                ->line('cash', cr: 450.00)
+                ->doc('ck-no-1336-scan.pdf')
+                ->post();
 
             $this->lastYear('2/12')
                 ->transact('provide 2 hours technical consulting services (inv. 100)')
@@ -79,10 +83,12 @@ class StaticSeeder extends Seeder
                 ->doc('invoice-101.pdf')
                 ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/1')
                 ->transact('pay office space rent - mar')
-                ->draft();
+                ->line('rent-expense', dr: 450.00)
+                ->line('cash', cr: 450.00)
+                ->doc('ck-no-1337-scan.pdf')
+                ->post();
 
             // TODO(zmd): finish me
             $this->lastYear('3/1')

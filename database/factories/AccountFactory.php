@@ -43,7 +43,7 @@ class AccountFactory extends Factory
             ['number' => '5000', 'name' => 'Expenses',                   'type' => AccountType::Expense],
                 ['number' => '5110', 'name' => 'Cost of Sales',              'type' => AccountType::Expense],
                 ['number' => '5120', 'name' => 'Cost of Services',           'type' => AccountType::Expense],
-                ['number' => '5130', 'name' => 'Advertising Expense'         'type' => AccountType::Expense],
+                ['number' => '5130', 'name' => 'Advertising Expense',        'type' => AccountType::Expense],
                 ['number' => '5210', 'name' => 'Interest Expense',           'type' => AccountType::Expense],
                 ['number' => '5220', 'name' => 'Insurance Expense',          'type' => AccountType::Expense],
                 ['number' => '5300', 'name' => 'Rent Expense',               'type' => AccountType::Expense],
