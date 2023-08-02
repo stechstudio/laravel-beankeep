@@ -87,18 +87,22 @@ class StaticSeeder extends Seeder
                 ->transact('pay office space rent - mar')
                 ->line('rent-expense', dr: 450.00)
                 ->line('cash', cr: 450.00)
-                ->doc('ck-no-1337-scan.pdf')
+                ->doc('ck-no-1338-scan.pdf')
                 ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/1')
                 ->transact('receive invoice for web hosting')
-                ->draft();
+                ->line('telecommunications-expense', dr: 5.00)
+                ->line('accounts-payable', cr: 5.00)
+                ->doc('digital-drop-in-the-bucket-fish-shooter-plan-feb-hosting.pdf')
+                ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/5')
                 ->transact('pay web hosting fees')
-                ->draft();
+                ->line('accounts-payable', dr: 5.00)
+                ->line('cash', cr: 5.00)
+                ->doc('ck-no-1339-scan.pdf')
+                ->post();
 
             $this->lastYear('3/8')
                 ->transact('bill for 12 hours development services (inv. 102)')
