@@ -5,13 +5,19 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Seeders;
 
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
+use STS\Beankeep\Database\Factories\Support\Transactor;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\Transaction;
 
 class StaticSeeder extends Seeder
 {
     use HasRelativeTransactor;
+
+    protected int $currentCheckNo = 1000;
+
+    protected int $currentInvoiceNo = 100;
 
     public function run(): void
     {
@@ -79,12 +85,7 @@ class StaticSeeder extends Seeder
         //
         // -- Feb ------------------------------------------------------
         //
-        $this->lastYear('2/1')
-            ->transact('pay office space rent - feb')
-            ->line('rent-expense', dr: 450.00)
-            ->line('cash', cr: 450.00)
-            ->doc('ck-no-1336-scan.pdf')
-            ->post();
+        $this->rent(lastYear: '2/1');
 
         $this->lastYear('2/12')
             ->transact('provide 2 hours technical consulting services (inv. 100)')
@@ -111,12 +112,7 @@ class StaticSeeder extends Seeder
         //
         // -- Mar ------------------------------------------------------
         //
-        $this->lastYear('3/1')
-            ->transact('pay office space rent - mar')
-            ->line('rent-expense', dr: 450.00)
-            ->line('cash', cr: 450.00)
-            ->doc('ck-no-1338-scan.pdf')
-            ->post();
+        $this->rent(lastYear: '3/1');
 
         $this->lastYear('3/1')
             ->transact('receive invoice for web hosting')
@@ -166,11 +162,13 @@ class StaticSeeder extends Seeder
         //
         // -- Apr ------------------------------------------------------
         //
+        $this->rent(lastYear: '4/1');
+
         $this->lastYear('4/1')
-            ->transact('pay office space rent - apr')
-            ->line('rent-expense', dr: 450.00)
-            ->line('cash', cr: 450.00)
-            ->doc('ck-no-1340-scan.pdf')
+            ->transact('receive invoice for web hosting')
+            ->line('telecommunications-expense', dr: 5.00)
+            ->line('accounts-payable', cr: 5.00)
+            ->doc('digital-drop-in-the-bucket-fish-shooter-plan-mar-hosting.pdf')
             ->post();
 
         $this->lastYear('4/2')
@@ -180,6 +178,13 @@ class StaticSeeder extends Seeder
             ->doc('cust-payment-for-inv-102.pdf')
             ->post();
 
+        $this->lastYear('4/4')
+            ->transact('pay web hosting fees')
+            ->line('accounts-payable', dr: 5.00)
+            ->line('cash', cr: 5.00)
+            ->doc('ck-no-1341-scan.pdf')
+            ->post();
+
         $this->lastYear('4/11')
             ->transact('receive payment for inv. 103')
             ->line('cash', dr: 960.00)
@@ -187,13 +192,28 @@ class StaticSeeder extends Seeder
             ->doc('cust-payment-for-inv-103.pdf')
             ->post();
 
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- May ------------------------------------------------------
         //
 
+        $this->rent(lastYear: '6/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Jun ------------------------------------------------------
         //
+
+        $this->rent(lastYear: '6/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
     }
 
     protected function seedLastYearQ3(): void
@@ -204,13 +224,31 @@ class StaticSeeder extends Seeder
         // -- Jul ------------------------------------------------------
         //
 
+        $this->rent(lastYear: '7/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Aug ------------------------------------------------------
         //
 
+        $this->rent(lastYear: '8/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Sep ------------------------------------------------------
         //
+
+        $this->rent(lastYear: '9/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
     }
 
     protected function seedLastYearQ4(): void
@@ -221,13 +259,31 @@ class StaticSeeder extends Seeder
         // -- Oct ------------------------------------------------------
         //
 
+        $this->rent(lastYear: '10/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Nov ------------------------------------------------------
         //
 
+        $this->rent(lastYear: '11/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Dec ------------------------------------------------------
         //
+
+        $this->rent(lastYear: '12/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
     }
 
     protected function seedThisYearQ1(): void
@@ -238,12 +294,60 @@ class StaticSeeder extends Seeder
         // -- Jan ------------------------------------------------------
         //
 
+        $this->rent(thisYear: '1/1');
+
+        // TODO(zmd): domain renewal
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+
         //
         // -- Feb ------------------------------------------------------
         //
 
-        //
-        // -- Mar ------------------------------------------------------
-        //
+        $this->rent(thisYear: '2/1');
+
+        // TODO(zmd): hosting fees
+        // TODO(zmd): invoice for work
+        // TODO(zmd): process payment for prior invoices
+    }
+
+    protected function rent(
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        $monthName = $this->shortMonth($lastYear ?: $thisYear);
+        $checkNo = $this->checkNo();
+
+        $this->thisYearOrLast($lastYear, $thisYear)
+            ->transact("pay office space rent - $monthName")
+            ->line('rent-expense', dr: 450.00)
+            ->line('cash', cr: 450.00)
+            ->doc("ck-no-$checkNo-scan.pdf")
+            ->post();
+    }
+
+    protected function thisYearOrLast(
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): Transactor {
+        return $lastYear
+            ? $this->lastYear($lastYear)
+            : $this->thisYear($thisYear);
+    }
+
+    protected function shortMonth(string $shortDate): string
+    {
+        return strtolower(Carbon::parse($shortDate)->format('M'));
+    }
+
+    protected function checkNo(): string
+    {
+        return (string) $this->currentCheckNo++;
+    }
+
+    protected function invoiceNo(): string
+    {
+        return (string) $this->currentInvoiceNo++;
     }
 }
