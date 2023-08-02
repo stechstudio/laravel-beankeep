@@ -111,25 +111,33 @@ class StaticSeeder extends Seeder
                 ->doc('invoice-102.pdf')
                 ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/8')
                 ->transact('receive payment for inv. 100')
-                ->draft();
+                ->line('cash', dr: 240.00)
+                ->line('accounts-receivable', cr: 240.00)
+                ->doc('cust-payment-for-inv-100.pdf')
+                ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/12')
                 ->transact('receive payment for inv. 101')
-                ->draft();
+                ->line('cash', dr: 480.00)
+                ->line('accounts-receivable', cr: 480.00)
+                ->doc('cust-payment-for-inv-101.pdf')
+                ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('4/1')
-                ->transact('pay office space rent - mar')
-                ->draft();
+                ->transact('pay office space rent - apr')
+                ->line('rent-expense', dr: 450.00)
+                ->line('cash', cr: 450.00)
+                ->doc('ck-no-1340-scan.pdf')
+                ->post();
 
-            // TODO(zmd): finish me
             $this->lastYear('4/2')
                 ->transact('receive payment for inv. 102')
-                ->draft();
+                ->line('cash', dr: 1440.00)
+                ->line('accounts-receivable', cr: 1440.00)
+                ->doc('cust-payment-for-inv-102.pdf')
+                ->post();
         }
     }
 
