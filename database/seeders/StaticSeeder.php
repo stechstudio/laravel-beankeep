@@ -55,15 +55,14 @@ class StaticSeeder extends Seeder
             // TODO(zmd): finish me
             $this->lastYear('2/1')
                 ->transact('pay office space rent - feb')
+                ->draft();
+
+            $this->lastYear('2/12')
+                ->transact('provide 2 hours technical consulting services (inv. 100)')
                 ->line('accounts-receivable', dr: 240.00)
                 ->line('services-revenue', cr: 240.00)
                 ->doc('invoice-100.pdf')
                 ->post();
-
-            // TODO(zmd): finish me
-            $this->lastYear('2/12')
-                ->transact('provide 2 hours technical consulting services (inv. 100)')
-                ->draft();
 
             $this->lastYear('2/16')
                 ->transact('ck no. 1337 - pay computers-r-us invoice')
@@ -95,7 +94,6 @@ class StaticSeeder extends Seeder
                 ->transact('pay web hosting fees')
                 ->draft();
 
-            // TODO(zmd): finish me
             $this->lastYear('3/8')
                 ->transact('bill for 12 hours development services (inv. 102)')
                 ->line('accounts-receivable', dr: 1440.00)
