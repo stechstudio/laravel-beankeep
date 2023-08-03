@@ -212,8 +212,27 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '6/2', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->invoicePaid(lastYear: '6/5');
+
+        $this->sendInvoice(
+            lastYear: '6/10',
+            hours: 6,
+            task: 'design services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '6/12',
+            hours: 2,
+            task: 'consulting services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '6/14',
+            hours: 15,
+            task: 'development services',
+        );
+
+        $this->invoicePaid(lastYear: '6/12');
     }
 
     protected function seedLastYearQ3(): void
