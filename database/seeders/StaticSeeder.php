@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Database\Seeders;
 
-use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Database\Factories\Support\Transactor;
