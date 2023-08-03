@@ -19,6 +19,8 @@ class StaticSeeder extends Seeder
 
     protected int $currentInvoiceNo = 100;
 
+    protected array $outstandingInvoices = [];
+
     public function run(): void
     {
         $this->seedAccountsIfNeeded();
@@ -87,12 +89,11 @@ class StaticSeeder extends Seeder
         //
         $this->rent(lastYear: '2/1');
 
-        $this->lastYear('2/12')
-            ->transact('provide 2 hours technical consulting services (inv. 100)')
-            ->line('accounts-receivable', dr: 240.00)
-            ->line('services-revenue', cr: 240.00)
-            ->doc('invoice-100.pdf')
-            ->post();
+        $this->invoice(
+            lastYear: '2/12',
+            hours: 2,
+            task: 'technical consulting services',
+        );
 
         $this->lastYear('2/16')
             ->transact('ck no. 1337 - pay computers-r-us invoice')
@@ -102,12 +103,11 @@ class StaticSeeder extends Seeder
             ->doc('computers-r-us-invoice-no-4242.pdf')
             ->post();
 
-        $this->lastYear('2/26')
-            ->transact('bill for 4 hours design services (inv. 101)')
-            ->line('accounts-receivable', dr: 480.00)
-            ->line('services-revenue', cr: 480.00)
-            ->doc('invoice-101.pdf')
-            ->post();
+        $this->invoice(
+            lastYear: '2/26',
+            hours: 4,
+            task: 'design services',
+        );
 
         //
         // -- Mar ------------------------------------------------------
@@ -128,12 +128,11 @@ class StaticSeeder extends Seeder
             ->doc('ck-no-1339-scan.pdf')
             ->post();
 
-        $this->lastYear('3/8')
-            ->transact('bill for 12 hours development services (inv. 102)')
-            ->line('accounts-receivable', dr: 1440.00)
-            ->line('services-revenue', cr: 1440.00)
-            ->doc('invoice-102.pdf')
-            ->post();
+        $this->invoice(
+            lastYear: '3/8',
+            hours: 12,
+            task: 'development services',
+        );
 
         $this->lastYear('3/8')
             ->transact('receive payment for inv. 100')
@@ -149,12 +148,11 @@ class StaticSeeder extends Seeder
             ->doc('cust-payment-for-inv-101.pdf')
             ->post();
 
-        $this->lastYear('3/20')
-            ->transact('bill for 8 hours development services (inv. 103)')
-            ->line('accounts-receivable', dr: 960.00)
-            ->line('services-revenue', cr: 960.00)
-            ->doc('invoice-103.pdf')
-            ->post();
+        $this->invoice(
+            lastYear: '3/20',
+            hours: 8,
+            task: 'development services',
+        );
     }
 
     protected function seedLastYearQ2(): void
@@ -199,7 +197,7 @@ class StaticSeeder extends Seeder
         // -- May ------------------------------------------------------
         //
 
-        $this->rent(lastYear: '6/1');
+        $this->rent(lastYear: '5/1');
 
         // TODO(zmd): hosting fees
         // TODO(zmd): invoice for work
@@ -325,6 +323,36 @@ class StaticSeeder extends Seeder
             ->line('cash', cr: 450.00)
             ->doc("ck-no-$checkNo-scan.pdf")
             ->post();
+    }
+
+    protected function invoice(
+        int $hours,
+        string $task,
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        $invoiceNo = $this->invoiceNo();
+        $memo = "$hours hours $task - (inv. $invoiceNo)";
+        $amount = $hours * 120.00;
+
+        $this->thisYearOrLast($lastYear, $thisYear)
+            ->transact($memo)
+            ->line('accounts-receivable', dr: $amount)
+            ->line('services-revenue', cr: $amount)
+            ->doc("invoice-$invoiceNo.pdf")
+            ->post();
+
+        $this->outstandingInvoices[] = [
+            'invoiceNo' => $invoiceNo,
+            'amount' => $amount,
+        ];
+    }
+
+    protected function invoicePaid(
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        // TODO(zmd):
     }
 
     protected function thisYearOrLast(
