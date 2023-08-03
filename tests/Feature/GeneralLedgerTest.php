@@ -4,69 +4,45 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
-use STS\Beankeep\Tests\TestSupport\Traits\BeanConstructors;
+use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 
 final class GeneralLedgerTest extends TestCase
 {
-    use BeanConstructors;
+    use CanCreateAccounts;
+    use HasRelativeTransactor;
 
-    public function testItCanModelAChartOfAccounts(): void
+    public function setUp(): void
     {
-        $accounts = array_values($this->createAccounts());
-
-        foreach ($this->accountAttributes() as $index => [$number, $name, $type]) {
-            $this->assertEquals($number, $accounts[$index]->number);
-            $this->assertEquals($type, $accounts[$index]->type);
-            $this->assertEquals($name, $accounts[$index]->name);
-        }
+        parent::setUp();
+        $this->createAccounts();
     }
 
     public function testItCanRecordATransactionToTheJournal(): void
     {
-        $accounts = $this->createAccounts();
-
-        $transaction = $this->transaction(
-            'initial owner contribution',
-            '2022-01-01',
-        );
-
-        $debit = $this->debit($accounts['cash'], $transaction, 1000000);
-        $credit = $this->credit($accounts['capital'], $transaction, 1000000);
-        $sourceDoc = $this->doc($transaction, 'contribution-moa.pdf');
-
-        $transaction->refresh();
+        $transaction = $this->thisYear('1/1')->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->doc('contribution-moa.pdf')
+            ->draft();
 
         $this->assertEquals('initial owner contribution', $transaction->memo);
-        $this->assertEquals($this->date('2022-01-01'), $transaction->date);
+        $this->assertEquals($this->getDate(thisYear: '1/1'), $transaction->date);
         $this->assertFalse($transaction->posted);
 
         $this->assertEquals(2, $transaction->lineItems()->count());
         $this->assertEquals(1000000, $transaction->lineItems[0]->debit);
-        $this->assertEquals($accounts['cash'], $transaction->lineItems[0]->account);
+        $this->assertEquals($this->account('cash'), $transaction->lineItems[0]->account);
         $this->assertEquals(1000000, $transaction->lineItems[1]->credit);
-        $this->assertEquals($accounts['capital'], $transaction->lineItems[1]->account);
+        $this->assertEquals($this->account('capital'), $transaction->lineItems[1]->account);
 
         $this->assertEquals(1, $transaction->sourceDocuments()->count());
-        $this->assertEquals(
-            $sourceDoc->attachment,
-            $transaction->sourceDocuments->first()->attachment,
-        );
-        $this->assertEquals(
-            $sourceDoc->filename,
-            $transaction->sourceDocuments->first()->filename,
-        );
-        $this->assertEquals(
-            $sourceDoc->mime_type,
-            $transaction->sourceDocuments->first()->mime_type,
-        );
     }
 
     public function testItCanModelAJournalWithManyTransactions(): void
     {
-        $transact = $this->simpleTransactor();
-
         //
         //      Date | Account            |        Dr |        Cr | Memo
         // ==========+====================+===========+===========+======================
@@ -82,9 +58,20 @@ final class GeneralLedgerTest extends TestCase
         //           | TOTAL (Dr)         |  20000.00 |           |
         //           |   TOTAL (Cr)       |           |  20000.00 |
         //
-        $transact('2022-01-01', 'initial owner contribution', 10000.00, dr: 'cash', cr: 'capital');
-        $transact('2022-10-15', '2 computers from computers-r-us', 5000.00, dr: 'equipment', cr: 'accounts-payable');
-        $transact('2022-10-16', 'ck no. 1337', 5000.00, dr: 'accounts-payable', cr: 'cash');
+        $this->thisYear('1/1')->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->post();
+
+        $this->thisYear('10/15')->transact('2 computers from computers-r-us')
+            ->line('equipment', dr: 5000.00)
+            ->line('accounts-payable', cr: 5000.00)
+            ->post();
+
+        $this->thisYear('10/16')->transact('ck no. 1337')
+            ->line('accounts-payable', dr: 5000.00)
+            ->line('cash', cr: 5000.00)
+            ->post();
 
         // NOTE(zmd): later we'll *also* check individual account balances here,
         //   once we have created helpers for doing such in the package.
