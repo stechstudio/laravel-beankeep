@@ -246,8 +246,33 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '7/3', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '7/2',
+            hours: 6,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '6/12');
+
+        $this->sendInvoice(
+            lastYear: '7/6',
+            hours: 8,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '7/20',
+            hours: 4,
+            task: 'consulting services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '7/22',
+            hours: 10,
+            task: 'development services',
+        );
+
+        $this->invoicePaid(lastYear: '7/30');
 
         //
         // -- Aug ------------------------------------------------------
@@ -256,10 +281,33 @@ class StaticSeeder extends Seeder
 
         $this->receiveInvoice(lastYear: '8/1', amount: 5.00, for: 'hosting');
 
+        $this->invoicePaid(lastYear: '8/3');
+
         $this->payInvoice(lastYear: '8/4', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '8/5',
+            hours: 12,
+            task: 'develoment services',
+        );
+
+        $this->invoicePaid(lastYear: '8/5');
+
+        $this->invoicePaid(lastYear: '8/7');
+
+        $this->invoicePaid(lastYear: '8/9');
+
+        $this->sendInvoice(
+            lastYear: '8/11',
+            hours: 6,
+            task: 'design services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '8/23',
+            hours: 2,
+            task: 'consulting services',
+        );
 
         //
         // -- Sep ------------------------------------------------------
@@ -270,8 +318,27 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '9/10', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '9/2',
+            hours: 12,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '9/7');
+
+        $this->sendInvoice(
+            lastYear: '9/12',
+            hours: 6,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '9/22',
+            hours: 10,
+            task: 'consulting services',
+        );
+
+        $this->invoicePaid(lastYear: '9/20');
     }
 
     protected function seedLastYearQ4(): void
