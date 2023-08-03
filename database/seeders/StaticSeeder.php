@@ -152,8 +152,19 @@ class StaticSeeder extends Seeder
 
         $this->invoicePaid(lastYear: '4/11');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '4/15',
+            hours: 6,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '4/20',
+            hours: 14,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '4/21');
 
         //
         // -- May ------------------------------------------------------
@@ -164,8 +175,33 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '5/6', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '5/4',
+            hours: 8,
+            task: 'development services',
+        );
+
+        $this->invoicePaid(lastYear: '5/10');
+
+        $this->sendInvoice(
+            lastYear: '5/12',
+            hours: 8,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '5/20',
+            hours: 8,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '5/20',
+            hours: 4,
+            task: 'development services',
+        );
+
+        $this->invoicePaid(lastYear: '5/20');
 
         //
         // -- Jun ------------------------------------------------------
