@@ -352,7 +352,6 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '10/9', for: 'hosting');
 
-        // TODO(zmd): invoice for work
         $this->sendInvoice(
             lastYear: '10/5',
             hours: 6,
@@ -394,8 +393,41 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '11/3', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '11/2',
+            hours: 10,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '11/6');
+
+        $this->sendInvoice(
+            lastYear: '11/6',
+            hours: 16,
+            task: 'development services',
+        );
+        $this->invoicePaid(lastYear: '11/10');
+
+        $this->sendInvoice(
+            lastYear: '11/11',
+            hours: 6,
+            task: 'consulting services',
+        );
+        $this->invoicePaid(lastYear: '11/16');
+
+        $this->sendInvoice(
+            lastYear: '11/20',
+            hours: 16,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '11/23',
+            hours: 8,
+            task: 'consulting services',
+        );
+
+        $this->invoicePaid(lastYear: '11/30');
 
         //
         // -- Dec ------------------------------------------------------
@@ -406,8 +438,35 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(lastYear: '12/4', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '12/1',
+            hours: 6,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '12/3');
+
+        $this->invoicePaid(lastYear: '12/3');
+
+        $this->sendInvoice(
+            lastYear: '12/12',
+            hours: 22,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '12/13',
+            hours: 10,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '12/15');
+
+        $this->sendInvoice(
+            lastYear: '12/31',
+            hours: 3,
+            task: 'consulting services',
+        );
     }
 
     protected function seedThisYearQ1(): void
