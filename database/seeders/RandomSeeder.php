@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Database\Seeders;
 
-use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\SourceDocument;
