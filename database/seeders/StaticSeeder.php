@@ -73,10 +73,10 @@ class StaticSeeder extends Seeder
             ->post();
 
         $this->lastYear('1/10')
-            ->transact('2 computers from computers-r-us')
+            ->transact('2 computers from computers-ᴙ-us')
             ->line('equipment', dr: 5000.00)
             ->line('accounts-payable', cr: 5000.00)
-            ->doc('computers-r-us-receipt.pdf')
+            ->doc('computers-ᴙ-us-receipt.pdf')
             ->post();
 
         $this->lastYear('1/20')
@@ -98,11 +98,11 @@ class StaticSeeder extends Seeder
         );
 
         $this->lastYear('2/16')
-            ->transact('ck no. 1337 - pay computers-r-us invoice')
+            ->transact('ck no. 1337 - pay computers-ᴙ-us invoice')
             ->line('accounts-payable', dr: 5000.00)
             ->line('cash', cr: 5000.00)
             ->doc('ck-no-1337-scan.pdf')
-            ->doc('computers-r-us-invoice-no-4242.pdf')
+            ->doc('computers-ᴙ-us-invoice-no-4242.pdf')
             ->post();
 
         $this->sendInvoice(
