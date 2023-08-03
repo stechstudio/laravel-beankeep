@@ -19,7 +19,9 @@ class StaticSeeder extends Seeder
 
     protected int $currentInvoiceNo = 100;
 
-    protected array $outstandingInvoices = [];
+    protected array $receivableInvoices = [];
+
+    protected array $payableInvoices = [];
 
     public function run(): void
     {
@@ -89,7 +91,7 @@ class StaticSeeder extends Seeder
         //
         $this->rent(lastYear: '2/1');
 
-        $this->invoice(
+        $this->sendInvoice(
             lastYear: '2/12',
             hours: 2,
             task: 'technical consulting services',
@@ -103,7 +105,7 @@ class StaticSeeder extends Seeder
             ->doc('computers-r-us-invoice-no-4242.pdf')
             ->post();
 
-        $this->invoice(
+        $this->sendInvoice(
             lastYear: '2/26',
             hours: 4,
             task: 'design services',
@@ -114,12 +116,7 @@ class StaticSeeder extends Seeder
         //
         $this->rent(lastYear: '3/1');
 
-        $this->lastYear('3/1')
-            ->transact('receive invoice for web hosting')
-            ->line('telecommunications-expense', dr: 5.00)
-            ->line('accounts-payable', cr: 5.00)
-            ->doc('digital-drop-in-the-bucket-fish-shooter-plan-feb-hosting.pdf')
-            ->post();
+        $this->receiveInvoice(lastYear: '3/1', for: 'hosting', amount: 5.00);
 
         $this->lastYear('3/5')
             ->transact('pay web hosting fees')
@@ -128,7 +125,7 @@ class StaticSeeder extends Seeder
             ->doc('ck-no-1339-scan.pdf')
             ->post();
 
-        $this->invoice(
+        $this->sendInvoice(
             lastYear: '3/8',
             hours: 12,
             task: 'development services',
@@ -138,7 +135,7 @@ class StaticSeeder extends Seeder
 
         $this->invoicePaid(lastYear: '3/12');
 
-        $this->invoice(
+        $this->sendInvoice(
             lastYear: '3/20',
             hours: 8,
             task: 'development services',
@@ -152,12 +149,7 @@ class StaticSeeder extends Seeder
         //
         $this->rent(lastYear: '4/1');
 
-        $this->lastYear('4/1')
-            ->transact('receive invoice for web hosting')
-            ->line('telecommunications-expense', dr: 5.00)
-            ->line('accounts-payable', cr: 5.00)
-            ->doc('digital-drop-in-the-bucket-fish-shooter-plan-mar-hosting.pdf')
-            ->post();
+        $this->receiveInvoice(lastYear: '4/1', amount: 5.00, for: 'hosting');
 
         $this->invoicePaid(lastYear: '4/2');
 
@@ -176,20 +168,20 @@ class StaticSeeder extends Seeder
         //
         // -- May ------------------------------------------------------
         //
-
         $this->rent(lastYear: '5/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '5/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Jun ------------------------------------------------------
         //
-
         $this->rent(lastYear: '6/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '6/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
     }
@@ -201,91 +193,88 @@ class StaticSeeder extends Seeder
         //
         // -- Jul ------------------------------------------------------
         //
-
         $this->rent(lastYear: '7/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '7/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Aug ------------------------------------------------------
         //
-
         $this->rent(lastYear: '8/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '8/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Sep ------------------------------------------------------
         //
-
         $this->rent(lastYear: '9/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '9/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
     }
 
     protected function seedLastYearQ4(): void
     {
-        echo "TODO(zmd): last year Q4\n";
-
         //
         // -- Oct ------------------------------------------------------
         //
-
         $this->rent(lastYear: '10/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '10/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Nov ------------------------------------------------------
         //
-
         $this->rent(lastYear: '11/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '11/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Dec ------------------------------------------------------
         //
-
         $this->rent(lastYear: '12/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(lastYear: '12/1', amount: 5.00, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
     }
 
     protected function seedThisYearQ1(): void
     {
-        echo "TODO(zmd): this year Q1\n";
-
         //
         // -- Jan ------------------------------------------------------
         //
-
         $this->rent(thisYear: '1/1');
 
         // TODO(zmd): domain renewal
-        // TODO(zmd): hosting fees
+
+        $this->receiveInvoice(thisYear: '1/1', amount: 7.50, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
 
         //
         // -- Feb ------------------------------------------------------
         //
-
         $this->rent(thisYear: '2/1');
 
-        // TODO(zmd): hosting fees
+        $this->receiveInvoice(thisYear: '2/1', amount: 7.50, for: 'hosting');
+
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
     }
@@ -305,7 +294,7 @@ class StaticSeeder extends Seeder
             ->post();
     }
 
-    protected function invoice(
+    protected function sendInvoice(
         int $hours,
         string $task,
         ?string $lastYear = null,
@@ -322,7 +311,7 @@ class StaticSeeder extends Seeder
             ->doc("invoice-$invoiceNo.pdf")
             ->post();
 
-        $this->outstandingInvoices[] = [
+        $this->receivableInvoices[] = [
             'date' => $lastYear ?: $thisYear,
             'invoiceNo' => $invoiceNo,
             'amount' => $amount,
@@ -333,7 +322,7 @@ class StaticSeeder extends Seeder
         ?string $lastYear = null,
         ?string $thisYear = null,
     ): void {
-        $invoice = array_shift($this->outstandingInvoices);
+        $invoice = array_shift($this->receivableInvoices);
         $invoiceNo = $invoice['invoiceNo'];
         $invoiceDate = $invoice['date'];
 
@@ -343,6 +332,60 @@ class StaticSeeder extends Seeder
             ->line('accounts-receivable', cr: $invoice['amount'])
             ->doc("cust-payment-for-inv-$invoiceNo.pdf")
             ->post();
+    }
+
+    protected function receiveInvoice(
+        string $for,
+        float $amount,
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        $this->payableInvoices[$for][] = match ($for) {
+            'hosting' => $this->receiveHostingInvoice($amount, $lastYear, $thisYear),
+        };
+    }
+
+    protected function receiveHostingInvoice(
+        float $amount,
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): array {
+        $date = $lastYear ?: $thisYear;
+        $lastMonthName = $this->shortLastMonth($date);
+
+        $this->thisYearOrLast($lastYear, $thisYear)
+            ->transact('receive invoice for web hosting')
+            ->line('telecommunications-expense', dr: $amount)
+            ->line('accounts-payable', cr: $amount)
+            ->doc("digital-drop-in-the-bucket-fish-shooter-plan-$lastMonthName-hosting.pdf")
+            ->post();
+
+        return [
+            'date' => $date,
+            'amount' => $amount,
+        ];
+    }
+
+    protected function payInvoice(
+        string $for,
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        match ($for) {
+            'hosting' => $this->payHostingInvoice(
+                    array_shift($this->payableInvoices[$for]),
+                    $lastYear,
+                    $thisYear,
+                ),
+        };
+    }
+
+    protected function payHostingInvoice(
+        array $invoice,
+        ?string $lastYear = null,
+        ?string $thisYear = null,
+    ): void {
+        // TODO(zmd): implement me
     }
 
     protected function thisYearOrLast(
@@ -357,6 +400,14 @@ class StaticSeeder extends Seeder
     protected function shortMonth(string $shortDate): string
     {
         return strtolower(Carbon::parse($shortDate)->format('M'));
+    }
+
+    protected function shortLastMonth(string $shortDate): string
+    {
+        return strtolower(Carbon::parse($shortDate)
+            ->startOfMonth()
+            ->subMonth()
+            ->format('M'));
     }
 
     protected function checkNo(): string
