@@ -134,19 +134,9 @@ class StaticSeeder extends Seeder
             task: 'development services',
         );
 
-        $this->lastYear('3/8')
-            ->transact('receive payment for inv. 100')
-            ->line('cash', dr: 240.00)
-            ->line('accounts-receivable', cr: 240.00)
-            ->doc('cust-payment-for-inv-100.pdf')
-            ->post();
+        $this->invoicePaid(lastYear: '3/8');
 
-        $this->lastYear('3/12')
-            ->transact('receive payment for inv. 101')
-            ->line('cash', dr: 480.00)
-            ->line('accounts-receivable', cr: 480.00)
-            ->doc('cust-payment-for-inv-101.pdf')
-            ->post();
+        $this->invoicePaid(lastYear: '3/12');
 
         $this->invoice(
             lastYear: '3/20',
@@ -169,12 +159,7 @@ class StaticSeeder extends Seeder
             ->doc('digital-drop-in-the-bucket-fish-shooter-plan-mar-hosting.pdf')
             ->post();
 
-        $this->lastYear('4/2')
-            ->transact('receive payment for inv. 102')
-            ->line('cash', dr: 1440.00)
-            ->line('accounts-receivable', cr: 1440.00)
-            ->doc('cust-payment-for-inv-102.pdf')
-            ->post();
+        $this->invoicePaid(lastYear: '4/2');
 
         $this->lastYear('4/4')
             ->transact('pay web hosting fees')
@@ -183,12 +168,7 @@ class StaticSeeder extends Seeder
             ->doc('ck-no-1341-scan.pdf')
             ->post();
 
-        $this->lastYear('4/11')
-            ->transact('receive payment for inv. 103')
-            ->line('cash', dr: 960.00)
-            ->line('accounts-receivable', cr: 960.00)
-            ->doc('cust-payment-for-inv-103.pdf')
-            ->post();
+        $this->invoicePaid(lastYear: '4/11');
 
         // TODO(zmd): invoice for work
         // TODO(zmd): process payment for prior invoices
@@ -343,6 +323,7 @@ class StaticSeeder extends Seeder
             ->post();
 
         $this->outstandingInvoices[] = [
+            'date' => $lastYear ?: $thisYear,
             'invoiceNo' => $invoiceNo,
             'amount' => $amount,
         ];
@@ -352,7 +333,16 @@ class StaticSeeder extends Seeder
         ?string $lastYear = null,
         ?string $thisYear = null,
     ): void {
-        // TODO(zmd):
+        $invoice = array_shift($this->outstandingInvoices);
+        $invoiceNo = $invoice['invoiceNo'];
+        $invoiceDate = $invoice['date'];
+
+        $this->thisYearOrLast($lastYear, $thisYear)
+            ->transact("receive payment for inv. $invoiceNo ($invoiceDate)")
+            ->line('cash', dr: $invoice['amount'])
+            ->line('accounts-receivable', cr: $invoice['amount'])
+            ->doc("cust-payment-for-inv-$invoiceNo.pdf")
+            ->post();
     }
 
     protected function thisYearOrLast(
