@@ -265,7 +265,12 @@ class StaticSeeder extends Seeder
         //
         $this->rent(thisYear: '1/1');
 
-        // TODO(zmd): domain renewal
+        $this->thisYear('1/20')
+            ->transact('renew domain')
+            ->line('cost-of-services', dr: 15.00)
+            ->line('cash', cr: 15.00)
+            ->doc('namecheap-receipt.pdf')
+            ->post();
 
         $this->receiveInvoice(thisYear: '1/1', amount: 7.50, for: 'hosting');
 
