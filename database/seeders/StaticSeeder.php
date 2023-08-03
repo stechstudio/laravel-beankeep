@@ -60,10 +60,12 @@ class StaticSeeder extends Seeder
         }
     }
 
+    // =======================================================================
+
     protected function seedLastYearQ1(): void
     {
         //
-        // -- Jan ------------------------------------------------------
+        // -- Jan ------------------------------------------------------------
         //
         $this->lastYear('1/1')
             ->transact('initial owner contribution')
@@ -87,7 +89,7 @@ class StaticSeeder extends Seeder
             ->post();
 
         //
-        // -- Feb ------------------------------------------------------
+        // -- Feb ------------------------------------------------------------
         //
         $this->rent(lastYear: '2/1');
 
@@ -112,7 +114,7 @@ class StaticSeeder extends Seeder
         );
 
         //
-        // -- Mar ------------------------------------------------------
+        // -- Mar ------------------------------------------------------------
         //
         $this->rent(lastYear: '3/1');
 
@@ -140,7 +142,7 @@ class StaticSeeder extends Seeder
     protected function seedLastYearQ2(): void
     {
         //
-        // -- Apr ------------------------------------------------------
+        // -- Apr ------------------------------------------------------------
         //
         $this->rent(lastYear: '4/1');
 
@@ -167,7 +169,7 @@ class StaticSeeder extends Seeder
         $this->invoicePaid(lastYear: '4/21');
 
         //
-        // -- May ------------------------------------------------------
+        // -- May ------------------------------------------------------------
         //
         $this->rent(lastYear: '5/1');
 
@@ -204,7 +206,7 @@ class StaticSeeder extends Seeder
         $this->invoicePaid(lastYear: '5/20');
 
         //
-        // -- Jun ------------------------------------------------------
+        // -- Jun ------------------------------------------------------------
         //
         $this->rent(lastYear: '6/1');
 
@@ -238,7 +240,7 @@ class StaticSeeder extends Seeder
     protected function seedLastYearQ3(): void
     {
         //
-        // -- Jul ------------------------------------------------------
+        // -- Jul ------------------------------------------------------------
         //
         $this->rent(lastYear: '7/1');
 
@@ -275,7 +277,7 @@ class StaticSeeder extends Seeder
         $this->invoicePaid(lastYear: '7/30');
 
         //
-        // -- Aug ------------------------------------------------------
+        // -- Aug ------------------------------------------------------------
         //
         $this->rent(lastYear: '8/1');
 
@@ -310,7 +312,7 @@ class StaticSeeder extends Seeder
         );
 
         //
-        // -- Sep ------------------------------------------------------
+        // -- Sep ------------------------------------------------------------
         //
         $this->rent(lastYear: '9/1');
 
@@ -344,7 +346,7 @@ class StaticSeeder extends Seeder
     protected function seedLastYearQ4(): void
     {
         //
-        // -- Oct ------------------------------------------------------
+        // -- Oct ------------------------------------------------------------
         //
         $this->rent(lastYear: '10/1');
 
@@ -385,7 +387,7 @@ class StaticSeeder extends Seeder
         $this->invoicePaid(lastYear: '10/28');
 
         //
-        // -- Nov ------------------------------------------------------
+        // -- Nov ------------------------------------------------------------
         //
         $this->rent(lastYear: '11/1');
 
@@ -430,7 +432,7 @@ class StaticSeeder extends Seeder
         $this->invoicePaid(lastYear: '11/30');
 
         //
-        // -- Dec ------------------------------------------------------
+        // -- Dec ------------------------------------------------------------
         //
         $this->rent(lastYear: '12/1');
 
@@ -472,7 +474,7 @@ class StaticSeeder extends Seeder
     protected function seedThisYearQ1(): void
     {
         //
-        // -- Jan ------------------------------------------------------
+        // -- Jan ------------------------------------------------------------
         //
         $this->rent(thisYear: '1/1');
 
@@ -485,13 +487,36 @@ class StaticSeeder extends Seeder
 
         $this->receiveInvoice(thisYear: '1/1', amount: 7.50, for: 'hosting');
 
+        $this->invoicePaid(lastYear: '1/1');
+
         $this->payInvoice(thisYear: '1/2', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->invoicePaid(lastYear: '1/2');
+
+        $this->sendInvoice(
+            lastYear: '1/10',
+            hours: 12,
+            task: 'consulting services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '1/12',
+            hours: 10,
+            task: 'design services',
+        );
+
+        $this->invoicePaid(lastYear: '1/15');
+
+        $this->sendInvoice(
+            lastYear: '1/21',
+            hours: 26,
+            task: 'development services',
+        );
+
+        $this->invoicePaid(lastYear: '1/25');
 
         //
-        // -- Feb ------------------------------------------------------
+        // -- Feb ------------------------------------------------------------
         //
         $this->rent(thisYear: '2/1');
 
@@ -499,9 +524,46 @@ class StaticSeeder extends Seeder
 
         $this->payInvoice(thisYear: '2/4', for: 'hosting');
 
-        // TODO(zmd): invoice for work
-        // TODO(zmd): process payment for prior invoices
+        $this->sendInvoice(
+            lastYear: '2/5',
+            hours: 10,
+            task: 'design services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '2/6',
+            hours: 12,
+            task: 'design services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '2/7',
+            hours: 3,
+            task: 'consulting services',
+        );
+
+        $this->invoicePaid(lastYear: '2/10');
+
+        $this->sendInvoice(
+            lastYear: '2/11',
+            hours: 14,
+            task: 'development services',
+        );
+
+        $this->sendInvoice(
+            lastYear: '2/22',
+            hours: 6,
+            task: 'consulting services',
+        );
+
+        $this->invoicePaid(lastYear: '2/22');
+
+        $this->invoicePaid(lastYear: '2/23');
+
+        $this->invoicePaid(lastYear: '2/28');
     }
+
+    // =======================================================================
 
     protected function rent(
         ?string $lastYear = null,
