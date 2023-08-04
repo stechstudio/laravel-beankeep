@@ -77,6 +77,22 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
     }
 
+    // NOTE(zmd): right now the default period is the current calendar year; we
+    //   will need to update this test once we make the default period
+    //   user-configurable
+    public function testItCanEasilyOfferAccessToAllLineItemsWithinTheDefaultPeriod(): void
+    {
+        $this->twoMonthsOfTransactions();
+
+        $this->assertEquals(14, LineItem::all()->count());
+
+        $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
+        $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
+
+        $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
+        $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
+    }
+
     // =======================================================================
 
     protected function janPeriod(): CarbonPeriod
