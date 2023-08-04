@@ -57,7 +57,7 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->twoMonthsOfTransactions();
 
-        $this->assertEquals(10, LineItem::posted()->count());
+        $this->assertEquals(12, LineItem::posted()->count());
         $this->assertEquals(0, LineItem::posted()->sum('debit') - LineItem::posted()->sum('credit'));
 
         $this->assertEquals(4, LineItem::pending()->count());
@@ -108,6 +108,20 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(0, LineItem::ledger()->sum('debit') - LineItem::ledger()->sum('credit'));
     }
 
+    /*
+    public function testItCanGetAllDebitsThatExistInTheSystem(): void
+    {
+        // TODO(zmd): implement me
+    }
+    */
+
+    /*
+    public function testItCanGetAllCreditsThatExistInTheSystem(): void
+    {
+        // TODO(zmd): implement me
+    }
+    */
+
     // =======================================================================
 
     protected function janPeriod(): CarbonPeriod
@@ -126,15 +140,20 @@ final class GeneralLedgerTest extends TestCase
         return $start->dayUntil($end);
     }
 
-    // TODO(zmd): we need to make this 3 months, and include the prior year (so
-    //   that our "default period" tests are testing something more meaningful)
     protected function twoMonthsOfTransactions(): void
     {
-        $this->thisYear('1/1')
+        $this->lastYear('12/25')
             ->transact('initial owner contribution')
             ->line('cash', dr: 10000.00)
             ->line('capital', cr: 10000.00)
             ->doc('contribution-moa.pdf')
+            ->post();
+
+        $this->thisYear('1/5')
+            ->transact('develpment services')
+            ->line('accounts-receivable', dr: 1200.00)
+            ->line('services-revenue', cr: 1200.00)
+            ->doc("invoice-99.pdf")
             ->post();
 
         $this->thisYear('1/10')
