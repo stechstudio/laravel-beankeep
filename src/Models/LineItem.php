@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonPeriod;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
 
 final class LineItem extends Beankeeper
@@ -38,6 +41,14 @@ final class LineItem extends Beankeeper
         return LineItemFactory::new();
     }
 
+    public static function defaultPeriod(): CarbonPeriod
+    {
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
+
+        return $startOfYear->daysUntil($endOfYear);
+    }
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -46,6 +57,46 @@ final class LineItem extends Beankeeper
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    public function scopeLedger(
+        Builder $query,
+        ?iterable $period = null,
+    ): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->whereBetween('date', $period ?? self::defaultPeriod())
+            ->where('posted', true));
+    }
+
+    public function scopePeriod(
+        Builder $query,
+        ?iterable $period = null,
+    ): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->whereBetween('date', $period ?? self::defaultPeriod()));
+    }
+
+    public function scopePosted(Builder $query): void {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('posted', true));
+    }
+
+    public function scopePending(Builder $query): void
+    {
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('posted', false));
+    }
+
+    public function scopeDebits(Builder $query): void
+    {
+        $query->where('debit', '>', 0)
+            ->where('credit', 0);
+    }
+
+    public function scopeCredits(Builder $query): void
+    {
+        $query->where('credit', '>', 0)
+            ->where('debit', 0);
     }
 
     public function isDebit(): bool
