@@ -77,4 +77,30 @@ final class GeneralLedgerTest extends TestCase
         //   once we have created helpers for doing such in the package.
         $this->assertEquals(0, LineItem::sum('debit') - LineItem::sum('credit'));
     }
+
+    public function testItCanDifferentiateBetweenPostedAndUnpostedLineItems(): void
+    {
+        $this->thisYear('1/1')->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->post();
+
+        $this->thisYear('10/15')->transact('2 computers from computers-r-us')
+            ->line('equipment', dr: 5000.00)
+            ->line('accounts-payable', cr: 5000.00)
+            ->post();
+
+        $this->thisYear('10/16')->transact('ck no. 1337')
+            ->line('accounts-payable', dr: 5000.00)
+            ->line('cash', cr: 5000.00)
+            ->draft();
+
+        $this->assertEquals(4, LineItem::posted()->count());
+        $this->assertEquals(1500000, LineItem::posted()->sum('debit'));
+        $this->assertEquals(1500000, LineItem::posted()->sum('credit'));
+
+        $this->assertEquals(2, LineItem::pending()->count());
+        $this->assertEquals(500000, LineItem::pending()->sum('debit'));
+        $this->assertEquals(500000, LineItem::pending()->sum('credit'));
+    }
 }
