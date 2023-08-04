@@ -35,7 +35,7 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    public function ledger(?iterable $period = null): HasMany
+    public function ledgerLineItems(?iterable $period = null): HasMany
     {
         return $this->lineItems()->ledger($period);
     }

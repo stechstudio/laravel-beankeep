@@ -28,7 +28,7 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $ledger = $account->ledger;
+        $ledger = $account->ledgerLineItems;
 
         $this->assertEquals(2, $ledger->count());
 
@@ -46,8 +46,8 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $janLedger = $this->account('cash')->ledger($this->janPeriod())->get();
-        $febLedger = $this->account('cash')->ledger($this->febPeriod())->get();
+        $janLedger = $this->account('cash')->ledgerLineItems($this->janPeriod())->get();
+        $febLedger = $this->account('cash')->ledgerLineItems($this->febPeriod())->get();
 
         $this->assertEquals(1, $janLedger->count());
         $this->assertEquals(1500, $janLedger[0]->credit);
