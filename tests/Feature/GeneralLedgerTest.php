@@ -97,6 +97,14 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(0, LineItem::ledger($this->febPeriod())->sum('debit') - LineItem::ledger($this->febPeriod())->sum('credit'));
     }
 
+    public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinTheDefaultPeriod(): void
+    {
+        $this->twoMonthsOfTransactions();
+
+        $this->assertEquals(10, LineItem::ledger()->count());
+        $this->assertEquals(0, LineItem::ledger()->sum('debit') - LineItem::ledger()->sum('credit'));
+    }
+
     // =======================================================================
 
     protected function janPeriod(): CarbonPeriod
