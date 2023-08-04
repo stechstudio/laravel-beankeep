@@ -68,8 +68,6 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->twoMonthsOfTransactions();
 
-        $this->assertEquals(14, LineItem::all()->count());
-
         $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
         $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
 
@@ -84,13 +82,22 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->twoMonthsOfTransactions();
 
-        $this->assertEquals(14, LineItem::all()->count());
-
         $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
         $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
 
         $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
         $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
+    }
+
+    public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinASpecifiedPeriod(): void
+    {
+        $this->twoMonthsOfTransactions();
+
+        $this->assertEquals(6, LineItem::ledger($this->janPeriod())->count());
+        $this->assertEquals(0, LineItem::ledger($this->janPeriod())->sum('debit') - LineItem::ledger($this->janPeriod())->sum('credit'));
+
+        $this->assertEquals(4, LineItem::ledger($this->febPeriod())->count());
+        $this->assertEquals(0, LineItem::ledger($this->febPeriod())->sum('debit') - LineItem::ledger($this->febPeriod())->sum('credit'));
     }
 
     // =======================================================================
@@ -111,6 +118,8 @@ final class GeneralLedgerTest extends TestCase
         return $start->dayUntil($end);
     }
 
+    // TODO(zmd): we need to make this 3 months, and include the prior year (so
+    //   that our "default period" tests are testing something more meaningful)
     protected function twoMonthsOfTransactions(): void
     {
         $this->thisYear('1/1')
