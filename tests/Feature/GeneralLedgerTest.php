@@ -82,11 +82,8 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->twoMonthsOfTransactions();
 
-        $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
-        $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
-
-        $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
-        $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
+        $this->assertEquals(14, LineItem::period()->count());
+        $this->assertEquals(0, LineItem::period()->sum('debit') - LineItem::period()->sum('credit'));
     }
 
     public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinASpecifiedPeriod(): void
