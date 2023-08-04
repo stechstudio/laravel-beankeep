@@ -32,6 +32,16 @@ final class AccountLedgerTest extends TestCase
         $this->assertEquals(2, $account->ledger()->count());
     }
 
+    public function testItCanGetLedgerTransactionsForSpecificPeriod(): void
+    {
+        $this->threeMonthsOfTransactions();
+
+        $account = $this->account('cash');
+
+        $this->assertEquals(1, $account->ledger($this->janPeriod())->count());
+        $this->assertEquals(1, $account->ledger($this->febPeriod())->count());
+    }
+
     // =======================================================================
 
     protected function janPeriod(): CarbonPeriod
