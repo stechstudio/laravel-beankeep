@@ -21,6 +21,8 @@ final class GeneralLedgerTest extends TestCase
         $this->createAccounts();
     }
 
+    // NOTE(zmd): this is basically just a smoke test, making sure things are
+    //   hooked up
     public function testItCanRecordATransactionToTheJournal(): void
     {
         $transaction = $this->thisYear('1/1')->transact('initial owner contribution')
@@ -44,35 +46,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanModelAJournalWithManyTransactions(): void
     {
-        //
-        //      Date | Account            |        Dr |        Cr | Memo
-        // ==========+====================+===========+===========+======================
-        //  01/01/22 | Cash               |  10000.00 |           | initial owner con...
-        //           |   Capital          |           |  10000.00 |
-        // ----------+--------------------+-----------+-----------+----------------------
-        //  10/15/22 | Equipment          |   5000.00 |           | 2 computers from ...
-        //           |   Accounts Payable |           |   5000.00 |
-        // ----------+--------------------+-----------+-----------+----------------------
-        //  10/16/22 | Accounts Payable   |   5000.00 |           | ck no. 1337
-        //           |   Cash             |           |   5000.00 |
-        // ==========+====================+===========+===========+======================
-        //           | TOTAL (Dr)         |  20000.00 |           |
-        //           |   TOTAL (Cr)       |           |  20000.00 |
-        //
-        $this->thisYear('1/1')->transact('initial owner contribution')
-            ->line('cash', dr: 10000.00)
-            ->line('capital', cr: 10000.00)
-            ->post();
-
-        $this->thisYear('10/15')->transact('2 computers from computers-r-us')
-            ->line('equipment', dr: 5000.00)
-            ->line('accounts-payable', cr: 5000.00)
-            ->post();
-
-        $this->thisYear('10/16')->transact('ck no. 1337')
-            ->line('accounts-payable', dr: 5000.00)
-            ->line('cash', cr: 5000.00)
-            ->post();
+        $this->twoMonthsOfTransactions();
 
         // NOTE(zmd): later we'll *also* check individual account balances here,
         //   once we have created helpers for doing such in the package.
@@ -81,28 +55,13 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanDifferentiateBetweenPostedAndUnpostedLineItems(): void
     {
-        $this->thisYear('1/1')->transact('initial owner contribution')
-            ->line('cash', dr: 10000.00)
-            ->line('capital', cr: 10000.00)
-            ->post();
+        $this->twoMonthsOfTransactions();
 
-        $this->thisYear('10/15')->transact('2 computers from computers-r-us')
-            ->line('equipment', dr: 5000.00)
-            ->line('accounts-payable', cr: 5000.00)
-            ->post();
+        $this->assertEquals(10, LineItem::posted()->count());
+        $this->assertEquals(0, LineItem::posted()->sum('debit') - LineItem::posted()->sum('credit'));
 
-        $this->thisYear('10/16')->transact('ck no. 1337')
-            ->line('accounts-payable', dr: 5000.00)
-            ->line('cash', cr: 5000.00)
-            ->draft();
-
-        $this->assertEquals(4, LineItem::posted()->count());
-        $this->assertEquals(1500000, LineItem::posted()->sum('debit'));
-        $this->assertEquals(1500000, LineItem::posted()->sum('credit'));
-
-        $this->assertEquals(2, LineItem::pending()->count());
-        $this->assertEquals(500000, LineItem::pending()->sum('debit'));
-        $this->assertEquals(500000, LineItem::pending()->sum('credit'));
+        $this->assertEquals(4, LineItem::pending()->count());
+        $this->assertEquals(0, LineItem::pending()->sum('debit') - LineItem::pending()->sum('credit'));
     }
 
     public function testItCanEasilyOfferAccessToAllLineItemsWithinASpecifiedPeriod(): void
@@ -110,9 +69,15 @@ final class GeneralLedgerTest extends TestCase
         $this->twoMonthsOfTransactions();
 
         $this->assertEquals(14, LineItem::all()->count());
+
         $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
+        $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
+
         $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
+        $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
     }
+
+    // =======================================================================
 
     protected function janPeriod(): CarbonPeriod
     {
@@ -173,13 +138,13 @@ final class GeneralLedgerTest extends TestCase
             ->line('cash', cr: 5000.00)
             ->doc('ck-no-1338-scan.pdf')
             ->doc('computers-ᴙ-us-invoice-no-42.pdf')
-            ->post();
+            ->draft();
 
         $this->thisYear('2/26')
             ->transact('design services')
             ->line('accounts-receivable', dr: 480.00)
             ->line('services-revenue', cr: 480.00)
             ->doc("invoice-101.pdf")
-            ->post();
+            ->draft();
     }
 }
