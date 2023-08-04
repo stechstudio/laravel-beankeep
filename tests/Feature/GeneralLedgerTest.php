@@ -46,7 +46,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanModelAJournalWithManyTransactions(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         // NOTE(zmd): later we'll *also* check individual account balances here,
         //   once we have created helpers for doing such in the package.
@@ -55,7 +55,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanDifferentiateBetweenPostedAndUnpostedLineItems(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(12, LineItem::posted()->count());
         $this->assertEquals(0, LineItem::posted()->sum('debit') - LineItem::posted()->sum('credit'));
@@ -66,7 +66,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanEasilyOfferAccessToAllLineItemsWithinASpecifiedPeriod(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
         $this->assertEquals(0, LineItem::period($this->janPeriod())->sum('debit') - LineItem::period($this->janPeriod())->sum('credit'));
@@ -80,7 +80,7 @@ final class GeneralLedgerTest extends TestCase
     //   user-configurable
     public function testItCanEasilyOfferAccessToAllLineItemsWithinTheDefaultPeriod(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(14, LineItem::period()->count());
         $this->assertEquals(0, LineItem::period()->sum('debit') - LineItem::period()->sum('credit'));
@@ -88,7 +88,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinASpecifiedPeriod(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(6, LineItem::ledger($this->janPeriod())->count());
         $this->assertEquals(0, LineItem::ledger($this->janPeriod())->sum('debit') - LineItem::ledger($this->janPeriod())->sum('credit'));
@@ -102,7 +102,7 @@ final class GeneralLedgerTest extends TestCase
     //   user-configurable
     public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinTheDefaultPeriod(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(10, LineItem::ledger()->count());
         $this->assertEquals(0, LineItem::ledger()->sum('debit') - LineItem::ledger()->sum('credit'));
@@ -110,14 +110,14 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanGetAllDebitsThatExistInTheSystem(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(8, LineItem::debits()->count());
     }
 
     public function testItCanGetAllCreditsThatExistInTheSystem(): void
     {
-        $this->twoMonthsOfTransactions();
+        $this->threeMonthsOfTransactions();
 
         $this->assertEquals(8, LineItem::credits()->count());
     }
@@ -140,7 +140,7 @@ final class GeneralLedgerTest extends TestCase
         return $start->dayUntil($end);
     }
 
-    protected function twoMonthsOfTransactions(): void
+    protected function threeMonthsOfTransactions(): void
     {
         $this->lastYear('12/25')
             ->transact('initial owner contribution')
