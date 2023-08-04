@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
+use Carbon\CarbonPeriod;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
@@ -102,5 +103,83 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(2, LineItem::pending()->count());
         $this->assertEquals(500000, LineItem::pending()->sum('debit'));
         $this->assertEquals(500000, LineItem::pending()->sum('credit'));
+    }
+
+    public function testItCanEasilyOfferAccessToAllLineItemsWithinASpecifiedPeriod(): void
+    {
+        $this->twoMonthsOfTransactions();
+
+        $this->assertEquals(14, LineItem::all()->count());
+        $this->assertEquals(6, LineItem::period($this->janPeriod())->count());
+        $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
+    }
+
+    protected function janPeriod(): CarbonPeriod
+    {
+        $start = $this->getDate(thisYear: '1/1');
+        $end = $start->endOfMonth();
+
+        return $start->daysUntil($end);
+    }
+
+    protected function febPeriod(): CarbonPeriod
+    {
+        $start = $this->getDate(thisYear: '2/1');
+        $end = $start->endOfMonth();
+
+        return $start->dayUntil($end);
+    }
+
+    protected function twoMonthsOfTransactions(): void
+    {
+        $this->thisYear('1/1')
+            ->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->doc('contribution-moa.pdf')
+            ->post();
+
+        $this->thisYear('1/10')
+            ->transact('register domain')
+            ->line('cost-of-services', dr: 15.00)
+            ->line('cash', cr: 15.00)
+            ->doc('namecheap-receipt.pdf')
+            ->post();
+
+        $this->thisYear('1/20')
+            ->transact('2 computers from computers-ᴙ-us')
+            ->line('equipment', dr: 5000.00)
+            ->line('accounts-payable', cr: 5000.00)
+            ->doc('computers-ᴙ-us-receipt.pdf')
+            ->post();
+
+        $this->thisYear('2/1')
+            ->transact("pay office space rent - feb")
+            ->line('rent-expense', dr: 450.00)
+            ->line('cash', cr: 450.00)
+            ->doc("ck-no-1337-scan.pdf")
+            ->post();
+
+        $this->thisYear('2/12')
+            ->transact('technical consulting services')
+            ->line('accounts-receivable', dr: 240.00)
+            ->line('services-revenue', cr: 240.00)
+            ->doc("invoice-100.pdf")
+            ->post();
+
+        $this->thisYear('2/16')
+            ->transact('ck no. 1338 - pay computers-ᴙ-us invoice')
+            ->line('accounts-payable', dr: 5000.00)
+            ->line('cash', cr: 5000.00)
+            ->doc('ck-no-1338-scan.pdf')
+            ->doc('computers-ᴙ-us-invoice-no-42.pdf')
+            ->post();
+
+        $this->thisYear('2/26')
+            ->transact('design services')
+            ->line('accounts-receivable', dr: 480.00)
+            ->line('services-revenue', cr: 480.00)
+            ->doc("invoice-101.pdf")
+            ->post();
     }
 }
