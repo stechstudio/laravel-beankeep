@@ -20,10 +20,16 @@ final class AccountLedgerTest extends TestCase
         $this->createAccounts();
     }
 
-    public function testItCanGetLedgerTransactionsForGivenPeriod(): void
+    // NOTE(zmd): right now the default period is the current calendar year; we
+    //   will need to update this test once we make the default period
+    //   user-configurable
+    public function testItCanGetLedgerTransactionsForDefaultPeriod(): void
     {
-        // TODO(zmd): implement me
-        $this->assertTrue(false);
+        $this->threeMonthsOfTransactions();
+
+        $account = $this->account('cash');
+
+        $this->assertEquals(2, $account->ledger()->count());
     }
 
     // =======================================================================
