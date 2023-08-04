@@ -97,6 +97,9 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(0, LineItem::ledger($this->febPeriod())->sum('debit') - LineItem::ledger($this->febPeriod())->sum('credit'));
     }
 
+    // NOTE(zmd): right now the default period is the current calendar year; we
+    //   will need to update this test once we make the default period
+    //   user-configurable
     public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinTheDefaultPeriod(): void
     {
         $this->twoMonthsOfTransactions();
