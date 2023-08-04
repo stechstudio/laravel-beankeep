@@ -28,17 +28,17 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $ledger = $account->ledgerLineItems;
+        $ledgerItems = $account->ledgerLineItems;
 
-        $this->assertEquals(2, $ledger->count());
+        $this->assertEquals(2, $ledgerItems->count());
 
-        $this->assertEquals(1500, $ledger[0]->credit);
-        $this->assertTrue($ledger[0]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '1/10'), $ledger[0]->transaction->date);
+        $this->assertEquals(1500, $ledgerItems[0]->credit);
+        $this->assertTrue($ledgerItems[0]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '1/10'), $ledgerItems[0]->transaction->date);
 
-        $this->assertEquals(45000, $ledger[1]->credit);
-        $this->assertTrue($ledger[1]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '2/1'), $ledger[1]->transaction->date);
+        $this->assertEquals(45000, $ledgerItems[1]->credit);
+        $this->assertTrue($ledgerItems[1]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '2/1'), $ledgerItems[1]->transaction->date);
     }
 
     public function testItCanGetLedgerTransactionsForSpecificPeriod(): void
@@ -46,18 +46,18 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $janLedger = $this->account('cash')->ledgerLineItems($this->janPeriod())->get();
-        $febLedger = $this->account('cash')->ledgerLineItems($this->febPeriod())->get();
+        $janLedgerItems = $this->account('cash')->ledgerLineItems($this->janPeriod())->get();
+        $febLedgerItems = $this->account('cash')->ledgerLineItems($this->febPeriod())->get();
 
-        $this->assertEquals(1, $janLedger->count());
-        $this->assertEquals(1500, $janLedger[0]->credit);
-        $this->assertTrue($janLedger[0]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '1/10'), $janLedger[0]->transaction->date);
+        $this->assertEquals(1, $janLedgerItems->count());
+        $this->assertEquals(1500, $janLedgerItems[0]->credit);
+        $this->assertTrue($janLedgerItems[0]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '1/10'), $janLedgerItems[0]->transaction->date);
 
-        $this->assertEquals(1, $febLedger->count());
-        $this->assertEquals(45000, $febLedger[0]->credit);
-        $this->assertTrue($febLedger[0]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '2/1'), $febLedger[0]->transaction->date);
+        $this->assertEquals(1, $febLedgerItems->count());
+        $this->assertEquals(45000, $febLedgerItems[0]->credit);
+        $this->assertTrue($febLedgerItems[0]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '2/1'), $febLedgerItems[0]->transaction->date);
     }
 
     // =======================================================================
