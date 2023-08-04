@@ -108,19 +108,19 @@ final class GeneralLedgerTest extends TestCase
         $this->assertEquals(0, LineItem::ledger()->sum('debit') - LineItem::ledger()->sum('credit'));
     }
 
-    /*
     public function testItCanGetAllDebitsThatExistInTheSystem(): void
     {
-        // TODO(zmd): implement me
-    }
-    */
+        $this->twoMonthsOfTransactions();
 
-    /*
+        $this->assertEquals(8, LineItem::debits()->count());
+    }
+
     public function testItCanGetAllCreditsThatExistInTheSystem(): void
     {
-        // TODO(zmd): implement me
+        $this->twoMonthsOfTransactions();
+
+        $this->assertEquals(8, LineItem::credits()->count());
     }
-    */
 
     // =======================================================================
 
