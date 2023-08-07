@@ -43,6 +43,6 @@ final class Account extends Beankeeper
 
     public function ledger(?iterable $period = null): Ledger
     {
-        return new Ledger();
+        return new Ledger($this);
     }
 }
