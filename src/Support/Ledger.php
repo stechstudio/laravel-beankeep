@@ -11,10 +11,15 @@ use STS\Beankeep\Models\LineItem;
 
 final class Ledger
 {
+    /** @var Collection<LineItem> */
     private Collection $debits;
 
+    /** @var Collection<LineItem> */
     private Collection $credits;
 
+    /**
+     * @param Collection<LineItem> $ledgerEntries
+     */
     public function __construct(
         private Account $account,
         private int $startingBalance,
@@ -26,18 +31,12 @@ final class Ledger
 
     public function balance(): int
     {
-        if ($this->isDebitPositive()) {
-            return $this->startingBalance
-                + $this->debits->sum('debit')
-                - $this->credits->sum('credit');
-        }
-
-        return $this->startingBalance
-            + $this->credits->sum('credit')
-            - $this->debits->sum('debit');
+        return $this->isDebitPositive()
+            ? $this->debitPositiveBalance()
+            : $this->creditPositiveBalance();
     }
 
-    public function isDebitPositive(): bool
+    private function isDebitPositive(): bool
     {
         return match ($this->account->type) {
             AccountType::Asset => true,
@@ -46,8 +45,22 @@ final class Ledger
         };
     }
 
-    public function isCreditPositive(): bool
+    private function isCreditPositive(): bool
     {
         return !$this->isDebitPositive();
+    }
+
+    private function debitPositiveBalance(): int
+    {
+        return $this->startingBalance
+            + $this->debits->sum('debit')
+            - $this->credits->sum('credit');
+    }
+
+    private function creditPositiveBalance(): int
+    {
+        return $this->startingBalance
+            + $this->credits->sum('credit')
+            - $this->debits->sum('debit');
     }
 }
