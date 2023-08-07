@@ -76,6 +76,19 @@ final class LineItem extends Beankeeper
             ->whereBetween('date', $period ?? self::defaultPeriod()));
     }
 
+    // TODO(zmd): test me:
+    public function scopePriorTo(
+        Builder $query,
+        string|Carbon|CarbonImmutable|iterable $date,
+    ): void {
+        if (is_iterable($date)) {
+            $date = iterator_to_array($date)[0];
+        }
+
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('date', '<', $date));
+    }
+
     public function scopePosted(Builder $query): void {
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->where('posted', true));

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Support\Ledger;
@@ -36,6 +38,7 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
+    // TODO(zmd): remove this relation, it's silly
     public function ledgerLineItems(?iterable $period = null): HasMany
     {
         return $this->lineItems()->ledger($period);
@@ -43,6 +46,21 @@ final class Account extends Beankeeper
 
     public function ledger(?iterable $period = null): Ledger
     {
-        return new Ledger($this);
+        // TODO(zmd): get default period when no period passed in
+        return new Ledger(
+            account: $this,
+            startingBalance: $this->openingBalance($period),
+            ledgerEntries: $this->lineItems()->ledger($period)->get(),
+        );
+    }
+
+    // TODO(zmd): test me
+    public function openingBalance(string|Carbon|CarbonImmutable|iterable $date): int
+    {
+        return (new Ledger(
+            account: $this,
+            startingBalance: 0,
+            ledgerEntries: $this->lineItems()->priorTo($date)->get(),
+        ))->balance();
     }
 }
