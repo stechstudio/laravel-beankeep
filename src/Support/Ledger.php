@@ -32,8 +32,9 @@ final class Ledger
                 - $this->credits->sum('credit');
         }
 
-        // TODO(zmd): implement me
-        return 0;
+        return $this->startingBalance
+            + $this->credits->sum('credit')
+            - $this->debits->sum('debit');
     }
 
     public function isDebitPositive(): bool

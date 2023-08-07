@@ -62,13 +62,22 @@ final class AccountLedgerTest extends TestCase
 
     // -----------------------------------------------------------------------
 
-    public function testItCanConstructLedgerObjectForSpecificAccountAndPeriod(): void
+    public function testItCanConstructLedgerObjectForDebitPositiveAccountAndPeriod(): void
     {
         $this->threeMonthsOfTransactions();
 
         $janLedger = $this->account('cash')->ledger($this->janPeriod());
 
         $this->assertEquals(998500, $janLedger->balance());
+    }
+
+    public function testItCanConstructLedgerObjectForCreditPositiveAccountAndPeriod(): void
+    {
+        $this->threeMonthsOfTransactions();
+
+        $janLedger = $this->account('accounts-payable')->ledger($this->janPeriod());
+
+        $this->assertEquals(500000, $janLedger->balance());
     }
 
     // =======================================================================
