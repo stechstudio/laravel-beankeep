@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Support;
 
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 
-final class Ledger
+// TODO(zmd): rename to Ledger (replacing current Ledger class) if this idea
+//   sticks
+final class LedgerCollection extends Collection
 {
-    /** @var Collection<LineItem> */
-    private Collection $debits;
-
-    /** @var Collection<LineItem> */
-    private Collection $credits;
-
     /**
-     * @param Collection<LineItem> $ledgerEntries
+     * @param LineItem[] $models
      */
     public function __construct(
+        array $models,
         private Account $account,
         private int $startingBalance,
-        Collection $ledgerEntries,
     ) {
-        $this->debits = $ledgerEntries->filter->isDebit();
-        $this->credits = $ledgerEntries->filter->isCredit();
+    }
+
+    public function debits(): Collection
+    {
+        $this->filter->isDebit();
+    }
+
+    public function credits(): Collection
+    {
+        $this->filter->isCredit();
     }
 
     public function balance(): int
@@ -57,14 +61,14 @@ final class Ledger
     private function debitPositiveBalance(): int
     {
         return $this->startingBalance
-            + $this->debits->sum('debit')
-            - $this->credits->sum('credit');
+            + $this->debits()->sum('debit')
+            - $this->credits()->sum('credit');
     }
 
     private function creditPositiveBalance(): int
     {
         return $this->startingBalance
-            + $this->credits->sum('credit')
-            - $this->debits->sum('debit');
+            + $this->credits()->sum('credit')
+            - $this->debits()->sum('debit');
     }
 }
