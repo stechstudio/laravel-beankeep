@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use STS\Beankeep\Models\Account;
 
 // TODO(zmd): test me
-final class LineItemCollection extends Collection
+class LineItemCollection extends Collection
 {
     public function debits(): Collection
     {

@@ -6,18 +6,20 @@ namespace STS\Beankeep\Models;
 
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
 use STS\Beankeep\Support\LineItemCollection;
+use STS\Beankeep\Support\LedgerCollection;
 
 final class LineItem extends Beankeeper
 {
     use HasFactory;
 
     protected $table = 'beankeep_line_items';
+
+    private string $collectionClass = LineItemCollection::class;
 
     protected $fillable = [
         'account_id',
@@ -48,9 +50,18 @@ final class LineItem extends Beankeeper
      */
     public function newCollection(array $models = []): LineItemCollection
     {
-        // TODO(zmd): return a Ledger instead of LineItems _if_ all line items
-        //   are for the same account (but how do we determine starting balance
-        //   in such a case?)
+        if (count($models) > 0 && $this->collectionClass == LedgerCollection::class) {
+            $accountId = $models[0]->account_id;
+
+            foreach ($models as $model) {
+                if ($accountId != $model->account_id) {
+                    return new LineItemCollection($models);
+                }
+            }
+
+            return new LedgerCollection($models);
+        }
+
         return new LineItemCollection($models);
     }
 
@@ -72,10 +83,14 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
+    // TODO(zmd): we should require the account to scope to as well, for our
+    //   purposes ledger's are account-specific
     public function scopeLedger(
         Builder $query,
         ?iterable $period = null,
     ): void {
+        $this->collectionClass = LedgerCollection::class;
+
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period ?? self::defaultPeriod())
             ->where('posted', true));
