@@ -21,6 +21,7 @@ final class LedgerCollection extends Collection
         private Account $account,
         private int $startingBalance,
     ) {
+        parent::__construct($models);
     }
 
     public function debits(): Collection
