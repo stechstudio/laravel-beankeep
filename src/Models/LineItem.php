@@ -6,10 +6,12 @@ namespace STS\Beankeep\Models;
 
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
+use STS\Beankeep\Support\LineItemCollection;
 
 final class LineItem extends Beankeeper
 {
@@ -39,6 +41,17 @@ final class LineItem extends Beankeeper
     protected static function newFactory()
     {
         return LineItemFactory::new();
+    }
+
+    /**
+     * @param LineItem[] $models
+     */
+    public function newCollection(array $models = []): LineItemCollection
+    {
+        // TODO(zmd): return a Ledger instead of LineItems _if_ all line items
+        //   are for the same account (but how do we determine starting balance
+        //   in such a case?)
+        return new LineItemCollection($models);
     }
 
     public static function defaultPeriod(): CarbonPeriod
