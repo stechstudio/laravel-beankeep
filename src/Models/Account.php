@@ -38,12 +38,6 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    // TODO(zmd): remove this relation, it's silly
-    public function ledgerLineItems(?iterable $period = null): HasMany
-    {
-        return $this->lineItems()->ledger($period);
-    }
-
     public function ledger(?iterable $period = null): Ledger
     {
         // TODO(zmd): get default period when no period passed in
