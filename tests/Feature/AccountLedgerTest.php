@@ -60,6 +60,17 @@ final class AccountLedgerTest extends TestCase
         $this->assertEquals($this->getDate(thisYear: '2/1'), $febLedgerItems[0]->transaction->date);
     }
 
+    // -----------------------------------------------------------------------
+
+    public function testItCanConstructLedgerObjectForSpecificAccountAndPeriod(): void
+    {
+        $this->threeMonthsOfTransactions();
+
+        $janLedger = $this->account('cash')->ledger($this->janPeriod());
+
+        $this->assertEquals(998500, $janLedger->balance());
+    }
+
     // =======================================================================
 
     protected function janPeriod(): CarbonPeriod

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
+use STS\Beankeep\Support\Ledger;
 
 final class Account extends Beankeeper
 {
@@ -38,5 +39,10 @@ final class Account extends Beankeeper
     public function ledgerLineItems(?iterable $period = null): HasMany
     {
         return $this->lineItems()->ledger($period);
+    }
+
+    public function ledger(?iterable $period = null): Ledger
+    {
+        return new Ledger();
     }
 }
