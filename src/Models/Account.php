@@ -38,13 +38,30 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
+    // TODO(zmd): get default period when no period passed in
     public function ledger(?iterable $period = null): Ledger
     {
-        // TODO(zmd): get default period when no period passed in
         return new Ledger(
             account: $this,
             startingBalance: $this->openingBalance($period),
             ledgerEntries: $this->lineItems()->ledger($period)->get(),
+        );
+    }
+
+    // TODO(zmd): get default period when no period passed in
+    public function balance(?iterable $period = null): int
+    {
+        $balanceMethod = $this->debitPositive()
+            ? 'debitPositiveBalance'
+            : 'creditPositiveBalance';
+
+        $debitSum = $this->lineItems()->ledger($period)->sum('debit');
+        $creditSum = $this->lineItems()->ledger($period)->sum('credit');
+
+        return Ledger::$balanceMethod(
+            $this->openingBalance($period),
+            $debitSum,
+            $creditSum,
         );
     }
 

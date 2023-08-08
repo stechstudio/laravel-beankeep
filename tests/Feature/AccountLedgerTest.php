@@ -71,6 +71,16 @@ final class AccountLedgerTest extends TestCase
         $this->assertEquals(998500, $janLedger->balance());
     }
 
+    public function testItCanReportDebitPositiveBalanceForGivenPeriod(): void
+    {
+        $this->threeMonthsOfTransactions();
+
+        $this->assertEquals(
+            998500,
+            $this->account('cash')->balance($this->janPeriod()),
+        );
+    }
+
     public function testItCanConstructLedgerObjectForCreditPositiveAccountAndPeriod(): void
     {
         $this->threeMonthsOfTransactions();
@@ -78,6 +88,16 @@ final class AccountLedgerTest extends TestCase
         $janLedger = $this->account('accounts-payable')->ledger($this->janPeriod());
 
         $this->assertEquals(500000, $janLedger->balance());
+    }
+
+    public function testItCanReportCreditPositiveBalanceForGivenPeriod(): void
+    {
+        $this->threeMonthsOfTransactions();
+
+        $this->assertEquals(
+            500000,
+            $this->account('accounts-payable')->balance($this->janPeriod()),
+        );
     }
 
     // =======================================================================
