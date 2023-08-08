@@ -2,18 +2,15 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature;
+namespace STS\Beankeep\Tests\Feature\Transaction;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
-use STS\Beankeep\Enums\AccountType;
-use STS\Beankeep\Models\Account;
-use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
 
-final class TransactionPostingTest extends TestCase
+final class PostingTest extends TestCase
 {
     use CanCreateAccounts;
     use HasRelativeTransactor;
