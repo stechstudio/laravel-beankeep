@@ -51,11 +51,14 @@ final class Account extends Beankeeper
     // TODO(zmd): test me
     public function openingBalance(string|Carbon|CarbonImmutable|iterable $date): int
     {
-        return (new Ledger(
-            account: $this,
-            startingBalance: 0,
-            ledgerEntries: $this->lineItems()->priorTo($date)->get(),
-        ))->balance();
+        $balanceMethod = $this->debitPositive()
+            ? 'debitPositiveBalance'
+            : 'creditPositiveBalance';
+
+        $debitSum = $this->lineItems()->priorTo($date)->sum('debit');
+        $creditSum = $this->lineItems()->priorTo($date)->sum('credit');
+
+        return Ledger::$balanceMethod(0, $debitSum, $creditSum);
     }
 
     // TODO(zmd): test me
