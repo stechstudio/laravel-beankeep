@@ -36,31 +36,27 @@ final class Ledger
             : 'creditPositiveBalance';
 
         return self::$balanceMethod(
-            $this->debits,
-            $this->credits,
             $this->startingBalance,
+            $this->debits->sum('debit'),
+            $this->credits->sum('credit'),
         );
     }
 
     // TODO(zmd): test me
     public static function debitPositiveBalance(
-        LineItemCollection $debits,
-        LineItemCollection $credits,
         int $startingBalance,
+        int $debitSum,
+        int $creditSum,
     ): int {
-        return $startingBalance
-            + $debits->sum('debit')
-            - $credits->sum('credit');
+        return $startingBalance + $debitSum - $creditSum;
     }
 
     // TODO(zmd): test me
     public static function creditPositiveBalance(
-        LineItemCollection $debits,
-        LineItemCollection $credits,
         int $startingBalance,
+        int $debitSum,
+        int $creditSum,
     ): int {
-        return $startingBalance
-            + $credits->sum('credit')
-            - $debits->sum('debit');
+        return $startingBalance + $creditSum - $debitSum;
     }
 }
