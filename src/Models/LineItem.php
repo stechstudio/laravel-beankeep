@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
+use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\LineItemCollection;
 
 final class LineItem extends Beankeeper
@@ -50,14 +52,6 @@ final class LineItem extends Beankeeper
         return new LineItemCollection($models);
     }
 
-    public static function defaultPeriod(): CarbonPeriod
-    {
-        $startOfYear = Carbon::now()->startOfYear();
-        $endOfYear = Carbon::now()->endOfYear();
-
-        return $startOfYear->daysUntil($endOfYear);
-    }
-
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -68,31 +62,36 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
-    // TODO(zmd): accept optional account parameter here?
     public function scopeLedgerEntries(
         Builder $query,
-        ?iterable $period = null,
+        ?CarbonPeriod $period = null,
     ): void {
+        $period = BeankeepPeriod::from($period);
+
         $query->whereHas('transaction', fn (Builder $query) => $query
-            ->whereBetween('date', $period ?? self::defaultPeriod())
+            ->whereBetween('date', $period)
             ->where('posted', true));
     }
 
     public function scopePeriod(
         Builder $query,
-        ?iterable $period = null,
+        ?CarbonPeriod $period = null,
     ): void {
+        $period = BeankeepPeriod::from($period);
+
         $query->whereHas('transaction', fn (Builder $query) => $query
-            ->whereBetween('date', $period ?? self::defaultPeriod()));
+            ->whereBetween('date', $period));
     }
 
     // TODO(zmd): test me:
     public function scopePriorTo(
         Builder $query,
-        string|Carbon|CarbonImmutable|iterable $date,
+        string|Carbon|CarbonImmutable|CarbonPeriod $date,
     ): void {
-        if (is_iterable($date)) {
-            $date = iterator_to_array($date)[0];
+        if ($date instanceof CarbonPeriod) {
+            $date = $date->startDate;
+        } else {
+            $date = CarbonImmutable::parse($date);
         }
 
         $query->whereHas('transaction', fn (Builder $query) => $query

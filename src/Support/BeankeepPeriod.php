@@ -1,26 +1,37 @@
 <?php
 
-declare(strict_types=1)
+declare(strict_types=1);
 
+namespace STS\Beankeep\Support;
+
+use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 
 final class BeankeepPeriod
 {
-    public static function from(?iterable $period): CarbonPeriod
+    // TODO(zmd): test me
+    public static function from(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
             return self::defaultPeriod();
-        } elseif ($period instanceof CarbonPeriod::class) {
-            return $period;
         }
 
-        // TODO(zmd): finish implementing me
+        return $period;
     }
 
+    // TODO(zmd): test me
     public static function defaultPeriod(): CarbonPeriod
     {
-        [$startDateStr, $endDateStr] = config('beankeep.default-period');
+        if ($defaultPeriod = config('beankeep.default-period')) {
+            [$startDateStr, $endDateStr] = $defaultPeriod;
 
-        return Carbon::parse($startDateStr)->daysUntil($endDateStr);
+            return CarbonImmutable::parse($startDateStr)
+                ->daysUntil(CarbonImmutable::parse($endDateStr));
+        }
+
+        $startOfYear = CarbonImmutable::now()->startOfYear();
+        $endOfYear = CarbonImmutable::now()->endOfYear();
+
+        return $startOfYear->daysUntil($endOfYear);
     }
 }

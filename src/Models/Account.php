@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
-use Carbon\CarbonImmutable;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
+use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\Ledger;
 
 final class Account extends Beankeeper
@@ -38,9 +38,8 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    // TODO(zmd): get default period when no period passed in
     // TODO(zmd): finish testing me
-    public function ledger(?iterable $period = null): Ledger
+    public function ledger(?CarbonPeriod $period = null): Ledger
     {
         return new Ledger(
             account: $this,
@@ -49,9 +48,8 @@ final class Account extends Beankeeper
         );
     }
 
-    // TODO(zmd): get default period when no period passed in
     // TODO(zmd): test me
-    public function balance(?iterable $period = null): int
+    public function balance(?CarbonPeriod $period = null): int
     {
         $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
         $creditSum = $this->lineItems()->ledgerEntries($period)->sum('credit');
@@ -65,11 +63,16 @@ final class Account extends Beankeeper
     }
 
     // TODO(zmd): test me
-    public function openingBalance(
-        string|Carbon|CarbonImmutable|iterable $date,
-    ): int {
-        $debitSum = $this->lineItems()->priorTo($date)->sum('debit');
-        $creditSum = $this->lineItems()->priorTo($date)->sum('credit');
+    public function openingBalance(?CarbonPeriod $period = null): int {
+        $period = BeankeepPeriod::from($period);
+
+        $debitSum = $this->lineItems()
+            ->priorTo($period->startDate)
+            ->sum('debit');
+
+        $creditSum = $this->lineItems()
+            ->priorTo($period->startDate)
+            ->sum('credit');
 
         return Ledger::computeBalance($this, 0, $debitSum, $creditSum);
     }
