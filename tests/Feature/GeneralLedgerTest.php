@@ -90,11 +90,11 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->threeMonthsOfTransactions();
 
-        $this->assertEquals(6, LineItem::ledger($this->janPeriod())->count());
-        $this->assertEquals(0, LineItem::ledger($this->janPeriod())->sum('debit') - LineItem::ledger($this->janPeriod())->sum('credit'));
+        $this->assertEquals(6, LineItem::ledgerEntries($this->janPeriod())->count());
+        $this->assertEquals(0, LineItem::ledgerEntries($this->janPeriod())->sum('debit') - LineItem::ledgerEntries($this->janPeriod())->sum('credit'));
 
-        $this->assertEquals(4, LineItem::ledger($this->febPeriod())->count());
-        $this->assertEquals(0, LineItem::ledger($this->febPeriod())->sum('debit') - LineItem::ledger($this->febPeriod())->sum('credit'));
+        $this->assertEquals(4, LineItem::ledgerEntries($this->febPeriod())->count());
+        $this->assertEquals(0, LineItem::ledgerEntries($this->febPeriod())->sum('debit') - LineItem::ledgerEntries($this->febPeriod())->sum('credit'));
     }
 
     // NOTE(zmd): right now the default period is the current calendar year; we
@@ -104,8 +104,8 @@ final class GeneralLedgerTest extends TestCase
     {
         $this->threeMonthsOfTransactions();
 
-        $this->assertEquals(10, LineItem::ledger()->count());
-        $this->assertEquals(0, LineItem::ledger()->sum('debit') - LineItem::ledger()->sum('credit'));
+        $this->assertEquals(10, LineItem::ledgerEntries()->count());
+        $this->assertEquals(0, LineItem::ledgerEntries()->sum('debit') - LineItem::ledgerEntries()->sum('credit'));
     }
 
     public function testItCanGetAllDebitsThatExistInTheSystem(): void

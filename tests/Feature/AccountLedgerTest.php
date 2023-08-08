@@ -28,17 +28,17 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $ledgerItems = $account->lineItems()->ledger()->get();
+        $ledgerEntries = $account->lineItems()->ledgerEntries()->get();
 
-        $this->assertEquals(2, $ledgerItems->count());
+        $this->assertEquals(2, $ledgerEntries->count());
 
-        $this->assertEquals(1500, $ledgerItems[0]->credit);
-        $this->assertTrue($ledgerItems[0]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '1/10'), $ledgerItems[0]->transaction->date);
+        $this->assertEquals(1500, $ledgerEntries[0]->credit);
+        $this->assertTrue($ledgerEntries[0]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '1/10'), $ledgerEntries[0]->transaction->date);
 
-        $this->assertEquals(45000, $ledgerItems[1]->credit);
-        $this->assertTrue($ledgerItems[1]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '2/1'), $ledgerItems[1]->transaction->date);
+        $this->assertEquals(45000, $ledgerEntries[1]->credit);
+        $this->assertTrue($ledgerEntries[1]->transaction->posted);
+        $this->assertEquals($this->getDate(thisYear: '2/1'), $ledgerEntries[1]->transaction->date);
     }
 
     public function testItCanGetLedgerTransactionsForSpecificPeriod(): void
@@ -46,8 +46,8 @@ final class AccountLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
 
         $account = $this->account('cash');
-        $janLedgerItems = $this->account('cash')->lineItems()->ledger($this->janPeriod())->get();
-        $febLedgerItems = $this->account('cash')->lineItems()->ledger($this->febPeriod())->get();
+        $janLedgerItems = $this->account('cash')->lineItems()->ledgerEntries($this->janPeriod())->get();
+        $febLedgerItems = $this->account('cash')->lineItems()->ledgerEntries($this->febPeriod())->get();
 
         $this->assertEquals(1, $janLedgerItems->count());
         $this->assertEquals(1500, $janLedgerItems[0]->credit);

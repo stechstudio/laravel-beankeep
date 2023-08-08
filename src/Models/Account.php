@@ -45,7 +45,7 @@ final class Account extends Beankeeper
         return new Ledger(
             account: $this,
             startingBalance: $this->openingBalance($period),
-            ledgerEntries: $this->lineItems()->ledger($period)->get(),
+            ledgerEntries: $this->lineItems()->ledgerEntries($period)->get(),
         );
     }
 
@@ -53,8 +53,8 @@ final class Account extends Beankeeper
     // TODO(zmd): test me
     public function balance(?iterable $period = null): int
     {
-        $debitSum = $this->lineItems()->ledger($period)->sum('debit');
-        $creditSum = $this->lineItems()->ledger($period)->sum('credit');
+        $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
+        $creditSum = $this->lineItems()->ledgerEntries($period)->sum('credit');
 
         return Ledger::computeBalance(
             $this,

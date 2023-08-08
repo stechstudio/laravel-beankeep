@@ -69,7 +69,7 @@ final class LineItem extends Beankeeper
     }
 
     // TODO(zmd): accept optional account parameter here?
-    public function scopeLedger(
+    public function scopeLedgerEntries(
         Builder $query,
         ?iterable $period = null,
     ): void {
