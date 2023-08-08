@@ -39,6 +39,7 @@ final class Account extends Beankeeper
     }
 
     // TODO(zmd): get default period when no period passed in
+    // TODO(zmd): finish testing me
     public function ledger(?iterable $period = null): Ledger
     {
         return new Ledger(
@@ -49,6 +50,7 @@ final class Account extends Beankeeper
     }
 
     // TODO(zmd): get default period when no period passed in
+    // TODO(zmd): test me
     public function balance(?iterable $period = null): int
     {
         $balanceMethod = $this->debitPositive()
