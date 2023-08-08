@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature;
 
-use Carbon\CarbonPeriod;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\HasDefaultTransactions;
 
-final class GeneralLedgerTest extends TestCase
+final class GeneralJournalModelingTest extends TestCase
 {
     use HasDefaultTransactions;
 
@@ -19,8 +18,7 @@ final class GeneralLedgerTest extends TestCase
         $this->threeMonthsOfTransactions();
     }
 
-    // NOTE(zmd): this is basically just a smoke test, making sure things are
-    //   hooked up
+    // NOTE: smoke test to making sure things are hooked up
     public function testItCanRecordATransactionToTheJournal(): void
     {
         $transaction = $this->thisYear('1/1')->transact('initial owner contribution')
@@ -44,8 +42,7 @@ final class GeneralLedgerTest extends TestCase
 
     public function testItCanModelAJournalWithManyTransactions(): void
     {
-        // NOTE(zmd): later we'll *also* check individual account balances here,
-        //   once we have created helpers for doing such in the package.
+        // TODO(zmd): *also* check individual account balances here
         $this->assertEquals(0, LineItem::sum('debit') - LineItem::sum('credit'));
     }
 
@@ -88,7 +85,7 @@ final class GeneralLedgerTest extends TestCase
     // NOTE(zmd): right now the default period is the current calendar year; we
     //   will need to update this test once we make the default period
     //   user-configurable
-    public function testItCanEasilyOfferAccessToTheGeneralLedgerWithinTheDefaultPeriod(): void
+    public function testItCanEasilyOfferAccessToAllLedgerEntriesWithinTheDefaultPeriod(): void
     {
         $this->assertEquals(10, LineItem::ledgerEntries()->count());
         $this->assertEquals(0, LineItem::ledgerEntries()->sum('debit') - LineItem::ledgerEntries()->sum('credit'));
