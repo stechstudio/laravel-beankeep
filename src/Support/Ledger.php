@@ -31,15 +31,26 @@ final class Ledger
     // TODO(zmd): test me
     public function balance(): int
     {
-        $balanceMethod = $this->account->debitPositive()
-            ? 'debitPositiveBalance'
-            : 'creditPositiveBalance';
-
-        return self::$balanceMethod(
+        return self::computeBalance(
+            $this->account,
             $this->startingBalance,
             $this->debits->sum('debit'),
             $this->credits->sum('credit'),
         );
+    }
+
+    // TODO(zmd): test me
+    public static function computeBalance(
+        Account $account,
+        int $startingBalance,
+        int $debitSum,
+        int $creditSum,
+    ): int {
+        $balanceMethod = $account->debitPositive()
+            ? 'debitPositiveBalance'
+            : 'creditPositiveBalance';
+
+        return self::$balanceMethod($startingBalance, $debitSum, $creditSum);
     }
 
     // TODO(zmd): test me
