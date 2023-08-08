@@ -49,8 +49,9 @@ final class Account extends Beankeeper
     }
 
     // TODO(zmd): test me
-    public function openingBalance(string|Carbon|CarbonImmutable|iterable $date): int
-    {
+    public function openingBalance(
+        string|Carbon|CarbonImmutable|iterable $date,
+    ): int {
         $balanceMethod = $this->debitPositive()
             ? 'debitPositiveBalance'
             : 'creditPositiveBalance';
