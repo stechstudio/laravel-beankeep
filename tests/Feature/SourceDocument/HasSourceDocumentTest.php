@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature;
+namespace STS\Beankeep\Tests\Feature\SourceDocument;
 
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Models\SourceDocument as BeankeepSourceDocument;
