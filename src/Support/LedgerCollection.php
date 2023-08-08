@@ -10,8 +10,7 @@ use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 
-// TODO(zmd): rename to Ledger (replacing current Ledger class) if this idea
-//   sticks
+// TODO(zmd): throw this garbage away.
 class LedgerCollection extends LineItemCollection
 {
     private readonly Account $account;

@@ -39,12 +39,6 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    public function ledger(?iterable $period = null): LedgerCollection
-    {
-        return $this->lineItems()->ledger()->get();
-    }
-
-    /*
     public function ledger(?iterable $period = null): Ledger
     {
         // TODO(zmd): get default period when no period passed in
@@ -64,5 +58,4 @@ final class Account extends Beankeeper
             ledgerEntries: $this->lineItems()->priorTo($date)->get(),
         ))->balance();
     }
-    */
 }
