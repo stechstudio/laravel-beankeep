@@ -4,26 +4,25 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Support;
 
-use Illuminate\Support\Collection;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 
 final class Ledger
 {
-    /** @var Collection<LineItem> */
-    private Collection $debits;
+    /** @var LineItemCollection<LineItem> */
+    private LineItemCollection $debits;
 
-    /** @var Collection<LineItem> */
-    private Collection $credits;
+    /** @var LineItemCollection<LineItem> */
+    private LineItemCollection $credits;
 
     /**
-     * @param Collection<LineItem> $ledgerEntries
+     * @param LineItemCollection<LineItem> $ledgerEntries
      */
     public function __construct(
         private Account $account,
         private int $startingBalance,
-        Collection $ledgerEntries,
+        LineItemCollection $ledgerEntries,
     ) {
         $this->debits = $ledgerEntries->debits();
         $this->credits = $ledgerEntries->credits();
