@@ -22,23 +22,14 @@ class LineItemCollection extends Collection
     }
 
     // TODO(zmd): test me
-    public function getSums(): array
+    public function sumDebits(): int
     {
-        return [
-            $this->sumDebits(),
-            $this->sumCredits(),
-        ];
+        return $this->debits()->sum('debit');
     }
 
     // TODO(zmd): test me
-    public function subDebits(): int
+    public function sumCredits(): int
     {
-        // TODO(zmd): implement me
-    }
-
-    // TODO(zmd): test me
-    public function subCredits(): int
-    {
-        // TODO(zmd): implement me
+        return $this->credits()->sum('credit');
     }
 }

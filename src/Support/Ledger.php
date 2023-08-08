@@ -10,22 +10,14 @@ use STS\Beankeep\Models\LineItem;
 
 final class Ledger
 {
-    /** @var LineItemCollection<LineItem> */
-    private LineItemCollection $debits;
-
-    /** @var LineItemCollection<LineItem> */
-    private LineItemCollection $credits;
-
     /**
      * @param LineItemCollection<LineItem> $ledgerEntries
      */
     public function __construct(
         private Account $account,
         private int $startingBalance,
-        LineItemCollection $ledgerEntries,
+        private LineItemCollection $ledgerEntries,
     ) {
-        $this->debits = $ledgerEntries->debits();
-        $this->credits = $ledgerEntries->credits();
     }
 
     // TODO(zmd): test me
@@ -34,8 +26,8 @@ final class Ledger
         return self::computeBalance(
             $this->account,
             $this->startingBalance,
-            $this->debits->sum('debit'),
-            $this->credits->sum('credit'),
+            $this->ledgerEntries->sumDebits(),
+            $this->ledgerEntries->sumCredits(),
         );
     }
 
