@@ -11,7 +11,6 @@ use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Support\Ledger;
-use STS\Beankeep\Support\LedgerCollection;
 
 final class Account extends Beankeeper
 {
