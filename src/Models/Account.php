@@ -58,4 +58,20 @@ final class Account extends Beankeeper
             ledgerEntries: $this->lineItems()->priorTo($date)->get(),
         ))->balance();
     }
+
+    // TODO(zmd): test me
+    public function debitPositive(): bool
+    {
+        return match ($this->type) {
+            AccountType::Asset => true,
+            AccountType::Expense => true,
+            default => false,
+        };
+    }
+
+    // TODO(zmd): test me
+    public function creditPositive(): bool
+    {
+        return !$this->isDebitPositive();
+    }
 }

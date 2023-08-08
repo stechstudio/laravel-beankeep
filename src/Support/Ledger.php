@@ -25,46 +25,43 @@ final class Ledger
         private int $startingBalance,
         Collection $ledgerEntries,
     ) {
-        $this->debits = $ledgerEntries->filter->isDebit();
-        $this->credits = $ledgerEntries->filter->isCredit();
+        $this->debits = $ledgerEntries->debits();
+        $this->credits = $ledgerEntries->credits();
     }
 
+    // TODO(zmd): test me
     public function balance(): int
     {
-        return $this->isDebitPositive()
-            ? $this->debitPositiveBalance()
-            : $this->creditPositiveBalance();
+        $balanceMethod = $this->account->debitPositive()
+            ? 'debitPositiveBalance'
+            : 'creditPositiveBalance';
+
+        return self::$balanceMethod(
+            $this->debits,
+            $this->credits,
+            $this->startingBalance,
+        );
     }
 
-    // TODO(zmd): these should be public instance methods on the Account model
-    //   itself
-    private function isDebitPositive(): bool
-    {
-        return match ($this->account->type) {
-            AccountType::Asset => true,
-            AccountType::Expense => true,
-            default => false,
-        };
+    // TODO(zmd): test me
+    public static function debitPositiveBalance(
+        LineItemCollection $debits,
+        LineItemCollection $credits,
+        int $startingBalance,
+    ): int {
+        return $startingBalance
+            + $debits->sum('debit')
+            - $credits->sum('credit');
     }
 
-    // TODO(zmd): these should be public instance methods on the Account model
-    //   itself
-    private function isCreditPositive(): bool
-    {
-        return !$this->isDebitPositive();
-    }
-
-    private function debitPositiveBalance(): int
-    {
-        return $this->startingBalance
-            + $this->debits->sum('debit')
-            - $this->credits->sum('credit');
-    }
-
-    private function creditPositiveBalance(): int
-    {
-        return $this->startingBalance
-            + $this->credits->sum('credit')
-            - $this->debits->sum('debit');
+    // TODO(zmd): test me
+    public static function creditPositiveBalance(
+        LineItemCollection $debits,
+        LineItemCollection $credits,
+        int $startingBalance,
+    ): int {
+        return $startingBalance
+            + $credits->sum('credit')
+            - $debits->sum('debit');
     }
 }
