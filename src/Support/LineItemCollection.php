@@ -12,11 +12,11 @@ class LineItemCollection extends Collection
 {
     public function debits(): Collection
     {
-        $this->filter->isDebit();
+        return $this->filter->isDebit();
     }
 
     public function credits(): Collection
     {
-        $this->filter->isCredit();
+        return $this->filter->isCredit();
     }
 }

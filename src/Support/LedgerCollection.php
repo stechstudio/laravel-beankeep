@@ -32,15 +32,54 @@ class LedgerCollection extends LineItemCollection
 
     public function getStartingBalance(): int
     {
-        return $this->startingBalance ?? (function () {
-            // TODO(zmd): work out starting balance based on selected line
-            //   items of this collection
+        return $this->startingBalance ??= (function () {
+            $earlierLineItems = $this->getAccount()
+                ->lineItems()
+                ->priorTo($this->getStartDate())
+                ->get();
+
+            if ($this->debitPositiveBalance()) {
+                return self::calcDebitPositiveBalance(
+                    $earlierLineItems->debit(),
+                    $earlierLineItems->credit(),
+                    0,
+                );
+            }
+
+            return self::calcCreditPositiveBalance(
+                $earlierLineItems->debit(),
+                $earlierLineItems->credit(),
+                0,
+            );
         })();
     }
 
     public function getStartDate(): Carbon
     {
-        // TODO(zmd): implement me
+        return $this->sortBy(fn (LineItem $item, int $key) =>
+                $item->transaction->date)
+            ->first()
+            ->transaction->date;
+    }
+
+    public static function calcDebitPositiveBalance(
+        LineItemCollection $debits,
+        LineItemCollection $credits,
+        int $startingBalance,
+    ): int {
+        return $startingBalances
+            + $debits->sum('debit')
+            - $credits->sum('credit');
+    }
+
+    public static function calcCreditPositiveBalance(
+        LineItemCollection $debits,
+        LineItemCollection $credits,
+        int $startingBalance,
+    ): int {
+        return $startingBalances
+            + $credits->sum('credit')
+            - $debits->sum('debit');
     }
 
     // TODO(zmd): these should be public instance methods on the Account model
@@ -63,15 +102,19 @@ class LedgerCollection extends LineItemCollection
 
     private function debitPositiveBalance(): int
     {
-        return $this->getStartingBalance()
-            + $this->debits()->sum('debit')
-            - $this->credits()->sum('credit');
+        return self::calcDebitPositiveBalance(
+            $this->debits(),
+            $this->credits(),
+            $this->getStartingBalance(),
+        );
     }
 
     private function creditPositiveBalance(): int
     {
-        return $this->getStartingBalance
-            + $this->credits()->sum('credit')
-            - $this->debits()->sum('debit');
+        return self::calcCreditPositiveBalance(
+            $this->debits(),
+            $this->credits(),
+            $this->getStartingBalance(),
+        );
     }
 }
