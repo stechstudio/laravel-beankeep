@@ -77,16 +77,12 @@ final class Account extends Beankeeper
     // TODO(zmd): test me
     public function debitPositive(): bool
     {
-        return match ($this->type) {
-            AccountType::Asset => true,
-            AccountType::Expense => true,
-            default => false,
-        };
+        return $this->type->debitPositive();
     }
 
     // TODO(zmd): test me
     public function creditPositive(): bool
     {
-        return !$this->isDebitPositive();
+        return $this->type->creditPositive();
     }
 }

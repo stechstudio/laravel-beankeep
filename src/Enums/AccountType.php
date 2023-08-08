@@ -11,4 +11,20 @@ enum AccountType: string
     case Equity    = 'equity';
     case Revenue   = 'revenue';
     case Expense   = 'expense';
+
+    // TODO(zmd): test me
+    public function debitPositive(): bool
+    {
+        return match ($this) {
+            self::Asset => true,
+            self::Expense => true,
+            default => false,
+        };
+    }
+
+    // TODO(zmd): test me
+    public function creditPositive(): bool
+    {
+        return !$this->debitPositive();
+    }
 }
