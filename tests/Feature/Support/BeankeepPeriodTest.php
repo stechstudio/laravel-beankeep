@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Tests\Feature\Support;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Tests\TestCase;
 
@@ -20,5 +21,34 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertNull(config('beankeep.default-period'));
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
+    public function testDefaultPeriodRespondsWithConfiguredPeriodWhenAvailable(): void
+    {
+        config(['beankeep.default-period' => ['1-oct', '30-sep']]);
+
+        $expectedStartDate = CarbonImmutable::parse(
+            '1-oct ' . $this->thisYear(),
+        );
+
+        $expectedEndDate = CarbonImmutable::parse(
+            '30-sep ' . $this->nextYear(),
+        )->endOfDay();
+
+        $period = BeankeepPeriod::defaultPeriod();
+
+        $this->assertNotNull(config('beankeep.default-period'));
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
+    protected function thisYear(): string
+    {
+        return Carbon::now()->format('Y');
+    }
+
+    protected function nextYear(): string
+    {
+        return Carbon::now()->addYear()->format('Y');
     }
 }

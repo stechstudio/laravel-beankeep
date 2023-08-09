@@ -22,13 +22,28 @@ final class BeankeepPeriod
     // TODO(zmd): test me
     public static function defaultPeriod(): CarbonPeriod
     {
-        if ($defaultPeriod = config('beankeep.default-period')) {
-            [$startDateStr, $endDateStr] = $defaultPeriod;
-
-            return CarbonImmutable::parse($startDateStr)
-                ->daysUntil(CarbonImmutable::parse($endDateStr)->endOfDay());
+        if (config('beankeep.default-period')) {
+            return self::defaultPeriodFromConfig();
         }
 
+        return self::defaultPeriodThisYear();
+    }
+
+    private static function defaultPeriodFromConfig(): CarbonPeriod {
+        [$startDateStr, $endDateStr] = config('beankeep.default-period');
+
+        $startDate = CarbonImmutable::parse($startDateStr);
+        $endDate = CarbonImmutable::parse($endDateStr)->endOfDay();
+
+        if ($startDate->greaterThan($endDate)) {
+            $endDate = $endDate->addYear();
+        }
+
+        return $startDate->daysUntil($endDate);
+    }
+
+    private static function defaultPeriodThisYear(): CarbonPeriod
+    {
         $startOfYear = CarbonImmutable::now()->startOfYear();
         $endOfYear = CarbonImmutable::now()->endOfYear();
 
