@@ -25,6 +25,25 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
+    public function testFromWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
+    {
+        config(['beankeep.default-period' => ['1-oct', '30-sep']]);
+
+        $expectedStartDate = CarbonImmutable::parse(
+            '1-oct ' . $this->thisYear(),
+        );
+
+        $expectedEndDate = CarbonImmutable::parse(
+            '30-sep ' . $this->nextYear(),
+        )->endOfDay();
+
+        $period = BeankeepPeriod::from(null);
+
+        $this->assertNotNull(config('beankeep.default-period'));
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
     // -- ::defaultPeriod() --------------------------------------------------
 
     public function testDefaultPeriodRespondsWithCurrentCalendarYearInAbsenceOfConfig(): void
