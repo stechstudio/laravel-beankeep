@@ -38,7 +38,12 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1690500, LineItem::ledgerEntries()->sum('credit'));
     }
 
-    // TODO(zmd): public function testLedgerEntriesIncludesOnlyPostedEntriesForSpecifiedPeriod(): void {}
+    public function testLedgerEntriesIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
+    {
+        $this->assertEquals(4, LineItem::ledgerEntries($this->febPeriod())->count());
+        $this->assertEquals(69000, LineItem::ledgerEntries($this->febPeriod())->sum('debit'));
+        $this->assertEquals(69000, LineItem::ledgerEntries($this->febPeriod())->sum('credit'));
+    }
 
     // -- ::scopePeriod() -----------------------------------------------------
 
