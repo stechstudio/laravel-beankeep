@@ -13,6 +13,17 @@ final class BeankeepPeriodTest extends TestCase
 {
     // -- ::from() -----------------------------------------------------------
 
+    public function testFromWithCarbonPeriodReturnsThatPeriod(): void
+    {
+        $startDate = CarbonImmutable::now()->startOfMonth();
+        $endDate = CarbonImmutable::now()->endOfMonth();
+        $expectedPeriod = $startDate->daysUntil($endDate);
+
+        $period = BeankeepPeriod::from($expectedPeriod);
+
+        $this->assertEquals($expectedPeriod, $period);
+    }
+
     public function testFromWithNullFallsBackToCurrentCalendarYearInAbsenceOfConfig(): void
     {
         $expectedStartDate = CarbonImmutable::parse('1/1');
