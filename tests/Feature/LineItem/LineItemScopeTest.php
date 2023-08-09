@@ -75,7 +75,6 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToWithDatePassedAsString(): void
     {
-        // TODO(zmd): switch to producer for this test
         foreach ([
             $this->getDate(thisYear: '2/1')->format('d-M Y'),
             $this->getDate(thisYear: '2/1')->format('Y-m-d'),
@@ -87,7 +86,14 @@ final class LineItemScopeTest extends TestCase
         }
     }
 
-    // TODO(zmd): public function testPriorToWithDatePassedAsCarbon(): void {}
+    public function testPriorToWithDatePassedAsCarbon(): void
+    {
+        $date = $this->getDate(thisYear: '2/1')->toMutable();
+
+        $this->assertEquals(8, LineItem::priorTo($date)->count());
+        $this->assertEquals(1621500, LineItem::priorTo($date)->sum('debit'));
+        $this->assertEquals(1621500, LineItem::priorTo($date)->sum('credit'));
+    }
 
     // TODO(zmd): public function testPriorToWithDatePassedAsCarbonImmutable(): void {}
 
@@ -100,6 +106,4 @@ final class LineItemScopeTest extends TestCase
     // -- ::scopeDebits() -----------------------------------------------------
 
     // -- ::scopeCredits() ----------------------------------------------------
-
-    // ========================================================================
 }
