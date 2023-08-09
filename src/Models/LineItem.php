@@ -62,7 +62,6 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
-    // TODO(zmd): test me:
     public function scopeLedgerEntries(
         Builder $query,
         ?CarbonPeriod $period = null,
@@ -74,7 +73,6 @@ final class LineItem extends Beankeeper
             ->where('posted', true));
     }
 
-    // TODO(zmd): test me:
     public function scopePeriod(
         Builder $query,
         ?CarbonPeriod $period = null,
