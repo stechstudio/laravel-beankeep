@@ -104,7 +104,16 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1621500, LineItem::priorTo($date)->sum('credit'));
     }
 
-    // TODO(zmd): public function testPriorToWithDatePassedAsCarbonPeriod(): void {}
+    public function testPriorToWithDatePassedAsCarbonPeriod(): void
+    {
+        $start = $this->getDate(thisYear: '2/1');
+        $end = $this->getDate(thisYear: '2/1')->endOfMonth();
+        $period = $start->daysUntil($end);
+
+        $this->assertEquals(8, LineItem::priorTo($period)->count());
+        $this->assertEquals(1621500, LineItem::priorTo($period)->sum('debit'));
+        $this->assertEquals(1621500, LineItem::priorTo($period)->sum('credit'));
+    }
 
     // -- ::scopePosted() -----------------------------------------------------
 
