@@ -62,6 +62,7 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
+    // TODO(zmd): test me:
     public function scopeLedgerEntries(
         Builder $query,
         ?CarbonPeriod $period = null,
@@ -73,6 +74,7 @@ final class LineItem extends Beankeeper
             ->where('posted', true));
     }
 
+    // TODO(zmd): test me:
     public function scopePeriod(
         Builder $query,
         ?CarbonPeriod $period = null,
@@ -98,23 +100,27 @@ final class LineItem extends Beankeeper
             ->where('date', '<', $date));
     }
 
+    // TODO(zmd): test me:
     public function scopePosted(Builder $query): void {
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->where('posted', true));
     }
 
+    // TODO(zmd): test me:
     public function scopePending(Builder $query): void
     {
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->where('posted', false));
     }
 
+    // TODO(zmd): test me:
     public function scopeDebits(Builder $query): void
     {
         $query->where('debit', '>', 0)
             ->where('credit', 0);
     }
 
+    // TODO(zmd): test me:
     public function scopeCredits(Builder $query): void
     {
         $query->where('credit', '>', 0)
