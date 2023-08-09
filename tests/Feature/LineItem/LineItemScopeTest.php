@@ -54,7 +54,15 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1238500, LineItem::period()->sum('credit'));
     }
 
-    // TODO(zmd): public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void {}
+    public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void
+    {
+        $this->travelTo(Carbon::parse('5/4/2023'));
+        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+
+        $this->assertEquals(16, LineItem::period()->count());
+        $this->assertEquals(2238500, LineItem::period()->sum('debit'));
+        $this->assertEquals(2238500, LineItem::period()->sum('credit'));
+    }
 
     // TODO(zmd): public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void {}
 
