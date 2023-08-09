@@ -19,7 +19,6 @@ final class BeankeepPeriod
         return $period;
     }
 
-    // TODO(zmd): test me
     public static function defaultPeriod(): CarbonPeriod
     {
         if (config('beankeep.default-period')) {
@@ -39,6 +38,10 @@ final class BeankeepPeriod
             $endDate = $endDate->addYear();
         }
 
+        if (static::endOfFeb($endDate)) {
+            $endDate = $endDate->endOfMonth();
+        }
+
         return $startDate->daysUntil($endDate);
     }
 
@@ -48,5 +51,14 @@ final class BeankeepPeriod
         $endOfYear = CarbonImmutable::now()->endOfYear();
 
         return $startOfYear->daysUntil($endOfYear);
+    }
+
+    private static function endOfFeb(CarbonImmutable $endDate): bool
+    {
+        if ($endDate->month == 2) {
+            return $endDate->day >= 28;
+        }
+
+        return false;
     }
 }

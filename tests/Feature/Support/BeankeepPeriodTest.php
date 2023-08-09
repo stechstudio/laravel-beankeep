@@ -42,6 +42,26 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
+    public function testDefaultPeriodDealsWithLeapYearsForConfiguredEndPeriodBeingFeb(): void
+    {
+        $this->travelTo(Carbon::parse('5/4/2023'));
+        config(['beankeep.default-period' => ['1-mar', '28-feb']]);
+
+        $expectedStartDate = CarbonImmutable::parse(
+            '1-mar ' . $this->thisYear(),
+        );
+
+        $expectedEndDate = CarbonImmutable::parse(
+            '29-feb ' . $this->nextYear(),
+        )->endOfDay();
+
+        $period = BeankeepPeriod::defaultPeriod();
+
+        $this->assertNotNull(config('beankeep.default-period'));
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
     protected function thisYear(): string
     {
         return Carbon::now()->format('Y');
