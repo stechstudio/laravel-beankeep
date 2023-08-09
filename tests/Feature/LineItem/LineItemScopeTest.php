@@ -30,7 +30,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->thisYear('5/4'));
+        $this->travelTo($this->getDate(thisYear: '5/4'));
         config(['beankeep.default-period' => ['1-dec', '30-nov']]);
 
         $this->assertEquals(12, LineItem::ledgerEntries()->count());
@@ -56,7 +56,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->thisYear('5/4'));
+        $this->travelTo($this->getDate(thisYear: '5/4'));
         config(['beankeep.default-period' => ['1-dec', '30-nov']]);
 
         $this->assertEquals(16, LineItem::period()->count());
@@ -73,7 +73,19 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopePriorTo() ----------------------------------------------------
 
-    // TODO(zmd): public function testPriorToWithDatePassedAsString(): void {}
+    public function testPriorToWithDatePassedAsString(): void
+    {
+        // TODO(zmd): switch to producer for this test
+        foreach ([
+            $this->getDate(thisYear: '2/1')->format('d-M Y'),
+            $this->getDate(thisYear: '2/1')->format('Y-m-d'),
+            $this->getDate(thisYear: '2/1')->format('m/d/Y'),
+        ] as $dateStr) {
+            $this->assertEquals(8, LineItem::priorTo($dateStr)->count());
+            $this->assertEquals(1621500, LineItem::priorTo($dateStr)->sum('debit'));
+            $this->assertEquals(1621500, LineItem::priorTo($dateStr)->sum('credit'));
+        }
+    }
 
     // TODO(zmd): public function testPriorToWithDatePassedAsCarbon(): void {}
 
@@ -88,4 +100,6 @@ final class LineItemScopeTest extends TestCase
     // -- ::scopeDebits() -----------------------------------------------------
 
     // -- ::scopeCredits() ----------------------------------------------------
+
+    // ========================================================================
 }
