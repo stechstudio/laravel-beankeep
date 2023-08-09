@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature\LineItem;
 
+use Illuminate\Support\Carbon;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\HasDefaultTransactions;
@@ -29,6 +30,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
     {
+        $this->travelTo(Carbon::parse('5/4/2023'));
         config(['beankeep.default-period' => ['1-dec', '30-nov']]);
 
         $this->assertEquals(12, LineItem::ledgerEntries()->count());
