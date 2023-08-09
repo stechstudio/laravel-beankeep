@@ -31,20 +31,35 @@ final class AccountTypeTest extends TestCase
         $this->assertFalse(AccountType::Revenue->debitPositive());
     }
 
-    public function testDebitPositiveReturnsFalseForExpenseType(): void
+    public function testDebitPositiveReturnsTrueForExpenseType(): void
     {
         $this->assertTrue(AccountType::Expense->debitPositive());
     }
 
     // -- ::creditPositive() --------------------------------------------------
 
-    // TODO(zmd): test credit-positive w/asset type -> false
+    public function testCreditPositiveReturnsFalseForAssetType(): void
+    {
+        $this->assertFalse(AccountType::Asset->creditPositive());
+    }
 
-    // TODO(zmd): test credit-positive w/liability type -> true
+    public function testCreditPositiveReturnsTrueForLiabilityType(): void
+    {
+        $this->assertTrue(AccountType::Liability->creditPositive());
+    }
 
-    // TODO(zmd): test credit-positive w/equity type -> true
+    public function testCreditPositiveReturnsTrueForEquityType(): void
+    {
+        $this->assertTrue(AccountType::Equity->creditPositive());
+    }
 
-    // TODO(zmd): test credit-positive w/revenue type -> true
+    public function testCreditPositiveReturnsTrueForRevenueType(): void
+    {
+        $this->assertTrue(AccountType::Revenue->creditPositive());
+    }
 
-    // TODO(zmd): test credit-positive w/expense type -> false
+    public function testCreditPositiveReturnsFalseForExpenseType(): void
+    {
+        $this->assertFalse(AccountType::Expense->creditPositive());
+    }
 }
