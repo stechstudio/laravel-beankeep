@@ -83,7 +83,6 @@ final class LineItem extends Beankeeper
             ->whereBetween('date', $period));
     }
 
-    // TODO(zmd): test me:
     public function scopePriorTo(
         Builder $query,
         string|Carbon|CarbonImmutable|CarbonPeriod $date,
