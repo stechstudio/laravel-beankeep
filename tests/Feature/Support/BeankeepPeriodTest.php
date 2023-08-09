@@ -11,6 +11,22 @@ use STS\Beankeep\Tests\TestCase;
 
 final class BeankeepPeriodTest extends TestCase
 {
+    // -- ::from() -----------------------------------------------------------
+
+    public function testFromWithNullFallsBackToCurrentCalendarYearInAbsenceOfConfig(): void
+    {
+        $expectedStartDate = CarbonImmutable::parse('1/1');
+        $expectedEndDate = $expectedStartDate->endOfYear();
+
+        $period = BeankeepPeriod::from(null);
+
+        $this->assertNull(config('beankeep.default-period'));
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
+    // -- ::defaultPeriod() --------------------------------------------------
+
     public function testDefaultPeriodRespondsWithCurrentCalendarYearInAbsenceOfConfig(): void
     {
         $expectedStartDate = CarbonImmutable::parse('1/1');
@@ -61,6 +77,8 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
+
+    // =======================================================================
 
     protected function thisYear(): string
     {
