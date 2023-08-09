@@ -64,7 +64,12 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(2238500, LineItem::period()->sum('credit'));
     }
 
-    // TODO(zmd): public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void {}
+    public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void
+    {
+        $this->assertEquals(8, LineItem::period($this->febPeriod())->count());
+        $this->assertEquals(617000, LineItem::period($this->febPeriod())->sum('debit'));
+        $this->assertEquals(617000, LineItem::period($this->febPeriod())->sum('credit'));
+    }
 
     // -- ::scopePriorTo() ----------------------------------------------------
 
