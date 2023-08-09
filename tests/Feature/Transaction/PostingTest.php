@@ -21,7 +21,7 @@ final class PostingTest extends TestCase
         $this->createAccounts();
     }
 
-    // -- ::canPost() --------------------------------------------------
+    // -- ::canPost() ---------------------------------------------------------
 
     public function testCanPostReturnsTrueWhenDebitsAndCreditsBalance(): void
     {

@@ -64,9 +64,6 @@ final class GeneralJournalModelingTest extends TestCase
         $this->assertEquals(0, LineItem::period($this->febPeriod())->sum('debit') - LineItem::period($this->febPeriod())->sum('credit'));
     }
 
-    // NOTE(zmd): right now the default period is the current calendar year; we
-    //   will need to update this test once we make the default period
-    //   user-configurable
     public function testItCanEasilyOfferAccessToAllLineItemsWithinTheDefaultPeriod(): void
     {
         $this->assertEquals(14, LineItem::period()->count());
@@ -82,9 +79,6 @@ final class GeneralJournalModelingTest extends TestCase
         $this->assertEquals(0, LineItem::ledgerEntries($this->febPeriod())->sum('debit') - LineItem::ledgerEntries($this->febPeriod())->sum('credit'));
     }
 
-    // NOTE(zmd): right now the default period is the current calendar year; we
-    //   will need to update this test once we make the default period
-    //   user-configurable
     public function testItCanEasilyOfferAccessToAllLedgerEntriesWithinTheDefaultPeriod(): void
     {
         $this->assertEquals(10, LineItem::ledgerEntries()->count());

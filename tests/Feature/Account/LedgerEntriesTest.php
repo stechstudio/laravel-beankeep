@@ -17,9 +17,6 @@ final class LedgerEntriesTest extends TestCase
         $this->threeMonthsOfTransactions();
     }
 
-    // NOTE(zmd): right now the default period is the current calendar year; we
-    //   will need to update this test once we make the default period
-    //   user-configurable
     public function testItCanGetLedgerEntriesForDefaultPeriod(): void
     {
         $account = $this->account('cash');

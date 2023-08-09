@@ -11,7 +11,7 @@ use STS\Beankeep\Tests\TestCase;
 
 final class BeankeepPeriodTest extends TestCase
 {
-    // -- ::from() -----------------------------------------------------------
+    // -- ::from() ------------------------------------------------------------
 
     public function testFromWithCarbonPeriodReturnsThatPeriod(): void
     {
@@ -55,7 +55,7 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
-    // -- ::defaultPeriod() --------------------------------------------------
+    // -- ::defaultPeriod() ---------------------------------------------------
 
     public function testDefaultPeriodRespondsWithCurrentCalendarYearInAbsenceOfConfig(): void
     {
@@ -108,7 +108,7 @@ final class BeankeepPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
-    // =======================================================================
+    // ========================================================================
 
     protected function thisYear(): string
     {
