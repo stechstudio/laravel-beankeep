@@ -6,6 +6,7 @@ namespace STS\Beankeep\Tests\TestSupport\Traits;
 
 use Carbon\CarbonPeriod;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
+use STS\Beankeep\Models\Account;
 
 trait HasDefaultTransactions
 {
@@ -30,7 +31,7 @@ trait HasDefaultTransactions
 
     protected function threeMonthsOfTransactions(): void
     {
-        $this->createAccounts();
+        $this->createAccountsIfMissing();
 
         $this->lastYear('12/25')
             ->transact('initial owner contribution')
@@ -88,5 +89,24 @@ trait HasDefaultTransactions
             ->line('services-revenue', cr: 480.00)
             ->doc("invoice-101.pdf")
             ->draft();
+    }
+
+    protected function unpostedTransactionLastYear(): void
+    {
+        $this->createAccountsIfMissing();
+
+        $this->lastYear('12/27')
+            ->transact('buy office supplies')
+            ->line('cash', dr: 50.00)
+            ->line('supplies-expense', cr: 50.00)
+            ->doc('office-smacks-receipt.pdf')
+            ->draft();
+    }
+
+    protected function createAccountsIfMissing(): void
+    {
+        if (!Account::count()) {
+            $this->createAccounts();
+        }
     }
 }

@@ -115,6 +115,16 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1621500, LineItem::priorTo($period)->sum('credit'));
     }
 
+    public function testPriorToDoesNotFilterOutPendingItems(): void
+    {
+        $this->unpostedTransactionLastYear();
+        $date = $this->getDate(thisYear: '2/1');
+
+        $this->assertEquals(10, LineItem::priorTo($date)->count());
+        $this->assertEquals(1626500, LineItem::priorTo($date)->sum('debit'));
+        $this->assertEquals(1626500, LineItem::priorTo($date)->sum('credit'));
+    }
+
     // -- ::scopePosted() -----------------------------------------------------
 
     // -- ::scopePending() ----------------------------------------------------
