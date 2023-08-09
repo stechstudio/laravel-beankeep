@@ -47,6 +47,17 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopePeriod() -----------------------------------------------------
 
+    public function testPeriodIncludesAllItemsForDefaultPeriod(): void
+    {
+        $this->assertEquals(14, LineItem::period()->count());
+        $this->assertEquals(1238500, LineItem::period()->sum('debit'));
+        $this->assertEquals(1238500, LineItem::period()->sum('credit'));
+    }
+
+    // TODO(zmd): public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void {}
+
+    // TODO(zmd): public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void {}
+
     // -- ::scopePriorTo() ----------------------------------------------------
 
     // -- ::scopePosted() -----------------------------------------------------
