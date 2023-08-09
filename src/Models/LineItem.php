@@ -62,6 +62,8 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
+    // TODO(zmd): take both period & date & dispatch to correct scope based on
+    //   which is provided (throwing if both provided)
     public function scopeLedgerEntries(
         Builder $query,
         ?CarbonPeriod $period = null,
@@ -71,6 +73,22 @@ final class LineItem extends Beankeeper
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period)
             ->where('posted', true));
+    }
+
+    // TODO(zmd): test me
+    public function scopeLedgerEntriesForPeriod(
+        Builder $query,
+        ?CarbonPeriod $period = null,
+    ): void {
+        // TODO(zmd): implement me
+    }
+
+    // TODO(zmd): test me
+    public function scopeLedgerEntriesPriorTo(
+        Builder $query,
+        string|Carbon|CarbonImmutable|CarbonPeriod $date,
+    ) {
+        // TODO(zmd): implement me
     }
 
     public function scopePeriod(
