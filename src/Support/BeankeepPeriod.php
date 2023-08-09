@@ -9,7 +9,6 @@ use Carbon\CarbonPeriod;
 
 final class BeankeepPeriod
 {
-    // TODO(zmd): test me
     public static function from(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
