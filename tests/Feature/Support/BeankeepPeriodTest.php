@@ -38,6 +38,7 @@ final class BeankeepPeriodTest extends TestCase
 
     public function testFromWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
     {
+        $this->travelTo(Carbon::parse('11/23/2023'));
         config(['beankeep.default-period' => ['1-oct', '30-sep']]);
 
         $expectedStartDate = CarbonImmutable::parse(
@@ -50,7 +51,6 @@ final class BeankeepPeriodTest extends TestCase
 
         $period = BeankeepPeriod::from(null);
 
-        $this->assertNotNull(config('beankeep.default-period'));
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
@@ -71,6 +71,7 @@ final class BeankeepPeriodTest extends TestCase
 
     public function testDefaultPeriodRespondsWithConfiguredPeriodWhenAvailable(): void
     {
+        $this->travelTo(Carbon::parse('11/23/2023'));
         config(['beankeep.default-period' => ['1-oct', '30-sep']]);
 
         $expectedStartDate = CarbonImmutable::parse(
@@ -83,7 +84,6 @@ final class BeankeepPeriodTest extends TestCase
 
         $period = BeankeepPeriod::defaultPeriod();
 
-        $this->assertNotNull(config('beankeep.default-period'));
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
@@ -103,12 +103,35 @@ final class BeankeepPeriodTest extends TestCase
 
         $period = BeankeepPeriod::defaultPeriod();
 
-        $this->assertNotNull(config('beankeep.default-period'));
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
+    }
+
+    public function testDefaultPeriodCorrectlyHandlesContextOfCurrentTime(): void
+    {
+        $this->travelTo(Carbon::parse('5/4/2023'));
+        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+
+        $expectedStartDate = CarbonImmutable::parse(
+            '1-dec ' . $this->lastYear(),
+        );
+
+        $expectedEndDate = CarbonImmutable::parse(
+            '30-nov ' . $this->thisYear(),
+        )->endOfDay();
+
+        $period = BeankeepPeriod::defaultPeriod();
+
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
     // ========================================================================
+
+    protected function lastYear(): string
+    {
+        return Carbon::now()->subYear()->format('Y');
+    }
 
     protected function thisYear(): string
     {

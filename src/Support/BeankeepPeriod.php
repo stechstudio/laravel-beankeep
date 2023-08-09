@@ -6,6 +6,7 @@ namespace STS\Beankeep\Support;
 
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Carbon;
 
 final class BeankeepPeriod
 {
@@ -31,8 +32,11 @@ final class BeankeepPeriod
         [$startDateStr, $endDateStr] = config('beankeep.default-period');
 
         $startDate = CarbonImmutable::parse($startDateStr);
-        $endDate = CarbonImmutable::parse($endDateStr)->endOfDay();
+        if ($startDate->greaterThan(Carbon::now())) {
+            $startDate = $startDate->subYear();
+        }
 
+        $endDate = CarbonImmutable::parse($endDateStr)->endOfDay();
         if ($startDate->greaterThan($endDate)) {
             $endDate = $endDate->addYear();
         }
