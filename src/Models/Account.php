@@ -67,10 +67,14 @@ final class Account extends Beankeeper
         $period = BeankeepPeriod::from($period);
 
         $debitSum = $this->lineItems()
+            // TODO(zmd): we should be able to pass the period itself to
+            //   priorTo, no need to extract the start date explicitly here
             ->priorTo($period->startDate)
             ->sum('debit');
 
         $creditSum = $this->lineItems()
+            // TODO(zmd): we should be able to pass the period itself to
+            //   priorTo, no need to extract the start date explicitly here
             ->priorTo($period->startDate)
             ->sum('credit');
 
