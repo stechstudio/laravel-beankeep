@@ -26,7 +26,7 @@ final class BeankeepPeriod
             [$startDateStr, $endDateStr] = $defaultPeriod;
 
             return CarbonImmutable::parse($startDateStr)
-                ->daysUntil(CarbonImmutable::parse($endDateStr));
+                ->daysUntil(CarbonImmutable::parse($endDateStr)->endOfDay());
         }
 
         $startOfYear = CarbonImmutable::now()->startOfYear();
