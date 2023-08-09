@@ -30,7 +30,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo(Carbon::parse('5/4/2023'));
+        $this->travelTo($this->thisYear('5/4'));
         config(['beankeep.default-period' => ['1-dec', '30-nov']]);
 
         $this->assertEquals(12, LineItem::ledgerEntries()->count());
@@ -56,7 +56,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo(Carbon::parse('5/4/2023'));
+        $this->travelTo($this->thisYear('5/4'));
         config(['beankeep.default-period' => ['1-dec', '30-nov']]);
 
         $this->assertEquals(16, LineItem::period()->count());
@@ -72,6 +72,14 @@ final class LineItemScopeTest extends TestCase
     }
 
     // -- ::scopePriorTo() ----------------------------------------------------
+
+    // TODO(zmd): public function testPriorToWithDatePassedAsString(): void {}
+
+    // TODO(zmd): public function testPriorToWithDatePassedAsCarbon(): void {}
+
+    // TODO(zmd): public function testPriorToWithDatePassedAsCarbonImmutable(): void {}
+
+    // TODO(zmd): public function testPriorToWithDatePassedAsCarbonPeriod(): void {}
 
     // -- ::scopePosted() -----------------------------------------------------
 
