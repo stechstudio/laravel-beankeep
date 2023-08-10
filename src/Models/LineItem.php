@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
 use STS\Beankeep\Support\BeankeepPeriod;
+use STS\Beankeep\Support\PriorToDateNormalizer;
 use STS\Beankeep\Support\LineItemCollection;
 
 final class LineItem extends Beankeeper
@@ -80,7 +81,11 @@ final class LineItem extends Beankeeper
         Builder $query,
         ?CarbonPeriod $period = null,
     ): void {
-        // TODO(zmd): implement me
+        $period = BeankeepPeriod::from($period);
+
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->whereBetween('date', $period)
+            ->where('posted', true));
     }
 
     // TODO(zmd): test me
@@ -88,7 +93,11 @@ final class LineItem extends Beankeeper
         Builder $query,
         string|Carbon|CarbonImmutable|CarbonPeriod $date,
     ) {
-        // TODO(zmd): implement me
+        $date = PriorToDateNormalizer::normalize($date);
+
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('date', '<', $date)
+            ->where('posted', true));
     }
 
     public function scopePeriod(
@@ -105,11 +114,7 @@ final class LineItem extends Beankeeper
         Builder $query,
         string|Carbon|CarbonImmutable|CarbonPeriod $date,
     ): void {
-        if ($date instanceof CarbonPeriod) {
-            $date = $date->startDate;
-        } else {
-            $date = CarbonImmutable::parse($date);
-        }
+        $date = PriorToDateNormalizer::normalize($date);
 
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->where('date', '<', $date));
