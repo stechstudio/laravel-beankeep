@@ -48,7 +48,7 @@ final class Account extends Beankeeper
         );
     }
 
-    // TODO(zmd): test me
+    // TODO(zmd): finish testing me
     public function balance(?CarbonPeriod $period = null): int
     {
         $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
@@ -62,8 +62,9 @@ final class Account extends Beankeeper
         );
     }
 
-    // TODO(zmd): test me
-    public function openingBalance(?CarbonPeriod $period = null): int {
+    // TODO(zmd): finish testing me
+    public function openingBalance(?CarbonPeriod $period = null): int
+    {
         $period = BeankeepPeriod::from($period);
 
         $debitSum = $this->lineItems()
