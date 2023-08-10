@@ -49,4 +49,15 @@ final class LedgerEntriesTest extends TestCase
         $this->assertTrue($febLedgerItems[0]->transaction->posted);
         $this->assertEquals($this->getDate(thisYear: '2/1'), $febLedgerItems[0]->transaction->date);
     }
+
+    public function testItCanGetLedgerEntriesPriorToSpecificPeriod(): void
+    {
+        $account = $this->account('cash');
+        $priorToJanLedgerItems = $this->account('cash')->lineItems()->ledgerEntries(priorTo: $this->janPeriod())->get();
+
+        $this->assertEquals(1, $priorToJanLedgerItems->count());
+        $this->assertEquals(1000000, $priorToJanLedgerItems[0]->debit);
+        $this->assertTrue($priorToJanLedgerItems[0]->transaction->posted);
+        $this->assertEquals($this->getDate(lastYear: '12/25'), $priorToJanLedgerItems[0]->transaction->date);
+    }
 }
