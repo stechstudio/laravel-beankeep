@@ -54,6 +54,16 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(690500, LineItem::ledgerEntriesForPeriod()->sum('credit'));
     }
 
+    public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
+    {
+        $this->travelTo($this->getDate(thisYear: '5/4'));
+        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+
+        $this->assertEquals(12, LineItem::ledgerEntriesForPeriod()->count());
+        $this->assertEquals(1690500, LineItem::ledgerEntriesForPeriod()->sum('debit'));
+        $this->assertEquals(1690500, LineItem::ledgerEntriesForPeriod()->sum('credit'));
+    }
+
     // TODO(zmd): finish testing ::scopeLedgerEntriesForPeriod()
 
     // -- ::scopeLedgerEntriesPriorTo() ---------------------------------------
