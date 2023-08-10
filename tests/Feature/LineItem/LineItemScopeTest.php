@@ -67,11 +67,19 @@ final class LineItemScopeTest extends TestCase
         }
     }
 
-    // TODO(zmd): public function testLedgerEntriesReturnsPostedEntriesPriWithDatePassedAsCarbon(): void {}
+    public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbon(): void
+    {
+        $this->unpostedTransactionLastYear();
+        $date = $this->getDate(thisYear: '2/1')->toMutable();
 
-    // TODO(zmd): public function testLedgerEntriesReturnsPostedEntriesPriWithDatePassedAsCarbonImmutable(): void {}
+        $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
+        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $date)->sum('debit'));
+        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $date)->sum('credit'));
+    }
 
-    // TODO(zmd): public function testLedgerEntriesReturnsPostedEntriesPriWithDatePassedAsCarbonPeriod(): void {}
+    // TODO(zmd): public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonImmutable(): void {}
+
+    // TODO(zmd): public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonPeriod(): void {}
 
     // TODO(zmd): public function testLedgerEntriesCarpsIfYouPassBothAPeriodAndAPriorToDate(): void {}
 
