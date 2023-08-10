@@ -266,9 +266,17 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopePosted() -----------------------------------------------------
 
+    // TODO(zmd): test the ::scopePosted() scope
+
     // -- ::scopePending() ----------------------------------------------------
+
+    // TODO(zmd): test the ::scopePending() scope
 
     // -- ::scopeDebits() -----------------------------------------------------
 
+    // TODO(zmd): test the ::scopeDebits() scope
+
     // -- ::scopeCredits() ----------------------------------------------------
+
+    // TODO(zmd): test the ::scopeCredits() scope
 }

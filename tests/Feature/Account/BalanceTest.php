@@ -25,6 +25,8 @@ final class BalanceTest extends TestCase
         );
     }
 
+    // TODO(zmd): test that it correctly excludes not-posted transactions
+
     public function testItCanReportCreditPositiveBalanceForGivenPeriod(): void
     {
         $this->assertEquals(
@@ -32,4 +34,6 @@ final class BalanceTest extends TestCase
             $this->account('accounts-payable')->balance($this->janPeriod()),
         );
     }
+
+    // TODO(zmd): test that it correctly excludes not-posted transactions
 }
