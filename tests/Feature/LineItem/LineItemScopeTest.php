@@ -88,7 +88,15 @@ final class LineItemScopeTest extends TestCase
         }
     }
 
-    // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void {}
+    public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void
+    {
+        $this->unpostedTransactionLastYear();
+        $date = $this->getDate(thisYear: '2/1')->toMutable();
+
+        $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($date)->sum('debit'));
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($date)->sum('credit'));
+    }
 
     // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbonImmutable(): void {}
 
