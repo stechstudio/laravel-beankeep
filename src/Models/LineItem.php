@@ -12,8 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
 use STS\Beankeep\Support\BeankeepPeriod;
-use STS\Beankeep\Support\PriorToDateNormalizer;
 use STS\Beankeep\Support\LineItemCollection;
+use STS\Beankeep\Support\PriorToDateNormalizer;
+use ValueError;
 
 final class LineItem extends Beankeeper
 {
@@ -68,6 +69,11 @@ final class LineItem extends Beankeeper
         ?CarbonPeriod $period = null,
         null|string|Carbon|CarbonImmutable|CarbonPeriod $priorTo = null,
     ): void {
+        if ($period && $priorTo) {
+            throw new ValueError('You cannot specify both a period and '
+                . 'priorTo argument.');
+        }
+
         if ($priorTo) {
             self::scopeLedgerEntriesPriorTo($query, $priorTo);
 

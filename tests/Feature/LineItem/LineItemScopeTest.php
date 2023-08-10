@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\HasDefaultTransactions;
+use ValueError;
 
 final class LineItemScopeTest extends TestCase
 {
@@ -99,7 +100,14 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $period)->sum('credit'));
     }
 
-    // TODO(zmd): public function testLedgerEntriesCarpsIfYouPassBothAPeriodAndAPriorToDate(): void {}
+    public function testLedgerEntriesCarpsIfYouPassBothAPeriodAndAPriorToDate(): void
+    {
+        $date = $this->getDate(thisYear: '2/1');
+
+        $this->expectException(ValueError::class);
+
+        LineItem::ledgerEntries($date->daysUntil($date->endOfMonth()), $date);
+    }
 
     // -- ::scopeLedgerEntriesForPeriod() -------------------------------------
 
