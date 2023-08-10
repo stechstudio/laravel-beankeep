@@ -64,7 +64,9 @@ final class BalanceTest extends TestCase
     // -- ::openingBalance() --------------------------------------------------
 
     // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForGivenPeriod(): void {}
+
     // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForDefaultPeriod(): void {}
+
     // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForConfiguredDefaultPeriod(): void {}
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveOpeningBalanceCalculations(): void
@@ -80,8 +82,20 @@ final class BalanceTest extends TestCase
     }
 
     // TODO(zmd): public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForGivenPeriod(): void {}
+
     // TODO(zmd): public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForDefaultPeriod(): void {}
+
     // TODO(zmd): public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForConfiguredDefaultPeriod(): void {}
 
-    // TODO(zmd): public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveOpeningBalanceCalculations(): void {}
+    public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveOpeningBalanceCalculations(): void
+    {
+        $this->lastYear('12/28')
+            ->transact('1 optical mouse from computers-ᴙ-us')
+            ->line('equipment', dr: 25.00)
+            ->line('accounts-payable', cr: 25.00)
+            ->doc('computers-ᴙ-us-receipt.pdf')
+            ->draft();
+
+        $this->assertEquals(500000, $this->account('accounts-payable')->balance($this->febPeriod()));
+    }
 }
