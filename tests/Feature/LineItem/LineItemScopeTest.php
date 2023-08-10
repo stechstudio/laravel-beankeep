@@ -73,7 +73,26 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeLedgerEntriesPriorTo() ---------------------------------------
 
-    // TODO(zmd): write tests for ::scopeLedgerEntriesPriorTo()
+    public function testLedgerEntriesPriorToWithDatePassedAsString(): void
+    {
+        $this->unpostedTransactionLastYear();
+
+        foreach ([
+            $this->getDate(thisYear: '2/1')->format('d-M Y'),
+            $this->getDate(thisYear: '2/1')->format('Y-m-d'),
+            $this->getDate(thisYear: '2/1')->format('m/d/Y'),
+        ] as $dateStr) {
+            $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($dateStr)->count());
+            $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($dateStr)->sum('debit'));
+            $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($dateStr)->sum('credit'));
+        }
+    }
+
+    // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void {}
+
+    // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbonImmutable(): void {}
+
+    // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void {}
 
     // -- ::scopePeriod() -----------------------------------------------------
 
