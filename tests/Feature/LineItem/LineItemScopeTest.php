@@ -108,7 +108,17 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($date)->sum('credit'));
     }
 
-    // TODO(zmd): public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void {}
+    public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void
+    {
+        $this->unpostedTransactionLastYear();
+        $start = $this->getDate(thisYear: '2/1');
+        $end = $this->getDate(thisYear: '2/1')->endOfMonth();
+        $period = $start->daysUntil($end);
+
+        $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($period)->count());
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($period)->sum('debit'));
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($period)->sum('credit'));
+    }
 
     // -- ::scopePeriod() -----------------------------------------------------
 
