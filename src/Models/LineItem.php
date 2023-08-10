@@ -87,7 +87,6 @@ final class LineItem extends Beankeeper
             ->where('posted', true));
     }
 
-    // TODO(zmd): test me
     public function scopeLedgerEntriesPriorTo(
         Builder $query,
         string|Carbon|CarbonImmutable|CarbonPeriod $date,
