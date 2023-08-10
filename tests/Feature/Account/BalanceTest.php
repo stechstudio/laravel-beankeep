@@ -25,7 +25,20 @@ final class BalanceTest extends TestCase
         );
     }
 
-    // TODO(zmd): test that it correctly excludes not-posted transactions
+    public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveBalanceCalculations(): void
+    {
+        $this->lastYear('12/27')
+            ->transact('buy office supplies')
+            ->line('supplies-expense', dr: 50.00)
+            ->line('cash', cr: 50.00)
+            ->doc('office-smacks-receipt.pdf')
+            ->draft();
+
+        $this->assertEquals(
+            998500,
+            $this->account('cash')->balance($this->janPeriod()),
+        );
+    }
 
     public function testItCanReportCreditPositiveBalanceForGivenPeriod(): void
     {
@@ -35,5 +48,10 @@ final class BalanceTest extends TestCase
         );
     }
 
-    // TODO(zmd): test that it correctly excludes not-posted transactions
+    /*
+    public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveBalanceCalculations(): void
+    {
+        // TODO(zmd): implement me
+    }
+    */
 }
