@@ -97,8 +97,8 @@ trait HasDefaultTransactions
 
         $this->lastYear('12/27')
             ->transact('buy office supplies')
-            ->line('cash', dr: 50.00)
-            ->line('supplies-expense', cr: 50.00)
+            ->line('supplies-expense', dr: 50.00)
+            ->line('cash', cr: 50.00)
             ->doc('office-smacks-receipt.pdf')
             ->draft();
     }
