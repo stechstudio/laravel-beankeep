@@ -48,10 +48,18 @@ final class BalanceTest extends TestCase
         );
     }
 
-    /*
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveBalanceCalculations(): void
     {
-        // TODO(zmd): implement me
+        $this->lastYear('12/28')
+            ->transact('1 optical mouse from computers-ᴙ-us')
+            ->line('equipment', dr: 25.00)
+            ->line('accounts-payable', cr: 25.00)
+            ->doc('computers-ᴙ-us-receipt.pdf')
+            ->draft();
+
+        $this->assertEquals(
+            500000,
+            $this->account('accounts-payable')->balance($this->janPeriod()),
+        );
     }
-    */
 }
