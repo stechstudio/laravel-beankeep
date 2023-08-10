@@ -70,6 +70,8 @@ final class LineItem extends Beankeeper
     ): void {
         if ($priorTo) {
             self::scopeLedgerEntriesPriorTo($query, $priorTo);
+
+            return;
         }
 
         self::scopeLedgerEntriesForPeriod($query, $period);
