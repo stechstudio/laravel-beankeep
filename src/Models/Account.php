@@ -68,19 +68,11 @@ final class Account extends Beankeeper
         $period = BeankeepPeriod::from($period);
 
         $debitSum = $this->lineItems()
-            // TODO(zmd): we should be able to pass the period itself to
-            //   priorTo, no need to extract the start date explicitly here
-            // TODO(zmd): this is broken for any cases where unposted txns
-            //   exist in the previous dates... that is not acceptable.
-            ->priorTo($period->startDate)
+            ->ledgerEntries(priorTo: $period)
             ->sum('debit');
 
         $creditSum = $this->lineItems()
-            // TODO(zmd): we should be able to pass the period itself to
-            //   priorTo, no need to extract the start date explicitly here
-            // TODO(zmd): this is broken for any cases where unposted txns
-            //   exist in the previous dates... that is not acceptable.
-            ->priorTo($period->startDate)
+            ->ledgerEntries(priorTo: $period)
             ->sum('credit');
 
         return Ledger::computeBalance($this, 0, $debitSum, $creditSum);
