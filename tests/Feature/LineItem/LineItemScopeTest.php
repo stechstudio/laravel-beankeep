@@ -267,6 +267,14 @@ final class LineItemScopeTest extends TestCase
     // -- ::scopePosted() -----------------------------------------------------
 
     // TODO(zmd): test the ::scopePosted() scope
+    public function testScopePostedReturnsJustPostedLineItems(): void
+    {
+        $this->unpostedTransactionLastYear();
+
+        $this->assertEquals(12, LineItem::posted()->count());
+        $this->assertEquals(1690500, LineItem::posted()->sum('debit'));
+        $this->assertEquals(1690500, LineItem::posted()->sum('credit'));
+    }
 
     // -- ::scopePending() ----------------------------------------------------
 
