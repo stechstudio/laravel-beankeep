@@ -288,7 +288,14 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeDebits() -----------------------------------------------------
 
-    // TODO(zmd): test the ::scopeDebits() scope
+    public function testScopeDebitsJustReturnsDebitLineItems(): void
+    {
+        $this->unpostedTransactionLastYear();
+
+        $this->assertEquals(9, LineItem::debits()->count());
+        $this->assertEquals(2243500, LineItem::debits()->sum('debit'));
+        $this->assertEquals(0, LineItem::debits()->sum('credit'));
+    }
 
     // -- ::scopeCredits() ----------------------------------------------------
 
