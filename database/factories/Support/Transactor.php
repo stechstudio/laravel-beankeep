@@ -28,10 +28,12 @@ final class Transactor
     }
 
     public function transact(
-        string $memo,
+        ?string $memo = null,
         Carbon|CarbonImmutable|null $date = null,
     ): self {
-        $this->memo($memo);
+        if ($memo) {
+            $this->memo($memo);
+        }
 
         if ($date) {
             return $this->date($date);
@@ -74,7 +76,7 @@ final class Transactor
     }
 
     public function doc(
-        string $filename,
+        ?string $filename = null,
         ?string $mimeType = null,
         ?string $attachment = null,
     ): self {
