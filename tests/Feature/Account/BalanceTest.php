@@ -24,7 +24,10 @@ final class BalanceTest extends TestCase
         $this->assertEquals(998500, $this->account('cash')->balance($this->janPeriod()));
     }
 
-    // TODO(zmd): public function testItCanReportDebitPositiveBalanceForDefaultPeriod(): void {}
+    public function testItCanReportDebitPositiveBalanceForDefaultPeriod(): void
+    {
+        $this->assertEquals(953500, $this->account('cash')->balance());
+    }
 
     // TODO(zmd): public function testItCanReportDebitPositiveBalanceForConfiguredDefaultPeriod(): void {}
 
