@@ -142,7 +142,6 @@ final class LineItem extends Beankeeper
             ->where('credit', 0);
     }
 
-    // TODO(zmd): test me:
     public function scopeCredits(Builder $query): void
     {
         $query->where('credit', '>', 0)
