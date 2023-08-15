@@ -71,7 +71,10 @@ final class BalanceTest extends TestCase
 
     // -- ::openingBalance() --------------------------------------------------
 
-    // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForGivenPeriod(): void {}
+    public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForGivenPeriod(): void
+    {
+        $this->assertEquals(998500, $this->account('cash')->openingBalance($this->febPeriod()));
+    }
 
     // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForDefaultPeriod(): void {}
 
