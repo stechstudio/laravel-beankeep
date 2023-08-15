@@ -32,7 +32,10 @@ final class AccountTest extends TestCase
         $this->assertFalse($this->revenueAccount()->debitPositive());
     }
 
-    // TODO(zmd): public function testThatExpenseAccountIsConsideredDebitPositive(): void {}
+    public function testThatExpenseAccountIsConsideredDebitPositive(): void
+    {
+        $this->assertTrue($this->expenseAccount()->debitPositive());
+    }
 
     // -- ::creditPositive() --------------------------------------------------
 
