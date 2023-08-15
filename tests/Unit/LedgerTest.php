@@ -7,28 +7,45 @@ namespace STS\Beankeep\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Support\Ledger;
+use STS\Beankeep\Support\LineItemCollection;
 
 final class LedgerTest extends TestCase
 {
     // -- ::balance() ---------------------------------------------------------
 
-    // TODO(zmd): test ::balance()
-
     public function testBalanceWithDebitPositiveAccountAndZeroStartingBalance(): void
     {
-        $this->assertTrue(false, 'TODO(zmd): implement me');
+        $ledger = new Ledger(
+            account: $this->debitPositiveAccount(),
+            startingBalance: 0,
+            ledgerEntries: new LineItemCollection([
+                $this->debit(100.00),  //   0.00 + 100.00 = 100.00
+                $this->debit(50.00),   // 100.00 +  50.00 = 150.00
+                $this->credit(10.00),  // 150.00 -  10.00 = 140.00
+                $this->credit(50.00),  // 140.00 -  50.00 =  90.00
+                $this->debit(10.00),   //  90.00 +  10.00 = 100.00
+            ]),
+        );
+
+        $this->assertEquals(10000, $ledger->balance());
     }
 
-    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndNonZeroStartingBalance(): void {}
+    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndPositiveStartingBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndNegativeStartingBalance(): void {}
 
     // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
 
     // TODO(zmd): public function testBalanceWithDebitPositiveAccountWihtoutEntries(): void {}
 
+
     // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndZeroStartingBalance(): void {}
 
-    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndNonZeroStartingBalance(): void {}
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndPositiveStartingBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndNegativeStartingBalance(): void {}
 
     // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
 
@@ -48,7 +65,7 @@ final class LedgerTest extends TestCase
 
     // ========================================================================
 
-    private function assetAccount(): Account
+    private function debitPositiveAccount(): Account
     {
         return new Account([
             'number' => '1000',
@@ -57,7 +74,7 @@ final class LedgerTest extends TestCase
         ]);
     }
 
-    private function liabilityAccount(): Account
+    private function creditPositiveAccount(): Account
     {
         return new Account([
             'number' => '2000',
@@ -66,30 +83,18 @@ final class LedgerTest extends TestCase
         ]);
     }
 
-    private function equityAccount(): Account
+    private function debit(float $amount): LineItem
     {
-        return new Account([
-            'number' => '3000',
-            'name' => 'Equity',
-            'type' => AccountType::Equity,
-        ]);
+        return new LineItem(['debit' => $this->floatToInt($amount)]);
     }
 
-    private function revenueAccount(): Account
+    private function credit(float $amount): LineItem
     {
-        return new Account([
-            'number' => '4000',
-            'name' => 'Revenue',
-            'type' => AccountType::Revenue,
-        ]);
+        return new LineItem(['credit' => $this->floatToInt($amount)]);
     }
 
-    private function expenseAccount(): Account
+    private function floatToInt(float $amount): int
     {
-        return new Account([
-            'number' => '5000',
-            'name' => 'Expense',
-            'type' => AccountType::Expense,
-        ]);
+        return (int) ($amount * 100);
     }
 }
