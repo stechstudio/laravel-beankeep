@@ -44,12 +44,12 @@ final class LedgerTest extends TestCase
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '1/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
         $ledger = $this->account('cash')->ledger();
 
-        $this->assertEquals(953500, $ledger->balance());
+        $this->assertEquals(998500, $ledger->balance());
     }
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
@@ -77,12 +77,12 @@ final class LedgerTest extends TestCase
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '1/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
         $ledger = $this->account('accounts-payable')->ledger();
 
-        $this->assertEquals(750000, $ledger->balance());
+        $this->assertEquals(500000, $ledger->balance());
     }
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
