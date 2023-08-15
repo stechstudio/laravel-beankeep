@@ -24,8 +24,8 @@ final class LedgerTest extends TestCase
         $this->txn(     thisYear: '2/1',   dr: ['rent-expense',          450.00], cr: ['cash',                  450.00]);
         $this->txn(     thisYear: '2/5',   dr: ['equipment',            2500.00], cr: ['accounts-payable',     2500.00]);
         $this->txn(     thisYear: '2/12',  dr: ['accounts-receivable',   240.00], cr: ['services-revenue',      240.00]);
-        $this->draftTxn(lastYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
-        $this->draftTxn(lastYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
+        $this->draftTxn(thisYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
+        $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountForSpecifiedPeriod(): void
@@ -35,9 +35,14 @@ final class LedgerTest extends TestCase
         $this->assertEquals(998500, $janLedger->balance());
     }
 
-    // public function testItCanConstructLedgerObjectForDebitPositiveAccountForDefaultPeriod(): void {}
+    public function testItCanConstructLedgerObjectForDebitPositiveAccountForDefaultPeriod(): void
+    {
+        $janLedger = $this->account('cash')->ledger();
 
-    // public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void {}
+        $this->assertEquals(953500, $janLedger->balance());
+    }
+
+    // TODO(zmd): public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void {}
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountAndSpecifiedPeriod(): void
     {
@@ -46,9 +51,9 @@ final class LedgerTest extends TestCase
         $this->assertEquals(500000, $janLedger->balance());
     }
 
-    // public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void {}
+    // TODO(zmd): public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void {}
 
-    // public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void {}
+    // TODO(zmd): public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void {}
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
