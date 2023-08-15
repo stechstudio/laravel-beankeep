@@ -81,7 +81,13 @@ final class BalanceTest extends TestCase
         $this->assertEquals(1000000, $this->account('cash')->openingBalance());
     }
 
-    // TODO(zmd): public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForConfiguredDefaultPeriod(): void {}
+    public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForConfiguredDefaultPeriod(): void
+    {
+        $this->travelTo($this->getDate(thisYear: '3/4'));
+        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+
+        $this->assertEquals(0, $this->account('cash')->openingBalance());
+    }
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveOpeningBalanceCalculations(): void
     {
