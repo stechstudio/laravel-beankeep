@@ -306,7 +306,14 @@ final class LedgerTest extends TestCase
         ));
     }
 
-    // TODO(zmd): public function testDebitPositiveBalanceWithDebitAndCreditSumsLeadingToNegativeBalance(): void {}
+    public function testDebitPositiveBalanceWithDebitAndCreditSumsLeadingToNegativeBalance(): void
+    {
+        $this->assertEquals(-5000, Ledger::debitPositiveBalance(
+            startingBalance: 0,
+            debitSum: 5000,
+            creditSum: 10000,
+        ));
+    }
 
     // TODO(zmd): public function testDebitPositiveBalanceWithZeroDebitAndCreditSums(): void {}
 
