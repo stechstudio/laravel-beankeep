@@ -129,7 +129,22 @@ final class LedgerTest extends TestCase
         $this->assertEquals(20000, $ledger->balance());
     }
 
-    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndNegativeStartingBalance(): void {}
+    public function testBalanceWithCreditPositiveAccountAndNegativeStartingBalance(): void
+    {
+        $ledger = new Ledger(
+            account: $this->creditPositiveAccount(),
+            startingBalance: -5000,
+            ledgerEntries: new LineItemCollection([
+                $this->credit(100.00),  //  -50.00 + 100.00 =  50.00
+                $this->credit(50.00),   //   50.00 +  50.00 = 100.00
+                $this->debit(10.00),    //  100.00 -  10.00 =  90.00
+                $this->debit(50.00),    //   90.00 -  50.00 =  40.00
+                $this->credit(10.00),   //   40.00 +  10.00 =  50.00
+            ]),
+        );
+
+        $this->assertEquals(5000, $ledger->balance());
+    }
 
     // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
 
