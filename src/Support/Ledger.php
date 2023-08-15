@@ -20,7 +20,6 @@ final class Ledger
     ) {
     }
 
-    // TODO(zmd): test me
     public function balance(): int
     {
         return self::computeBalance(
