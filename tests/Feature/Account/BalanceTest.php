@@ -14,7 +14,18 @@ final class BalanceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->wholeBunchOfTransactions();
+
+        $this->createAccountsIfMissing();
+
+        $this->txn(     lastYear: '12/25', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
+        $this->txn(     thisYear: '1/5',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
+        $this->txn(     thisYear: '1/10',  dr: ['cost-of-services',       15.00], cr: ['cash',                   15.00]);
+        $this->txn(     thisYear: '1/20',  dr: ['equipment',            5000.00], cr: ['accounts-payable',     5000.00]);
+        $this->txn(     thisYear: '2/1',   dr: ['rent-expense',          450.00], cr: ['cash',                  450.00]);
+        $this->txn(     thisYear: '2/5',   dr: ['equipment',            2500.00], cr: ['accounts-payable',     2500.00]);
+        $this->txn(     thisYear: '2/12',  dr: ['accounts-receivable',   240.00], cr: ['services-revenue',      240.00]);
+        $this->draftTxn(lastYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
+        $this->draftTxn(lastYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 
     // -- ::balance() ---------------------------------------------------------
@@ -119,22 +130,5 @@ final class BalanceTest extends TestCase
         $this->draftTxn(lastYear: '12/28', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
 
         $this->assertEquals(750000, $this->account('accounts-payable')->balance($this->febPeriod()));
-    }
-
-    // ========================================================================
-
-    public function wholeBunchOfTransactions(): void
-    {
-        $this->createAccountsIfMissing();
-
-        $this->txn(     lastYear: '12/25', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
-        $this->txn(     thisYear: '1/5',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
-        $this->txn(     thisYear: '1/10',  dr: ['cost-of-services',       15.00], cr: ['cash',                   15.00]);
-        $this->txn(     thisYear: '1/20',  dr: ['equipment',            5000.00], cr: ['accounts-payable',     5000.00]);
-        $this->txn(     thisYear: '2/1',   dr: ['rent-expense',          450.00], cr: ['cash',                  450.00]);
-        $this->txn(     thisYear: '2/5',   dr: ['equipment',            2500.00], cr: ['accounts-payable',     2500.00]);
-        $this->txn(     thisYear: '2/12',  dr: ['accounts-receivable',   240.00], cr: ['services-revenue',      240.00]);
-        $this->draftTxn(lastYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
-        $this->draftTxn(lastYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 }
