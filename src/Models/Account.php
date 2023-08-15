@@ -75,13 +75,11 @@ final class Account extends Beankeeper
         return Ledger::computeBalance($this, 0, $debitSum, $creditSum);
     }
 
-    // TODO(zmd): test me
     public function debitPositive(): bool
     {
         return $this->type->debitPositive();
     }
 
-    // TODO(zmd): test me
     public function creditPositive(): bool
     {
         return $this->type->creditPositive();
