@@ -42,7 +42,15 @@ final class LedgerTest extends TestCase
         $this->assertEquals(953500, $ledger->balance());
     }
 
-    // TODO(zmd): public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void {}
+    public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void
+    {
+        $this->travelTo($this->getDate(thisYear: '3/4'));
+        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+
+        $ledger = $this->account('cash')->ledger();
+
+        $this->assertEquals(953500, $ledger->balance());
+    }
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountAndSpecifiedPeriod(): void
     {
