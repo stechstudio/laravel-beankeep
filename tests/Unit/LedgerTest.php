@@ -257,7 +257,15 @@ final class LedgerTest extends TestCase
         ));
     }
 
-    // TODO(zmd): public function testComputeBalanceWithCreditPositiveAccountWithDebitAndCreditSumsLeadingToNegativeBalance(): void {}
+    public function testComputeBalanceWithCreditPositiveAccountWithDebitAndCreditSumsLeadingToNegativeBalance(): void
+    {
+        $this->assertEquals(-5000, Ledger::computeBalance(
+            account: $this->creditPositiveAccount(),
+            startingBalance: 0,
+            debitSum: 10000,
+            creditSum: 5000,
+        ));
+    }
 
     // TODO(zmd): public function testComputeBalanceWithCreditPositiveAccountAndZeroDebitAndCreditSums(): void {}
 
