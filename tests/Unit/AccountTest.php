@@ -54,7 +54,10 @@ final class AccountTest extends TestCase
         $this->assertTrue($this->equityAccount()->creditPositive());
     }
 
-    // TODO(zmd): public function testThatRevenueAccountIsConsideredCreditPositive(): void {}
+    public function testThatRevenueAccountIsConsideredCreditPositive(): void
+    {
+        $this->assertTrue($this->revenueAccount()->creditPositive());
+    }
 
     // TODO(zmd): public function testThatExpenseAccountIsNotConsideredCreditPositive(): void {}
 
