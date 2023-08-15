@@ -15,10 +15,24 @@ final class LedgerTest extends TestCase
 
     // TODO(zmd): test ::balance()
 
-    public function testTruth(): void
+    public function testBalanceWithDebitPositiveAccountAndZeroStartingBalance(): void
     {
-        $this->assertTrue(false);
+        $this->assertTrue(false, 'TODO(zmd): implement me');
     }
+
+    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndNonZeroStartingBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithDebitPositiveAccountWihtoutEntries(): void {}
+
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndZeroStartingBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndNonZeroStartingBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
+
+    // TODO(zmd): public function testBalanceWithCreditPositiveAccountWihtoutEntries(): void {}
 
     // -- ::computeBalance() --------------------------------------------------
 
