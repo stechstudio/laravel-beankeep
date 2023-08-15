@@ -30,7 +30,6 @@ final class Ledger
         );
     }
 
-    // TODO(zmd): test me
     public static function computeBalance(
         Account $account,
         int $startingBalance,
