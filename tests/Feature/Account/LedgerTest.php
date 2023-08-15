@@ -37,9 +37,9 @@ final class LedgerTest extends TestCase
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountForDefaultPeriod(): void
     {
-        $janLedger = $this->account('cash')->ledger();
+        $ledger = $this->account('cash')->ledger();
 
-        $this->assertEquals(953500, $janLedger->balance());
+        $this->assertEquals(953500, $ledger->balance());
     }
 
     // TODO(zmd): public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void {}
