@@ -38,7 +38,6 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    // TODO(zmd): finish testing me
     public function ledger(?CarbonPeriod $period = null): Ledger
     {
         return new Ledger(
