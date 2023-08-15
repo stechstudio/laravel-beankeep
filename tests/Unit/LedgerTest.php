@@ -21,11 +21,11 @@ final class LedgerTest extends TestCase
             account: $this->debitPositiveAccount(),
             startingBalance: 0,
             ledgerEntries: new LineItemCollection([
-                $this->debit(100.00),  //   0.00 + 100.00 = 100.00
-                $this->debit(50.00),   // 100.00 +  50.00 = 150.00
-                $this->credit(10.00),  // 150.00 -  10.00 = 140.00
-                $this->credit(50.00),  // 140.00 -  50.00 =  90.00
-                $this->debit(10.00),   //  90.00 +  10.00 = 100.00
+                $this->debit(100.00),  //    0.00 + 100.00 = 100.00
+                $this->debit(50.00),   //  100.00 +  50.00 = 150.00
+                $this->credit(10.00),  //  150.00 -  10.00 = 140.00
+                $this->credit(50.00),  //  140.00 -  50.00 =  90.00
+                $this->debit(10.00),   //   90.00 +  10.00 = 100.00
             ]),
         );
 
@@ -38,11 +38,11 @@ final class LedgerTest extends TestCase
             account: $this->debitPositiveAccount(),
             startingBalance: 10000,
             ledgerEntries: new LineItemCollection([
-                $this->debit(100.00),  // 100.00 + 100.00 = 200.00
-                $this->debit(50.00),   // 200.00 +  50.00 = 250.00
-                $this->credit(10.00),  // 250.00 -  10.00 = 240.00
-                $this->credit(50.00),  // 240.00 -  50.00 = 190.00
-                $this->debit(10.00),   // 190.00 +  10.00 = 200.00
+                $this->debit(100.00),  //  100.00 + 100.00 = 200.00
+                $this->debit(50.00),   //  200.00 +  50.00 = 250.00
+                $this->credit(10.00),  //  250.00 -  10.00 = 240.00
+                $this->credit(50.00),  //  240.00 -  50.00 = 190.00
+                $this->debit(10.00),   //  190.00 +  10.00 = 200.00
             ]),
         );
 
@@ -55,18 +55,34 @@ final class LedgerTest extends TestCase
             account: $this->debitPositiveAccount(),
             startingBalance: -5000,
             ledgerEntries: new LineItemCollection([
-                $this->debit(100.00),  // -50.00 + 100.00 =  50.00
-                $this->debit(50.00),   //  50.00 +  50.00 = 100.00
-                $this->credit(10.00),  // 100.00 -  10.00 =  90.00
-                $this->credit(50.00),  //  90.00 -  50.00 =  40.00
-                $this->debit(10.00),   //  40.00 +  10.00 =  50.00
+                $this->debit(100.00),  //  -50.00 + 100.00 =  50.00
+                $this->debit(50.00),   //   50.00 +  50.00 = 100.00
+                $this->credit(10.00),  //  100.00 -  10.00 =  90.00
+                $this->credit(50.00),  //   90.00 -  50.00 =  40.00
+                $this->debit(10.00),   //   40.00 +  10.00 =  50.00
             ]),
         );
 
         $this->assertEquals(5000, $ledger->balance());
     }
 
-    // TODO(zmd): public function testBalanceWithDebitPositiveAccountAndEntriesLeadingToNegativeBalance(): void {}
+    public function testBalanceWithDebitPositiveAccountAndEntriesLeadingToNegativeBalance(): void
+    {
+        $ledger = new Ledger(
+            account: $this->debitPositiveAccount(),
+            startingBalance: -10000,
+            ledgerEntries: new LineItemCollection([
+                $this->debit(100.00),  // -100.00 + 100.00 =   0.00
+                $this->debit(50.00),   //    0.00 +  50.00 =  50.00
+                $this->credit(10.00),  //   50.00 -  10.00 =  40.00
+                $this->credit(50.00),  //   40.00 -  50.00 = -10.00
+                $this->debit(10.00),   //  -10.00 +  10.00 =   0.00
+                $this->credit(30.00),  //    0.00 -  30.00 = -30.00
+            ]),
+        );
+
+        $this->assertEquals(-3000, $ledger->balance());
+    }
 
     // TODO(zmd): public function testBalanceWithDebitPositiveAccountWihtoutEntries(): void {}
 
