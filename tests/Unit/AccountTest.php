@@ -14,24 +14,24 @@ final class AccountTest extends TestCase
 
     public function testThatAssetAccountIsConsideredDebitPositive(): void
     {
-        $assetAccount = new Account([
+        $account = new Account([
             'number' => '1000',
             'name' => 'Assets',
             'type' => AccountType::Asset,
         ]);
 
-        $this->assertTrue($assetAccount->debitPositive());
+        $this->assertTrue($account->debitPositive());
     }
 
     public function testThatLiabilityAccountIsNotConsideredDebitPositive(): void
     {
-        $assetAccount = new Account([
+        $account = new Account([
             'number' => '2000',
             'name' => 'Liabilities',
             'type' => AccountType::Liability,
         ]);
 
-        $this->assertFalse($assetAccount->debitPositive());
+        $this->assertFalse($account->debitPositive());
     }
 
     // TODO(zmd): public function testThatEquityAccountIsNotConsideredDebitPositive(): void {}
