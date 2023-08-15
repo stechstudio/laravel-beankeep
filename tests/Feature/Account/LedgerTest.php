@@ -52,17 +52,6 @@ final class LedgerTest extends TestCase
         $this->assertEquals(953500, $ledger->balance());
     }
 
-    public function testItCanConstructLedgerObjectForCreditPositiveAccountAndSpecifiedPeriod(): void
-    {
-        $janLedger = $this->account('accounts-payable')->ledger($this->janPeriod());
-
-        $this->assertEquals(500000, $janLedger->balance());
-    }
-
-    // TODO(zmd): public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void {}
-
-    // TODO(zmd): public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void {}
-
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
         $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
@@ -71,6 +60,22 @@ final class LedgerTest extends TestCase
 
         $this->assertEquals(998500, $janLedger->balance());
     }
+
+    public function testItCanConstructLedgerObjectForCreditPositiveAccountAndSpecifiedPeriod(): void
+    {
+        $janLedger = $this->account('accounts-payable')->ledger($this->janPeriod());
+
+        $this->assertEquals(500000, $janLedger->balance());
+    }
+
+    public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void
+    {
+        $ledger = $this->account('accounts-payable')->ledger();
+
+        $this->assertEquals(750000, $ledger->balance());
+    }
+
+    // TODO(zmd): public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void {}
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
