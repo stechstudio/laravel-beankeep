@@ -42,10 +42,10 @@ final class BalanceTest extends TestCase
 
     public function testItCanReportDebitPositiveBalanceForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '1/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
-        $this->assertEquals(953500, $this->account('cash')->balance());
+        $this->assertEquals(998500, $this->account('cash')->balance());
     }
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveBalanceCalculations(): void
@@ -67,10 +67,10 @@ final class BalanceTest extends TestCase
 
     public function testItCanReportCreditPositiveBalanceForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '1/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
-        $this->assertEquals(750000, $this->account('accounts-payable')->balance());
+        $this->assertEquals(500000, $this->account('accounts-payable')->balance());
     }
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveBalanceCalculations(): void
@@ -94,10 +94,10 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '2/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
-        $this->assertEquals(0, $this->account('cash')->openingBalance());
+        $this->assertEquals(998500, $this->account('cash')->openingBalance());
     }
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveOpeningBalanceCalculations(): void
@@ -119,10 +119,10 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForConfiguredDefaultPeriod(): void
     {
-        $this->travelTo($this->getDate(thisYear: '3/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        $this->travelTo($this->getDate(thisYear: '2/25'));
+        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
 
-        $this->assertEquals(0, $this->account('accounts-payable')->openingBalance());
+        $this->assertEquals(500000, $this->account('accounts-payable')->openingBalance());
     }
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveOpeningBalanceCalculations(): void
