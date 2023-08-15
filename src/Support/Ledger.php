@@ -43,7 +43,6 @@ final class Ledger
         return self::$balanceMethod($startingBalance, $debitSum, $creditSum);
     }
 
-    // TODO(zmd): test me
     public static function debitPositiveBalance(
         int $startingBalance,
         int $debitSum,
