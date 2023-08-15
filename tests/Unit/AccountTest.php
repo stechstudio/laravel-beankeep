@@ -12,13 +12,34 @@ final class AccountTest extends TestCase
 {
     // -- ::debitPositive() ---------------------------------------------------
 
-    // TODO(zmd): write tests for ::debitPositive()
-    public function testTruth(): void
+    public function testThatAssetAccountIsConsideredDebitPositive(): void
     {
-        $this->assertTrue(false);
+        $assetAccount = new Account([
+            'number' => '1000',
+            'name' => 'Assets',
+            'type' => AccountType::Asset,
+        ]);
+
+        $this->assertTrue($assetAccount->debitPositive());
     }
+
+    // TODO(zmd): public function testThatLiabilityAccountIsNotConsideredDebitPositive(): void {}
+
+    // TODO(zmd): public function testThatEquityAccountIsNotConsideredDebitPositive(): void {}
+
+    // TODO(zmd): public function testThatRevenueAccountIsNotConsideredDebitPositive(): void {}
+
+    // TODO(zmd): public function testThatExpenseAccountIsConsideredDebitPositive(): void {}
 
     // -- ::creditPositive() --------------------------------------------------
 
-    // TODO(zmd): write tests for ::creditPositive()
+    // TODO(zmd): public function testThatAssetAccountIsNotConsideredCreditPositive(): void {}
+
+    // TODO(zmd): public function testThatLiabilityAccountIsConsideredCreditPositive(): void {}
+
+    // TODO(zmd): public function testThatEquityAccountIsConsideredCreditPositive(): void {}
+
+    // TODO(zmd): public function testThatRevenueAccountIsConsideredCreditPositive(): void {}
+
+    // TODO(zmd): public function testThatExpenseAccountIsNotConsideredCreditPositive(): void {}
 }
