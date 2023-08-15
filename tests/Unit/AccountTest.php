@@ -14,38 +14,23 @@ final class AccountTest extends TestCase
 
     public function testThatAssetAccountIsConsideredDebitPositive(): void
     {
-        $account = new Account([
-            'number' => '1000',
-            'name' => 'Assets',
-            'type' => AccountType::Asset,
-        ]);
-
-        $this->assertTrue($account->debitPositive());
+        $this->assertTrue($this->assetAccount()->debitPositive());
     }
 
     public function testThatLiabilityAccountIsNotConsideredDebitPositive(): void
     {
-        $account = new Account([
-            'number' => '2000',
-            'name' => 'Liabilities',
-            'type' => AccountType::Liability,
-        ]);
-
-        $this->assertFalse($account->debitPositive());
+        $this->assertFalse($this->liabilityAccount()->debitPositive());
     }
 
     public function testThatEquityAccountIsNotConsideredDebitPositive(): void
     {
-        $account = new Account([
-            'number' => '3000',
-            'name' => 'Equity',
-            'type' => AccountType::Equity,
-        ]);
-
-        $this->assertFalse($account->debitPositive());
+        $this->assertFalse($this->equityAccount()->debitPositive());
     }
 
-    // TODO(zmd): public function testThatRevenueAccountIsNotConsideredDebitPositive(): void {}
+    public function testThatRevenueAccountIsNotConsideredDebitPositive(): void
+    {
+        $this->assertFalse($this->revenueAccount()->debitPositive());
+    }
 
     // TODO(zmd): public function testThatExpenseAccountIsConsideredDebitPositive(): void {}
 
@@ -60,4 +45,51 @@ final class AccountTest extends TestCase
     // TODO(zmd): public function testThatRevenueAccountIsConsideredCreditPositive(): void {}
 
     // TODO(zmd): public function testThatExpenseAccountIsNotConsideredCreditPositive(): void {}
+
+    // ========================================================================
+
+    private function assetAccount(): Account
+    {
+        return new Account([
+            'number' => '1000',
+            'name' => 'Assets',
+            'type' => AccountType::Asset,
+        ]);
+    }
+
+    private function liabilityAccount(): Account
+    {
+        return new Account([
+            'number' => '2000',
+            'name' => 'Liabilities',
+            'type' => AccountType::Liability,
+        ]);
+    }
+
+    private function equityAccount(): Account
+    {
+        return new Account([
+            'number' => '3000',
+            'name' => 'Equity',
+            'type' => AccountType::Equity,
+        ]);
+    }
+
+    private function revenueAccount(): Account
+    {
+        return new Account([
+            'number' => '4000',
+            'name' => 'Revenue',
+            'type' => AccountType::Revenue,
+        ]);
+    }
+
+    private function expenseAccount(): Account
+    {
+        return new Account([
+            'number' => '5000',
+            'name' => 'Expense',
+            'type' => AccountType::Expense,
+        ]);
+    }
 }
