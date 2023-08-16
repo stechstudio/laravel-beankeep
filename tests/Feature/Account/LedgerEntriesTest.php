@@ -5,16 +5,74 @@ declare(strict_types=1);
 namespace STS\Beankeep\Tests\Feature\Account;
 
 use STS\Beankeep\Tests\TestCase;
-use STS\Beankeep\Tests\TestSupport\Traits\HasDefaultTransactions;
+use STS\Beankeep\Tests\TestSupport\Traits\HasTransactionMakingShortcuts;
 
 final class LedgerEntriesTest extends TestCase
 {
-    use HasDefaultTransactions;
+    use HasTransactionMakingShortcuts;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->threeMonthsOfTransactions();
+
+        $this->createAccountsIfMissing();
+
+        $this->lastYear('12/25')
+            ->transact('initial owner contribution')
+            ->line('cash', dr: 10000.00)
+            ->line('capital', cr: 10000.00)
+            ->doc('contribution-moa.pdf')
+            ->post();
+
+        $this->thisYear('1/5')
+            ->transact('develpment services')
+            ->line('accounts-receivable', dr: 1200.00)
+            ->line('services-revenue', cr: 1200.00)
+            ->doc("invoice-99.pdf")
+            ->post();
+
+        $this->thisYear('1/10')
+            ->transact('register domain')
+            ->line('cost-of-services', dr: 15.00)
+            ->line('cash', cr: 15.00)
+            ->doc('namecheap-receipt.pdf')
+            ->post();
+
+        $this->thisYear('1/20')
+            ->transact('2 computers from computers-ᴙ-us')
+            ->line('equipment', dr: 5000.00)
+            ->line('accounts-payable', cr: 5000.00)
+            ->doc('computers-ᴙ-us-receipt.pdf')
+            ->post();
+
+        $this->thisYear('2/1')
+            ->transact("pay office space rent - feb")
+            ->line('rent-expense', dr: 450.00)
+            ->line('cash', cr: 450.00)
+            ->doc("ck-no-1337-scan.pdf")
+            ->post();
+
+        $this->thisYear('2/12')
+            ->transact('technical consulting services')
+            ->line('accounts-receivable', dr: 240.00)
+            ->line('services-revenue', cr: 240.00)
+            ->doc("invoice-100.pdf")
+            ->post();
+
+        $this->thisYear('2/16')
+            ->transact('ck no. 1338 - pay computers-ᴙ-us invoice')
+            ->line('accounts-payable', dr: 5000.00)
+            ->line('cash', cr: 5000.00)
+            ->doc('ck-no-1338-scan.pdf')
+            ->doc('computers-ᴙ-us-invoice-no-42.pdf')
+            ->draft();
+
+        $this->thisYear('2/26')
+            ->transact('design services')
+            ->line('accounts-receivable', dr: 480.00)
+            ->line('services-revenue', cr: 480.00)
+            ->doc("invoice-101.pdf")
+            ->draft();
     }
 
     public function testItCanGetLedgerEntriesForDefaultPeriod(): void
