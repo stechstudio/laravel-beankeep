@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature\LineItem;
 
-use Illuminate\Support\Carbon;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\HasTransactionMakingShortcuts;

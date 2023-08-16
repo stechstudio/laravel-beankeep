@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Support;
 
-use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 

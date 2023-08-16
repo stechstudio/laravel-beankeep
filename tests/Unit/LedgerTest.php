@@ -7,7 +7,6 @@ namespace STS\Beankeep\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Models\Account;
-use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Support\Ledger;
 use STS\Beankeep\Support\LineItemCollection;
 use STS\Beankeep\Tests\TestSupport\Traits\CanMakeLineItems;
