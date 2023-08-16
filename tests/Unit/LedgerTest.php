@@ -86,7 +86,7 @@ final class LedgerTest extends TestCase
         $this->assertEquals(-3000, $ledger->balance());
     }
 
-    public function testBalanceWithDebitPositiveAccountWihtoutEntries(): void
+    public function testBalanceWithDebitPositiveAccountWithoutEntries(): void
     {
         $ledger = new Ledger(
             account: $this->debitPositiveAccount(),
@@ -166,7 +166,7 @@ final class LedgerTest extends TestCase
         $this->assertEquals(-3000, $ledger->balance());
     }
 
-    public function testBalanceWithCreditPositiveAccountWihtoutEntries(): void
+    public function testBalanceWithCreditPositiveAccountWithoutEntries(): void
     {
         $ledger = new Ledger(
             account: $this->creditPositiveAccount(),
