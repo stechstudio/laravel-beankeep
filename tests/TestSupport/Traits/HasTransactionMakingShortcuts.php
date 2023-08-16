@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\TestSupport\Traits;
 
-use STS\Beankeep\Models\Transaction;
+use Carbon\CarbonPeriod;
+use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Database\Factories\Support\Transactor;
+use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\Transaction;
 use ValueError;
 
 trait HasTransactionMakingShortcuts
 {
-    use HasDefaultTransactions;
+    use CanCreateAccounts;
+    use HasRelativeTransactor;
 
     protected bool $quickAccountsAlreadyInitialized = false;
 
@@ -21,11 +25,6 @@ trait HasTransactionMakingShortcuts
         ?array $cr = null,
         bool $posted = true,
     ): Transaction {
-        if (!$this->quickAccountsAlreadyInitialized) {
-            $this->createAccountsIfMissing();
-            $this->quickAccountsAlreadyInitialized = true;
-        }
-
         if ($posted) {
             return $this->quickTransaction(
                 $this->getQuickLineItemValues($dr, $cr),
@@ -101,5 +100,28 @@ trait HasTransactionMakingShortcuts
         return $thisYear
             ? $this->thisYear($thisYear)
             : $this->lastYear($lastYear);
+    }
+
+    protected function janPeriod(): CarbonPeriod
+    {
+        $start = $this->getDate(thisYear: '1/1');
+        $end = $start->endOfMonth();
+
+        return $start->daysUntil($end);
+    }
+
+    protected function febPeriod(): CarbonPeriod
+    {
+        $start = $this->getDate(thisYear: '2/1');
+        $end = $start->endOfMonth();
+
+        return $start->dayUntil($end);
+    }
+
+    protected function createAccountsIfMissing(): void
+    {
+        if (!Account::count()) {
+            $this->createAccounts();
+        }
     }
 }
