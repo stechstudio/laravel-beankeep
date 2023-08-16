@@ -58,7 +58,15 @@ final class LineItemCollectionTest extends TestCase
         }
     }
 
-    // TODO(zmd): public function testSumDebitsSumsTheDebitAmounts(): void {}
+    public function testSumDebitsSumsTheDebitAmounts(): void
+    {
+        $lineItems = new LineItemCollection($this->lineItems);
+
+        $this->assertEquals(
+            $this->floatToInt(100.00 + 10.00 + 5.00 + 18.00),
+            $lineItems->sumDebits(),
+        );
+    }
 
     // TODO(zmd): public function testSumCreditsSumsTheCreditAmounts(): void {}
 }
