@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature;
+namespace STS\Beankeep\Tests\Feature\LineItem;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Enums\AccountType;
@@ -11,7 +11,7 @@ use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
 
-final class LineItemDataIntegrityTest extends TestCase
+final class DataIntegrityTest extends TestCase
 {
     public function testCreatingWithJustADebitSucceeds(): void
     {

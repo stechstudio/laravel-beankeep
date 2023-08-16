@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
+use STS\Beankeep\Support\BeankeepPeriod;
+use STS\Beankeep\Support\LineItemCollection;
+use STS\Beankeep\Support\PriorToDateNormalizer;
+use ValueError;
 
 final class LineItem extends Beankeeper
 {
@@ -41,12 +46,12 @@ final class LineItem extends Beankeeper
         return LineItemFactory::new();
     }
 
-    public static function defaultPeriod(): CarbonPeriod
+    /**
+     * @param LineItem[] $models
+     */
+    public function newCollection(array $models = []): LineItemCollection
     {
-        $startOfYear = Carbon::now()->startOfYear();
-        $endOfYear = Carbon::now()->endOfYear();
-
-        return $startOfYear->daysUntil($endOfYear);
+        return new LineItemCollection($models);
     }
 
     public function account(): BelongsTo
@@ -59,21 +64,65 @@ final class LineItem extends Beankeeper
         return $this->belongsTo(Transaction::class);
     }
 
-    public function scopeLedger(
+    public function scopeLedgerEntries(
         Builder $query,
-        ?iterable $period = null,
+        ?CarbonPeriod $period = null,
+        null|string|Carbon|CarbonImmutable|CarbonPeriod $priorTo = null,
     ): void {
+        if ($period && $priorTo) {
+            throw new ValueError('You cannot specify both a period and '
+                . 'priorTo argument.');
+        }
+
+        if ($priorTo) {
+            self::scopeLedgerEntriesPriorTo($query, $priorTo);
+
+            return;
+        }
+
+        self::scopeLedgerEntriesForPeriod($query, $period);
+    }
+
+    public function scopeLedgerEntriesForPeriod(
+        Builder $query,
+        ?CarbonPeriod $period = null,
+    ): void {
+        $period = BeankeepPeriod::from($period);
+
         $query->whereHas('transaction', fn (Builder $query) => $query
-            ->whereBetween('date', $period ?? self::defaultPeriod())
+            ->whereBetween('date', $period)
+            ->where('posted', true));
+    }
+
+    public function scopeLedgerEntriesPriorTo(
+        Builder $query,
+        string|Carbon|CarbonImmutable|CarbonPeriod $date,
+    ) {
+        $date = PriorToDateNormalizer::normalize($date);
+
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('date', '<', $date)
             ->where('posted', true));
     }
 
     public function scopePeriod(
         Builder $query,
-        ?iterable $period = null,
+        ?CarbonPeriod $period = null,
     ): void {
+        $period = BeankeepPeriod::from($period);
+
         $query->whereHas('transaction', fn (Builder $query) => $query
-            ->whereBetween('date', $period ?? self::defaultPeriod()));
+            ->whereBetween('date', $period));
+    }
+
+    public function scopePriorTo(
+        Builder $query,
+        string|Carbon|CarbonImmutable|CarbonPeriod $date,
+    ): void {
+        $date = PriorToDateNormalizer::normalize($date);
+
+        $query->whereHas('transaction', fn (Builder $query) => $query
+            ->where('date', '<', $date));
     }
 
     public function scopePosted(Builder $query): void {
