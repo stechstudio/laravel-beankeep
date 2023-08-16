@@ -7,7 +7,6 @@ namespace STS\Beankeep\Tests\TestSupport\Traits;
 use Carbon\CarbonPeriod;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
 use STS\Beankeep\Database\Factories\Support\Transactor;
-use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\Transaction;
 use ValueError;
 
@@ -116,12 +115,5 @@ trait HasTransactionMakingShortcuts
         $end = $start->endOfMonth();
 
         return $start->dayUntil($end);
-    }
-
-    protected function createAccountsIfMissing(): void
-    {
-        if (!Account::count()) {
-            $this->createAccounts();
-        }
     }
 }
