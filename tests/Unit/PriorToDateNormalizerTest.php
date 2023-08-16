@@ -4,13 +4,29 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Unit;
 
+use Carbon\CarbonImmutable;
 use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Support\PriorToDateNormalizer;
 
 final class PriorToDateNormalizerTest extends TestCase
 {
-    public function testTruth(): void
+    // TODO(zmd): public function testNormalizeReturnsTheGivenMutableCarbonDateJustAsItWasPassed(): void {}
+
+    // TODO(zmd): public function testNormalizeReturnsTheGivenImmutableCarbonDateJustAsItWasPassed(): void {}
+
+    // TODO(zmd): public function testNormalizeReturnsImmutableDateParsedFromGivenString(): void {}
+
+    // TODO(zmd): public function testNormalizeReturnsMutableStartDateOfGivenPeriod(): void {}
+
+    public function testNormalizeReturnsImmutableStartDateOfGivenPeriod(): void
     {
-        $this->assertTrue(false);
+        $startDate = CarbonImmutable::now();
+        $endDate = CarbonImmutable::now()->addDays(5);
+        $period = $startDate->daysUntil($endDate);
+
+        $normalized = PriorToDateNormalizer::normalize($period);
+
+        $this->assertEquals($startDate, $normalized);
+        $this->assertInstanceOf(CarbonImmutable::class, $normalized);
     }
 }
