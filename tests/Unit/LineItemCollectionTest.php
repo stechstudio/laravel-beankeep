@@ -45,7 +45,18 @@ final class LineItemCollectionTest extends TestCase
         }
     }
 
-    // TODO(zmd): public function testCreditsReturnsJustTheCredits(): void {}
+    public function testCreditsReturnsJustTheCredits(): void
+    {
+        $lineItems = new LineItemCollection($this->lineItems);
+
+        $credits = $lineItems->credits();
+
+        $this->assertEquals(4, $credits->count());
+
+        foreach ($credits as $credit) {
+            $this->assertTrue($credit->isCredit());
+        }
+    }
 
     // TODO(zmd): public function testSumDebitsSumsTheDebitAmounts(): void {}
 
