@@ -10,9 +10,12 @@ use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Support\Ledger;
 use STS\Beankeep\Support\LineItemCollection;
+use STS\Beankeep\Tests\TestSupport\Traits\CanMakeLineItems;
 
 final class LedgerTest extends TestCase
 {
+    use CanMakeLineItems;
+
     // -- ::balance() ---------------------------------------------------------
 
     public function testBalanceWithDebitPositiveAccountAndZeroStartingBalance(): void
@@ -389,20 +392,5 @@ final class LedgerTest extends TestCase
             'name' => 'Liabilities',
             'type' => AccountType::Liability,
         ]);
-    }
-
-    private function debit(float $amount): LineItem
-    {
-        return new LineItem(['debit' => $this->floatToInt($amount)]);
-    }
-
-    private function credit(float $amount): LineItem
-    {
-        return new LineItem(['credit' => $this->floatToInt($amount)]);
-    }
-
-    private function floatToInt(float $amount): int
-    {
-        return (int) ($amount * 100);
     }
 }
