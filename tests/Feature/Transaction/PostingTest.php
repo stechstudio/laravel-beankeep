@@ -224,6 +224,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -238,6 +239,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
     {
         $transaction = $this->thisYear('03/31')
@@ -253,6 +255,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
     {
         $transaction = $this->thisYear('03/31')
@@ -268,6 +271,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
     {
         $transaction = $this->thisYear('05/05')
@@ -284,6 +288,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWithoutLineItems(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -296,6 +301,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
     {
         $transaction = new Transaction([
@@ -309,6 +315,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->exists);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveRequiresAtLeastOneDebit(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -323,6 +330,7 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
+    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveRequiresAtLeastOneCredit(): void
     {
         $transaction = $this->thisYear('07/18')
