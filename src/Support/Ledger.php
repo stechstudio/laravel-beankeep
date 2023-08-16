@@ -51,7 +51,6 @@ final class Ledger
         return $startingBalance + $debitSum - $creditSum;
     }
 
-    // TODO(zmd): test me
     public static function creditPositiveBalance(
         int $startingBalance,
         int $debitSum,
