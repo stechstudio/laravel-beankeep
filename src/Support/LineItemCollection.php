@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace STS\Beankeep\Support;
 
 use Illuminate\Database\Eloquent\Collection;
-use STS\Beankeep\Models\Account;
 
 class LineItemCollection extends Collection
 {
