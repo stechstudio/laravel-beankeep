@@ -12,7 +12,6 @@ enum AccountType: string
     case Revenue   = 'revenue';
     case Expense   = 'expense';
 
-    // TODO(zmd): test me
     public function debitPositive(): bool
     {
         return match ($this) {
@@ -22,7 +21,6 @@ enum AccountType: string
         };
     }
 
-    // TODO(zmd): test me
     public function creditPositive(): bool
     {
         return !$this->debitPositive();
