@@ -30,8 +30,6 @@ final class LineItemCollectionTest extends TestCase
         ];
     }
 
-    // -- ::debits() ----------------------------------------------------------
-
     public function testDebitsReturnsJustTheDebits(): void
     {
         $lineItems = new LineItemCollection($this->lineItems);
