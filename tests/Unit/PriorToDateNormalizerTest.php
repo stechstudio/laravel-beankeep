@@ -15,7 +15,16 @@ final class PriorToDateNormalizerTest extends TestCase
 
     // TODO(zmd): public function testNormalizeReturnsTheGivenImmutableCarbonDateJustAsItWasPassed(): void {}
 
-    // TODO(zmd): public function testNormalizeReturnsImmutableDateParsedFromGivenString(): void {}
+    public function testNormalizeReturnsImmutableDateParsedFromGivenString(): void
+    {
+        $input = '1/2/2003';
+        $expected = CarbonImmutable::parse($input);
+
+        $actual = PriorToDateNormalizer::normalize($input);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(CarbonImmutable::class, $actual);
+    }
 
     public function testNormalizeReturnsMutableStartDateOfGivenPeriod(): void
     {
