@@ -7,17 +7,27 @@ namespace STS\Beankeep\Tests\Feature\LineItem;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
-use STS\Beankeep\Tests\TestSupport\Traits\HasDefaultTransactions;
+use STS\Beankeep\Tests\TestSupport\Traits\HasTransactionMakingShortcuts;
 use ValueError;
 
 final class LineItemScopeTest extends TestCase
 {
-    use HasDefaultTransactions;
+    use HasTransactionMakingShortcuts;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->threeMonthsOfTransactions();
+
+        $this->createAccountsIfMissing();
+
+        $this->txn(     lastYear: '12/25', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
+        $this->txn(     thisYear: '1/5',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
+        $this->txn(     thisYear: '1/10',  dr: ['cost-of-services',       15.00], cr: ['cash',                   15.00]);
+        $this->txn(     thisYear: '1/20',  dr: ['equipment',            5000.00], cr: ['accounts-payable',     5000.00]);
+        $this->txn(     thisYear: '2/1',   dr: ['rent-expense',          450.00], cr: ['cash',                  450.00]);
+        $this->txn(     thisYear: '2/12',  dr: ['accounts-receivable',   240.00], cr: ['services-revenue',      240.00]);
+        $this->draftTxn(thisYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
+        $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 
     // -- ::scopeLedgerEntries() ----------------------------------------------
@@ -55,7 +65,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsString(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
             $this->getDate(thisYear: '2/1')->format('d-M Y'),
@@ -70,7 +80,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbon(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = $this->getDate(thisYear: '2/1')->toMutable();
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
@@ -80,7 +90,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonImmutable(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = $this->getDate(thisYear: '2/1')->toImmutable();
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
@@ -90,7 +100,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonPeriod(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $start = $this->getDate(thisYear: '2/1');
         $end = $this->getDate(thisYear: '2/1')->endOfMonth();
         $period = $start->daysUntil($end);
@@ -139,7 +149,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsString(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
             $this->getDate(thisYear: '2/1')->format('d-M Y'),
@@ -154,7 +164,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = $this->getDate(thisYear: '2/1')->toMutable();
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
@@ -164,7 +174,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonImmutable(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = $this->getDate(thisYear: '2/1')->toImmutable();
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
@@ -174,7 +184,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $start = $this->getDate(thisYear: '2/1');
         $end = $this->getDate(thisYear: '2/1')->endOfMonth();
         $period = $start->daysUntil($end);
@@ -256,7 +266,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToDoesNotFilterOutPendingItems(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = $this->getDate(thisYear: '2/1');
 
         $this->assertEquals(10, LineItem::priorTo($date)->count());
@@ -268,7 +278,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopePostedReturnsJustPostedLineItems(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(12, LineItem::posted()->count());
         $this->assertEquals(1690500, LineItem::posted()->sum('debit'));
@@ -279,7 +289,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopePendingJustReturnsPendingLineItems(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(6, LineItem::pending()->count());
         $this->assertEquals(553000, LineItem::pending()->sum('debit'));
@@ -290,7 +300,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopeDebitsJustReturnsDebitLineItems(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(9, LineItem::debits()->count());
         $this->assertEquals(2243500, LineItem::debits()->sum('debit'));
@@ -301,7 +311,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopeCreditsJustReturnsDebitLineItems(): void
     {
-        $this->unpostedTransactionLastYear();
+        $this->draftTxn(lastYear: '12/27', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(9, LineItem::credits()->count());
         $this->assertEquals(0, LineItem::credits()->sum('debit'));
