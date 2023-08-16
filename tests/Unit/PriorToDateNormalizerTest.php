@@ -11,7 +11,15 @@ use STS\Beankeep\Support\PriorToDateNormalizer;
 
 final class PriorToDateNormalizerTest extends TestCase
 {
-    // TODO(zmd): public function testNormalizeReturnsTheGivenMutableCarbonDateJustAsItWasPassed(): void {}
+    public function testNormalizeReturnsTheGivenMutableCarbonDateJustAsItWasPassed(): void
+    {
+        $input = Carbon::now();
+
+        $actual = PriorToDateNormalizer::normalize($input);
+
+        $this->assertEquals($input, $actual);
+        $this->assertInstanceOf(Carbon::class, $actual);
+    }
 
     public function testNormalizeReturnsTheGivenImmutableCarbonDateJustAsItWasPassed(): void
     {
