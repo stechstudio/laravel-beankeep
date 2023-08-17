@@ -6,6 +6,7 @@ namespace STS\Beankeep\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use STS\Beankeep\Database\Factories\JournalFactory;
+use STS\Beankeep\Enums\JournalPeriod;
 
 final class Journal extends Beankeeper
 {
@@ -14,11 +15,11 @@ final class Journal extends Beankeeper
     protected $table = 'beankeep_journals';
 
     protected $fillable = [
-        'period',  // integer (JournalPeriod enum)
+        'period',
     ];
 
-    // TODO(zmd): period -> JournalPeriod enum
     protected $casts = [
+        'period' => JournalPeriod::class
     ];
 
     protected static function newFactory()

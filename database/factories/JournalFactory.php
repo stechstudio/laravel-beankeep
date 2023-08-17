@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Models\Journal;
 
 class JournalFactory extends Factory
@@ -13,6 +14,8 @@ class JournalFactory extends Factory
 
     public function definition(): array
     {
-        return [];
+        return [
+            'period' => JournalPeriod::Jan,
+        ];
     }
 }
