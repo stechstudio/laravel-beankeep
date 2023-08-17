@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 
 final class BeankeepPeriod
 {
+    // TODO(zmd): port to JournalPeriod
     public static function from(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
@@ -19,6 +20,7 @@ final class BeankeepPeriod
         return $period;
     }
 
+    // TODO(zmd): port to JournalPeriod
     public static function defaultPeriod(): CarbonPeriod
     {
         if (config('beankeep.default-period')) {
@@ -28,6 +30,7 @@ final class BeankeepPeriod
         return self::defaultPeriodThisYear();
     }
 
+    // TODO(zmd): port to JournalPeriod
     private static function defaultPeriodFromConfig(): CarbonPeriod {
         [$startDateStr, $endDateStr] = config('beankeep.default-period');
 
@@ -48,6 +51,7 @@ final class BeankeepPeriod
         return $startDate->daysUntil($endDate);
     }
 
+    // TODO(zmd): port to JournalPeriod
     private static function defaultPeriodThisYear(): CarbonPeriod
     {
         $startOfYear = CarbonImmutable::now()->startOfYear();
@@ -56,6 +60,7 @@ final class BeankeepPeriod
         return $startOfYear->daysUntil($endOfYear);
     }
 
+    // TODO(zmd): port to JournalPeriod (if we keep, which we probably won't)
     private static function endOfFeb(CarbonImmutable $endDate): bool
     {
         if ($endDate->month == 2) {
