@@ -65,6 +65,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertTrue($lineItem->isCredit());
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToCreateWithBothCreditAndDebitAmount(): void
     {
         $lineItem = LineItem::create([
@@ -77,6 +78,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertFalse($lineItem->exists);
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToSaveWithBothCreditAndDebitAmount(): void
     {
         $lineItem = new LineItem(['debit' => 10000, 'credit' => 10000]);
@@ -87,6 +89,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertFalse($lineItem->exists);
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToUpdateWithBothCreditAndDebitAmount(): void
     {
         $lineItem = new LineItem(['debit' => 10000, 'credit' => 0]);
@@ -102,6 +105,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertEquals(0, $lineItem->refresh()->credit);
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToCreateWithoutEitherCreditOrDebitAmount(): void
     {
         $lineItem = LineItem::create([
@@ -114,6 +118,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertFalse($lineItem->exists);
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToSaveWithoutEitherCreditOrDebitAmount(): void
     {
         $lineItem = new LineItem(['debit' => 0, 'credit' => 0]);
@@ -124,6 +129,7 @@ final class DataIntegrityTest extends TestCase
         $this->assertFalse($lineItem->exists);
     }
 
+    // TODO(zmd): update to reflect desire to raise not silently fail a save
     public function testRefusesToUpdateWithoutEitherCreditOrDebitAmount(): void
     {
         $lineItem = new LineItem(['debit' => 10000, 'credit' => 0]);
