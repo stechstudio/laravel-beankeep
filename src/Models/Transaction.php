@@ -35,9 +35,15 @@ final class Transaction extends Beankeeper
         static::saving(function (Transaction $transaction) {
             if ($transaction->posted) {
                 if ($transaction->debitsOrCreditsMissing()) {
-                    throw new TransactionLineItemsMissing();
+                    throw new TransactionLineItemsMissing(
+                        'Transaction must have at least one debit and one '
+                        . 'credit in order to post.',
+                    );
                 } elseif (!$transaction->lineItemsBalance()) {
-                    throw new TransactionLineItemsUnbalanced();
+                    throw new TransactionLineItemsUnbalanced(
+                        "Transaction's line items must balance in order to "
+                        . 'post.',
+                    );
                 }
             }
         });
