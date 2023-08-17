@@ -7,6 +7,8 @@ namespace STS\Beankeep\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Database\Factories\TransactionFactory;
+use STS\Beankeep\Exceptions\TransactionLineItemsMissing;
+use STS\Beankeep\Exceptions\TransactionLineItemsUnbalanced;
 
 final class Transaction extends Beankeeper
 {
@@ -32,7 +34,11 @@ final class Transaction extends Beankeeper
     {
         static::saving(function (Transaction $transaction) {
             if ($transaction->posted) {
-                return $transaction->canPost();
+                if ($transaction->debitsOrCreditsMissing()) {
+                    throw new TransactionLineItemsMissing();
+                } elseif (!$transaction->lineItemsBalance()) {
+                    throw new TransactionLineItemsUnbalanced();
+                }
             }
         });
     }
@@ -60,6 +66,26 @@ final class Transaction extends Beankeeper
     private function lineItemsPresent(): bool
     {
         return $this->lineItems()->count() !== 0;
+    }
+
+    private function debitsOrCreditsMissing(): bool
+    {
+        return !$this->debitsAndCreditsPresent();
+    }
+
+    private function debitsAndCreditsPresent(): bool
+    {
+        return $this->debitsPresent() && $this->creditsPresent();
+    }
+
+    private function debitsPresent(): bool
+    {
+        return $this->lineItems()->debits()->count() > 0;
+    }
+
+    private function creditsPresent(): bool
+    {
+        return $this->lineItems()->credits()->count() > 0;
     }
 
     private function lineItemsBalance(): bool
