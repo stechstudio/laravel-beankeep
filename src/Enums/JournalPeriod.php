@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Enums;
 
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Str;
 
 enum JournalPeriod: int
 {
@@ -34,16 +35,35 @@ enum JournalPeriod: int
             self::Jan => 'January',
             self::Feb => 'February',
             // March, April, May, June and July are never abbreviated in text
-            self::MARCH => 'March',
-            self::APRIL => 'April',
-            self::MAY => 'May',
-            self::JUNE => 'June',
-            self::JULY => 'July',
+            self::March => 'March',
+            self::April => 'April',
+            self::May => 'May',
+            self::June => 'June',
+            self::July => 'July',
             self::Aug => 'August',
             self::Sept => 'September',
             self::Oct => 'October',
             self::Nov => 'November',
             self::Dec => 'December',
+        };
+    }
+
+    // TODO(zmd): test me
+    public static function fromString(string $value): static
+    {
+        return match(Str::lower($value)) {
+            'jan', 'january'           => static::Jan,
+            'feb', 'february'          => static::Feb,
+            'mar', 'march'             => static::March,
+            'apr', 'april'             => static::April,
+            'may'                      => static::May,
+            'jun', 'june'              => static::June,
+            'jul', 'july'              => static::July,
+            'aug', 'august'            => static::Aug,
+            'sep', 'sept', 'september' => static::Sept,
+            'oct', 'october'           => static::Oct,
+            'nov', 'november'          => static::Nov,
+            'dec', 'december'          => static::Dec,
         };
     }
 }
