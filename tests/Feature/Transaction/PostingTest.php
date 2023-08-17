@@ -255,7 +255,6 @@ final class PostingTest extends TestCase
         $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
     {
         $transaction = $this->thisYear('03/31')
@@ -265,13 +264,12 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 199.99)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
     {
         $transaction = $this->thisYear('05/05')
@@ -282,26 +280,24 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 200.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWithoutLineItems(): void
     {
         $transaction = $this->thisYear('07/18')
             ->transact('perform services')
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
     {
         $transaction = new Transaction([
@@ -309,13 +305,12 @@ final class PostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->exists);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveRequiresAtLeastOneDebit(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -324,13 +319,12 @@ final class PostingTest extends TestCase
             ->line('revenue', cr: 400.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveRequiresAtLeastOneCredit(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -339,9 +333,9 @@ final class PostingTest extends TestCase
             ->line('revenue', dr: 400.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 }
