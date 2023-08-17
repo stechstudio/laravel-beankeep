@@ -19,7 +19,7 @@ final class Journal extends Beankeeper
     ];
 
     protected $casts = [
-        'period' => JournalPeriod::class
+        'period' => JournalPeriod::class,
     ];
 
     protected static function newFactory()
