@@ -6,6 +6,8 @@ namespace STS\Beankeep\Tests\Feature\Transaction;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
+use STS\Beankeep\Exceptions\TransactionLineItemsMissing;
+use STS\Beankeep\Exceptions\TransactionLineItemsUnbalanced;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
@@ -224,7 +226,6 @@ final class PostingTest extends TestCase
         $this->assertFalse($transaction->refresh()->posted);
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
         $transaction = $this->thisYear('07/18')
@@ -233,13 +234,12 @@ final class PostingTest extends TestCase
             ->line('revenue', cr: 300.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
-    // TODO(zmd): update this test, save should throw on fail now
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
     {
         $transaction = $this->thisYear('03/31')
@@ -249,10 +249,10 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 400.02)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     // TODO(zmd): update this test, save should throw on fail now
