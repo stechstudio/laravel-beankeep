@@ -43,7 +43,7 @@ final class BalanceTest extends TestCase
     public function testItCanReportDebitPositiveBalanceForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $this->assertEquals(998500, $this->account('cash')->balance());
     }
@@ -68,7 +68,7 @@ final class BalanceTest extends TestCase
     public function testItCanReportCreditPositiveBalanceForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $this->assertEquals(500000, $this->account('accounts-payable')->balance());
     }
@@ -95,7 +95,7 @@ final class BalanceTest extends TestCase
     public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '2/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $this->assertEquals(998500, $this->account('cash')->openingBalance());
     }
@@ -120,7 +120,7 @@ final class BalanceTest extends TestCase
     public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '2/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $this->assertEquals(500000, $this->account('accounts-payable')->openingBalance());
     }

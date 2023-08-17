@@ -39,7 +39,7 @@ final class BeankeepPeriodTest extends TestCase
     public function testFromWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
     {
         $this->travelTo(Carbon::parse('11/23/2023'));
-        config(['beankeep.default-period' => ['1-oct', '30-sep']]);
+        config(['beankeep.default-period' => 'oct']);
 
         $expectedStartDate = CarbonImmutable::parse(
             '1-oct ' . $this->thisYear(),
@@ -72,7 +72,7 @@ final class BeankeepPeriodTest extends TestCase
     public function testDefaultPeriodRespondsWithConfiguredPeriodWhenAvailable(): void
     {
         $this->travelTo(Carbon::parse('11/23/2023'));
-        config(['beankeep.default-period' => ['1-oct', '30-sep']]);
+        config(['beankeep.default-period' => 'oct']);
 
         $expectedStartDate = CarbonImmutable::parse(
             '1-oct ' . $this->thisYear(),
@@ -91,7 +91,7 @@ final class BeankeepPeriodTest extends TestCase
     public function testDefaultPeriodDealsWithLeapYearsForConfiguredEndPeriodBeingFeb(): void
     {
         $this->travelTo(Carbon::parse('5/4/2023'));
-        config(['beankeep.default-period' => ['1-mar', '28-feb']]);
+        config(['beankeep.default-period' => 'mar']);
 
         $expectedStartDate = CarbonImmutable::parse(
             '1-mar ' . $this->thisYear(),
@@ -110,7 +110,7 @@ final class BeankeepPeriodTest extends TestCase
     public function testDefaultPeriodCorrectlyHandlesContextOfCurrentTime(): void
     {
         $this->travelTo(Carbon::parse('5/4/2023'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        config(['beankeep.default-period' => 'dec']);
 
         $expectedStartDate = CarbonImmutable::parse(
             '1-dec ' . $this->lastYear(),
