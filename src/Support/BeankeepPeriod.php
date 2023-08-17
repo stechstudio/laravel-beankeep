@@ -7,6 +7,7 @@ namespace STS\Beankeep\Support;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
+use STS\Beankeep\Enums\JournalPeriod;
 
 final class BeankeepPeriod
 {
@@ -32,21 +33,23 @@ final class BeankeepPeriod
 
     // TODO(zmd): port to JournalPeriod
     private static function defaultPeriodFromConfig(): CarbonPeriod {
-        [$startDateStr, $endDateStr] = config('beankeep.default-period');
+        $startMonthStr = config('beankeep.default-period');
 
-        $startDate = CarbonImmutable::parse($startDateStr);
-        if ($startDate->greaterThan(Carbon::now())) {
+        $journalPeriod = JournalPeriod::fromString(
+            config('beankeep.default-period'),
+        );
+
+        $now = CarbonImmutable::now();
+
+        $startDate = $now
+            ->setMonth($journalPeriod->value)
+            ->startOfMonth();
+
+        if ($startDate->greaterThan($now)) {
             $startDate = $startDate->subYear();
         }
 
-        $endDate = CarbonImmutable::parse($endDateStr)->endOfDay();
-        if ($startDate->greaterThan($endDate)) {
-            $endDate = $endDate->addYear();
-        }
-
-        if (static::endOfFeb($endDate)) {
-            $endDate = $endDate->endOfMonth();
-        }
+        $endDate = $startDate->addMonths(11)->endOfMonth();
 
         return $startDate->daysUntil($endDate);
     }
