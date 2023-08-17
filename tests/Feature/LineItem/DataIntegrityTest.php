@@ -6,6 +6,7 @@ namespace STS\Beankeep\Tests\Feature\LineItem;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Enums\AccountType;
+use STS\Beankeep\Exceptions\LineItemInvalid;
 use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
@@ -67,14 +68,14 @@ final class DataIntegrityTest extends TestCase
 
     public function testRefusesToCreateWithBothCreditAndDebitAmount(): void
     {
+        $this->expectException(LineItemInvalid::class);
+
         $lineItem = LineItem::create([
             'account_id' => $this->account()->id,
             'transaction_id' => $this->transaction()->id,
             'debit' => 10000,
             'credit' => 10000,
         ]);
-
-        $this->assertFalse($lineItem->exists);
     }
 
     public function testRefusesToSaveWithBothCreditAndDebitAmount(): void
@@ -83,8 +84,9 @@ final class DataIntegrityTest extends TestCase
         $lineItem->account_id = $this->account()->id;
         $lineItem->transaction_id = $this->transaction()->id;
 
-        $this->assertFalse($lineItem->save());
-        $this->assertFalse($lineItem->exists);
+        $this->expectException(LineItemInvalid::class);
+
+        $lineItem->save();
     }
 
     public function testRefusesToUpdateWithBothCreditAndDebitAmount(): void
@@ -98,20 +100,21 @@ final class DataIntegrityTest extends TestCase
 
         $lineItem->credit = 10000;
 
-        $this->assertFalse($lineItem->save());
-        $this->assertEquals(0, $lineItem->refresh()->credit);
+        $this->expectException(LineItemInvalid::class);
+
+        $lineItem->save();
     }
 
     public function testRefusesToCreateWithoutEitherCreditOrDebitAmount(): void
     {
+        $this->expectException(LineItemInvalid::class);
+
         $lineItem = LineItem::create([
             'account_id' => $this->account()->id,
             'transaction_id' => $this->transaction()->id,
             'debit' => 0,
             'credit' => 0,
         ]);
-
-        $this->assertFalse($lineItem->exists);
     }
 
     public function testRefusesToSaveWithoutEitherCreditOrDebitAmount(): void
@@ -120,8 +123,9 @@ final class DataIntegrityTest extends TestCase
         $lineItem->account_id = $this->account()->id;
         $lineItem->transaction_id = $this->transaction()->id;
 
-        $this->assertFalse($lineItem->save());
-        $this->assertFalse($lineItem->exists);
+        $this->expectException(LineItemInvalid::class);
+
+        $lineItem->save();
     }
 
     public function testRefusesToUpdateWithoutEitherCreditOrDebitAmount(): void
@@ -135,8 +139,9 @@ final class DataIntegrityTest extends TestCase
 
         $lineItem->debit = 0;
 
-        $this->assertFalse($lineItem->save());
-        $this->assertEquals(10000, $lineItem->refresh()->debit);
+        $this->expectException(LineItemInvalid::class);
+
+        $lineItem->save();
     }
 
     // ------------------------------------------------------------------------

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
+use STS\Beankeep\Exceptions\LineItemInvalid;
 use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\LineItemCollection;
 use STS\Beankeep\Support\PriorToDateNormalizer;
@@ -37,8 +38,18 @@ final class LineItem extends Beankeeper
     protected static function booted(): void
     {
         static::saving(function (LineItem $lineItem) {
-            return $lineItem->isDebit() xor $lineItem->isCredit();
+            if (!$lineItem->isDebitOrCredit()) {
+                throw new LineItemInvalid(
+                    'LineItem must be either a debit or a credit; it may not '
+                    . 'be both at the same time.',
+                );
+            }
         });
+    }
+
+    protected function isDebitOrCredit(): bool
+    {
+        return $this->isDebit() xor $this->isCredit();
     }
 
     protected static function newFactory()

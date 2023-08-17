@@ -6,6 +6,8 @@ namespace STS\Beankeep\Tests\Feature\Transaction;
 
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\Support\HasRelativeTransactor;
+use STS\Beankeep\Exceptions\TransactionLineItemsMissing;
+use STS\Beankeep\Exceptions\TransactionLineItemsUnbalanced;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
@@ -232,10 +234,10 @@ final class PostingTest extends TestCase
             ->line('revenue', cr: 300.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
@@ -247,10 +249,10 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 400.02)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
@@ -262,10 +264,10 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 199.99)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
@@ -278,10 +280,10 @@ final class PostingTest extends TestCase
             ->line('cash', cr: 200.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsUnbalanced::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveDisallowsPostingWithoutLineItems(): void
@@ -290,10 +292,10 @@ final class PostingTest extends TestCase
             ->transact('perform services')
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveNewDisallowsPostingBecauseNoLineItemsArePossiblyAssociatedYet(): void
@@ -303,10 +305,10 @@ final class PostingTest extends TestCase
             'memo' => 'perform services',
         ]);
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->exists);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveRequiresAtLeastOneDebit(): void
@@ -317,10 +319,10 @@ final class PostingTest extends TestCase
             ->line('revenue', cr: 400.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 
     public function testSaveRequiresAtLeastOneCredit(): void
@@ -331,9 +333,9 @@ final class PostingTest extends TestCase
             ->line('revenue', dr: 400.00)
             ->draft();
 
-        $transaction->posted = true;
+        $this->expectException(TransactionLineItemsMissing::class);
 
-        $this->assertFalse($transaction->save());
-        $this->assertFalse($transaction->refresh()->posted);
+        $transaction->posted = true;
+        $transaction->save();
     }
 }
