@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace STS\Beankeep\Enums;
 
 use Carbon\CarbonPeriod;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
 enum JournalPeriod: int
@@ -65,5 +66,54 @@ enum JournalPeriod: int
             'nov', 'november'          => static::Nov,
             'dec', 'december'          => static::Dec,
         };
+    }
+
+    public static function get(?CarbonPeriod $period): CarbonPeriod
+    {
+        if (is_null($period)) {
+            return static::defaultPeriod();
+        }
+
+        return $period;
+    }
+
+    public static function defaultPeriod(): CarbonPeriod
+    {
+        if (config('beankeep.default-period')) {
+            return static::defaultPeriodFromConfig();
+        }
+
+        return static::defaultPeriodThisYear();
+    }
+
+    private static function defaultPeriodFromConfig(): CarbonPeriod {
+        $startMonthStr = config('beankeep.default-period');
+
+        $journalPeriod = JournalPeriod::fromString(
+            config('beankeep.default-period'),
+        );
+
+        // TODO(zmd): replace with call to JournalPeriod::toCarbonPeriod()
+        $now = CarbonImmutable::now();
+
+        $startDate = $now
+            ->setMonth($journalPeriod->value)
+            ->startOfMonth();
+
+        if ($startDate->greaterThan($now)) {
+            $startDate = $startDate->subYear();
+        }
+
+        $endDate = $startDate->addMonths(11)->endOfMonth();
+
+        return $startDate->daysUntil($endDate);
+    }
+
+    private static function defaultPeriodThisYear(): CarbonPeriod
+    {
+        $startOfYear = CarbonImmutable::now()->startOfYear();
+        $endOfYear = CarbonImmutable::now()->endOfYear();
+
+        return $startOfYear->daysUntil($endOfYear);
     }
 }
