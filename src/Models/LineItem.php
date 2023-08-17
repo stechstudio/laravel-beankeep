@@ -39,7 +39,10 @@ final class LineItem extends Beankeeper
     {
         static::saving(function (LineItem $lineItem) {
             if (!$lineItem->isDebitOrCredit()) {
-                throw new LineItemInvalid();
+                throw new LineItemInvalid(
+                    'LineItem must be either a debit or a credit; it may not '
+                    . 'be both at the same time.',
+                );
             }
         });
     }
