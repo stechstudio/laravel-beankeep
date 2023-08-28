@@ -81,7 +81,21 @@ final class JournalPeriodTest extends TestCase
 
     // -- ::expanded() --------------------------------------------------------
 
-    // TODO(zmd): test ::expanded()
+    public function testExpandedReturnsFullStringCorrespondingToMonthValue(): void
+    {
+        $this->assertEquals('January', JournalPeriod::Jan->expanded());
+        $this->assertEquals('February', JournalPeriod::Feb->expanded());
+        $this->assertEquals('March', JournalPeriod::March->expanded());
+        $this->assertEquals('April', JournalPeriod::April->expanded());
+        $this->assertEquals('May', JournalPeriod::May->expanded());
+        $this->assertEquals('June', JournalPeriod::June->expanded());
+        $this->assertEquals('July', JournalPeriod::July->expanded());
+        $this->assertEquals('August', JournalPeriod::Aug->expanded());
+        $this->assertEquals('September', JournalPeriod::Sept->expanded());
+        $this->assertEquals('October', JournalPeriod::Oct->expanded());
+        $this->assertEquals('November', JournalPeriod::Nov->expanded());
+        $this->assertEquals('December', JournalPeriod::Dec->expanded());
+    }
 
     // -- ::fromString() ------------------------------------------------------
 
