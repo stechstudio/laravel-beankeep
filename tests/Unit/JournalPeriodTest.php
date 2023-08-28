@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithTime;
+use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Enums\JournalPeriod;
 
 final class JournalPeriodTest extends TestCase
