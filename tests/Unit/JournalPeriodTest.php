@@ -108,7 +108,13 @@ final class JournalPeriodTest extends TestCase
         $this->assertEquals($expected, JournalPeriod::fromString($input));
     }
 
-    // TODO(zmd): public function testFromStringDisregardsCasingOfInputString(): void {}
+    public function testFromStringDisregardsCasingOfInputString(): void
+    {
+        $this->assertEquals(JournalPeriod::Aug, JournalPeriod::fromString('August'));
+        $this->assertEquals(JournalPeriod::Aug, JournalPeriod::fromString('auGust'));
+        $this->assertEquals(JournalPeriod::Aug, JournalPeriod::fromString('augusT'));
+        $this->assertEquals(JournalPeriod::Aug, JournalPeriod::fromString('AUGUST'));
+    }
 
     // ------------------------------------------------------------------------
 
