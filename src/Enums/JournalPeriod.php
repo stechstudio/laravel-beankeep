@@ -23,13 +23,25 @@ enum JournalPeriod: int
     case Nov = 11;
     case Dec = 12;
 
-    // TODO(zmd): test me
+    // TODO(zmd): test me (may be unit test)
     public function toCarbonPeriod(): CarbonPeriod
     {
-        // TODO(zmd): test & implement me
+        $now = CarbonImmutable::now();
+
+        $startDate = $now
+            ->setMonth($this->value)
+            ->startOfMonth();
+
+        if ($startDate->greaterThan($now)) {
+            $startDate = $startDate->subYear();
+        }
+
+        $endDate = $startDate->addMonths(11)->endOfMonth();
+
+        return $startDate->daysUntil($endDate);
     }
 
-    // TODO(zmd): test me
+    // TODO(zmd): test me (may be unit test)
     public function expanded(): string
     {
         return match ($this) {
@@ -49,7 +61,7 @@ enum JournalPeriod: int
         };
     }
 
-    // TODO(zmd): test me
+    // TODO(zmd): test me (may be unit test)
     public static function fromString(string $value): static
     {
         return match(Str::lower($value)) {
@@ -68,7 +80,7 @@ enum JournalPeriod: int
         };
     }
 
-    // TODO(zmd): test me
+    // TODO(zmd): test me (must be feature test)
     public static function get(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
@@ -78,7 +90,7 @@ enum JournalPeriod: int
         return $period;
     }
 
-    // TODO(zmd): test me
+    // TODO(zmd): test me (must be feature test)
     public static function defaultPeriod(): CarbonPeriod
     {
         if (config('beankeep.default-period')) {
@@ -95,20 +107,7 @@ enum JournalPeriod: int
             config('beankeep.default-period'),
         );
 
-        // TODO(zmd): replace with call to JournalPeriod::toCarbonPeriod()
-        $now = CarbonImmutable::now();
-
-        $startDate = $now
-            ->setMonth($journalPeriod->value)
-            ->startOfMonth();
-
-        if ($startDate->greaterThan($now)) {
-            $startDate = $startDate->subYear();
-        }
-
-        $endDate = $startDate->addMonths(11)->endOfMonth();
-
-        return $startDate->daysUntil($endDate);
+        return $journalPeriod->toCarbonPeriod();
     }
 
     private static function defaultPeriodThisYear(): CarbonPeriod
