@@ -7,6 +7,7 @@ namespace STS\Beankeep\Tests\Unit;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithTime;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use STS\Beankeep\Enums\JournalPeriod;
 
@@ -99,5 +100,45 @@ final class JournalPeriodTest extends TestCase
 
     // -- ::fromString() ------------------------------------------------------
 
-    // TODO(zmd): test ::fromString()
+    #[DataProvider('stringToJournalPeriodProvider')]
+    public function testFromStringConvertsVariuosStringsToInstanceOfJournalPeriod(
+        $input,
+        $expected,
+    ): void {
+        $this->assertEquals($expected, JournalPeriod::fromString($input));
+    }
+
+    // TODO(zmd): public function testFromStringDisregardsCasingOfInputString(): void {}
+
+    // ------------------------------------------------------------------------
+
+    public static function stringToJournalPeriodProvider(): array
+    {
+        return [
+            ['jan',       JournalPeriod::Jan],
+            ['january',   JournalPeriod::Jan],
+            ['feb',       JournalPeriod::Feb],
+            ['february',  JournalPeriod::Feb],
+            ['mar',       JournalPeriod::March],
+            ['march',     JournalPeriod::March],
+            ['apr',       JournalPeriod::April],
+            ['april',     JournalPeriod::April],
+            ['may',       JournalPeriod::May],
+            ['jun',       JournalPeriod::June],
+            ['june',      JournalPeriod::June],
+            ['jul',       JournalPeriod::July],
+            ['july',      JournalPeriod::July],
+            ['aug',       JournalPeriod::Aug],
+            ['august',    JournalPeriod::Aug],
+            ['sep',       JournalPeriod::Sept],
+            ['sept',      JournalPeriod::Sept],
+            ['september', JournalPeriod::Sept],
+            ['oct',       JournalPeriod::Oct],
+            ['october',   JournalPeriod::Oct],
+            ['nov',       JournalPeriod::Nov],
+            ['november',  JournalPeriod::Nov],
+            ['dec',       JournalPeriod::Dec],
+            ['december',  JournalPeriod::Dec],
+        ];
+    }
 }
