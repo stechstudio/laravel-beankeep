@@ -23,13 +23,13 @@ enum JournalPeriod: int
     case Nov = 11;
     case Dec = 12;
 
-    // TODO(zmd): bring in the static methods from BeankeepPeriod
-
+    // TODO(zmd): test me
     public function toCarbonPeriod(): CarbonPeriod
     {
         // TODO(zmd): test & implement me
     }
 
+    // TODO(zmd): test me
     public function expanded(): string
     {
         return match ($this) {
@@ -68,6 +68,7 @@ enum JournalPeriod: int
         };
     }
 
+    // TODO(zmd): test me
     public static function get(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
@@ -77,6 +78,7 @@ enum JournalPeriod: int
         return $period;
     }
 
+    // TODO(zmd): test me
     public static function defaultPeriod(): CarbonPeriod
     {
         if (config('beankeep.default-period')) {
