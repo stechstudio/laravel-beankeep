@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
+use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\Ledger;
 
@@ -62,7 +63,7 @@ final class Account extends Beankeeper
 
     public function openingBalance(?CarbonPeriod $period = null): int
     {
-        $period = BeankeepPeriod::from($period);
+        $period = JournalPeriod::get($period);
 
         $debitSum = $this->lineItems()
             ->ledgerEntries(priorTo: $period)
