@@ -44,10 +44,10 @@ enum JournalPeriod: int
     // TODO(zmd): test me (may be unit test)
     public function expanded(): string
     {
+        // Note: March, April, May, June and July are never abbreviated in text
         return match ($this) {
             self::Jan => 'January',
             self::Feb => 'February',
-            // March, April, May, June and July are never abbreviated in text
             self::March => 'March',
             self::April => 'April',
             self::May => 'May',

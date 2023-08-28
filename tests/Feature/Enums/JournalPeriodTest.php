@@ -2,41 +2,41 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature\Support;
+namespace STS\Beankeep\Tests\Feature\Enums;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
-use STS\Beankeep\Support\BeankeepPeriod;
+use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Tests\TestCase;
 
-final class BeankeepPeriodTest extends TestCase
+final class JournalPeriodTest extends TestCase
 {
-    // -- ::from() ------------------------------------------------------------
+    // -- ::get() -------------------------------------------------------------
 
-    public function testFromWithCarbonPeriodReturnsThatPeriod(): void
+    public function testGetWithCarbonPeriodReturnsThatPeriod(): void
     {
         $startDate = CarbonImmutable::now()->startOfMonth();
         $endDate = CarbonImmutable::now()->endOfMonth();
         $expectedPeriod = $startDate->daysUntil($endDate);
 
-        $period = BeankeepPeriod::from($expectedPeriod);
+        $period = JournalPeriod::get($expectedPeriod);
 
         $this->assertEquals($expectedPeriod, $period);
     }
 
-    public function testFromWithNullFallsBackToCurrentCalendarYearInAbsenceOfConfig(): void
+    public function testGetWithNullFallsBackToCurrentCalendarYearInAbsenceOfConfig(): void
     {
         $expectedStartDate = CarbonImmutable::parse('1/1');
         $expectedEndDate = $expectedStartDate->endOfYear();
 
-        $period = BeankeepPeriod::from(null);
+        $period = JournalPeriod::get(null);
 
         $this->assertNull(config('beankeep.default-period'));
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
-    public function testFromWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
+    public function testGetWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
     {
         $this->travelTo(Carbon::parse('11/23/2023'));
         config(['beankeep.default-period' => 'oct']);
@@ -49,7 +49,7 @@ final class BeankeepPeriodTest extends TestCase
             '30-sep ' . $this->nextYear(),
         )->endOfDay();
 
-        $period = BeankeepPeriod::from(null);
+        $period = JournalPeriod::get(null);
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
@@ -62,7 +62,7 @@ final class BeankeepPeriodTest extends TestCase
         $expectedStartDate = CarbonImmutable::parse('1/1');
         $expectedEndDate = $expectedStartDate->endOfYear();
 
-        $period = BeankeepPeriod::defaultPeriod();
+        $period = JournalPeriod::defaultPeriod();
 
         $this->assertNull(config('beankeep.default-period'));
         $this->assertEquals($expectedStartDate, $period->startDate);
@@ -82,7 +82,7 @@ final class BeankeepPeriodTest extends TestCase
             '30-sep ' . $this->nextYear(),
         )->endOfDay();
 
-        $period = BeankeepPeriod::defaultPeriod();
+        $period = JournalPeriod::defaultPeriod();
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
@@ -101,7 +101,7 @@ final class BeankeepPeriodTest extends TestCase
             '29-feb ' . $this->nextYear(),
         )->endOfDay();
 
-        $period = BeankeepPeriod::defaultPeriod();
+        $period = JournalPeriod::defaultPeriod();
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
@@ -120,7 +120,7 @@ final class BeankeepPeriodTest extends TestCase
             '30-nov ' . $this->thisYear(),
         )->endOfDay();
 
-        $period = BeankeepPeriod::defaultPeriod();
+        $period = JournalPeriod::defaultPeriod();
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
