@@ -23,7 +23,6 @@ enum JournalPeriod: int
     case Nov = 11;
     case Dec = 12;
 
-    // TODO(zmd): test me (may be unit test)
     public function toCarbonPeriod(): CarbonPeriod
     {
         $now = CarbonImmutable::now();
@@ -41,7 +40,6 @@ enum JournalPeriod: int
         return $startDate->daysUntil($endDate);
     }
 
-    // TODO(zmd): test me (may be unit test)
     public function expanded(): string
     {
         // Note: March, April, May, June and July are never abbreviated in text
@@ -61,7 +59,6 @@ enum JournalPeriod: int
         };
     }
 
-    // TODO(zmd): test me (may be unit test)
     public static function fromString(string $value): static
     {
         return match(Str::lower($value)) {
@@ -80,7 +77,6 @@ enum JournalPeriod: int
         };
     }
 
-    // TODO(zmd): test me (must be feature test)
     public static function get(?CarbonPeriod $period): CarbonPeriod
     {
         if (is_null($period)) {
@@ -90,7 +86,6 @@ enum JournalPeriod: int
         return $period;
     }
 
-    // TODO(zmd): test me (must be feature test)
     public static function defaultPeriod(): CarbonPeriod
     {
         if (config('beankeep.default-period')) {
