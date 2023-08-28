@@ -60,7 +60,15 @@ final class JournalPeriodTest extends TestCase
         $this->assertEquals(CarbonImmutable::parse('2024-04-30')->endOfDay(), $period->endDate);
     }
 
-    // TODO(zmd): public function testToCarbonPeriodReturnsEndDateMatchingTheCurrentDate(): void {}
+    public function testToCarbonPeriodReturnsEndDateMatchingTheCurrentDate(): void
+    {
+        $this->travelTo('2023-12-31');
+
+        $period = JournalPeriod::Jan->toCarbonPeriod();
+
+        $this->assertEquals(CarbonImmutable::parse('2023-01-01'), $period->startDate);
+        $this->assertEquals(CarbonImmutable::parse('2023-12-31')->endOfDay(), $period->endDate);
+    }
 
     // TODO(zmd): public function testToCarbonPeriodReturnsCorrectDateForLeapYear(): void {}
 
