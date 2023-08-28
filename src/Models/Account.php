@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Enums\JournalPeriod;
-use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\Ledger;
 
 final class Account extends Beankeeper
