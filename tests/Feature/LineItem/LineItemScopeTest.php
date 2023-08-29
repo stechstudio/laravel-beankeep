@@ -41,7 +41,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesIncludesOnlyPostedEntriesForConfiguredDefaultPeriodWhenPassedNoArguments(): void
     {
         $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        config(['beankeep.default-period' => 'dec']);
 
         $this->assertEquals(12, LineItem::ledgerEntries()->count());
         $this->assertEquals(1690500, LineItem::ledgerEntries()->sum('debit'));
@@ -130,7 +130,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        config(['beankeep.default-period' => 'dec']);
 
         $this->assertEquals(12, LineItem::ledgerEntriesForPeriod()->count());
         $this->assertEquals(1690500, LineItem::ledgerEntriesForPeriod()->sum('debit'));
@@ -205,7 +205,7 @@ final class LineItemScopeTest extends TestCase
     public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => ['1-dec', '30-nov']]);
+        config(['beankeep.default-period' => 'dec']);
 
         $this->assertEquals(16, LineItem::period()->count());
         $this->assertEquals(2238500, LineItem::period()->sum('debit'));

@@ -45,7 +45,7 @@ final class LedgerTest extends TestCase
     public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $ledger = $this->account('cash')->ledger();
 
@@ -78,7 +78,7 @@ final class LedgerTest extends TestCase
     public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void
     {
         $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => ['1-feb', '31-jan']]);
+        config(['beankeep.default-period' => 'feb']);
 
         $ledger = $this->account('accounts-payable')->ledger();
 

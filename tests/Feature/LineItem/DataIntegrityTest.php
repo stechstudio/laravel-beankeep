@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use STS\Beankeep\Enums\AccountType;
 use STS\Beankeep\Exceptions\LineItemInvalid;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\Journal;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 use STS\Beankeep\Tests\TestCase;
@@ -152,18 +153,21 @@ final class DataIntegrityTest extends TestCase
 
     private function account(): Account
     {
-        return $account ??= Account::create([
-            'number' => '1100',
-            'type' => AccountType::Asset,
-            'name' => 'Cash',
-        ]);
+        return $account ??= Account::factory()
+            ->for(Journal::factory())
+            ->create([
+                'number' => '1100',
+                'type' => AccountType::Asset,
+                'name' => 'Cash',
+            ]);
     }
 
     private function transaction(): Transaction
     {
-        return $transaction ??= Transaction::create([
-            'date' => Carbon::parse('2023-07-18'),
-            'memo' => 'perform services',
-        ]);
+        return $transaction ??= Transaction::factory()
+            ->create([
+                'date' => Carbon::parse('2023-07-18'),
+                'memo' => 'perform services',
+            ]);
     }
 }

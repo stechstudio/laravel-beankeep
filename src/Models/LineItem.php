@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Database\Factories\LineItemFactory;
+use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Exceptions\LineItemInvalid;
-use STS\Beankeep\Support\BeankeepPeriod;
 use STS\Beankeep\Support\LineItemCollection;
 use STS\Beankeep\Support\PriorToDateNormalizer;
 use ValueError;
@@ -98,7 +98,7 @@ final class LineItem extends Beankeeper
         Builder $query,
         ?CarbonPeriod $period = null,
     ): void {
-        $period = BeankeepPeriod::from($period);
+        $period = JournalPeriod::get($period);
 
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period)
@@ -120,7 +120,7 @@ final class LineItem extends Beankeeper
         Builder $query,
         ?CarbonPeriod $period = null,
     ): void {
-        $period = BeankeepPeriod::from($period);
+        $period = JournalPeriod::get($period);
 
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period));

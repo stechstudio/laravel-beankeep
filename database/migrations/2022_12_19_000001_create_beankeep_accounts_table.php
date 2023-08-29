@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('beankeep_accounts', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\STS\Beankeep\Models\Journal::class);
             $table->nullableMorphs('keepable');
 
             $table->string('type');
