@@ -40,25 +40,17 @@ final class JournalCurrentPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
-    /* TODO(zmd): move these tests (those which are applicable) into Journal's
-         test of ::period()
-    public function testDefaultPeriodCorrectlyHandlesContextOfCurrentTime(): void
+    public function testCurrentPeriodAccountsForCurrentDateToDetermineStartDate(): void
     {
         $this->travelTo(Carbon::parse('5/4/2023'));
-        config(['beankeep.default-period' => 'dec']);
 
-        $expectedStartDate = CarbonImmutable::parse(
-            '1-dec ' . $this->lastYear(),
-        );
+        $journal = new Journal(['period' => JournalPeriod::Dec]);
+        $expectedStartDate = CarbonImmutable::parse('12/1/2022');
+        $expectedEndDate = CarbonImmutable::parse('11/30/2023')->endOfDay();
 
-        $expectedEndDate = CarbonImmutable::parse(
-            '30-nov ' . $this->thisYear(),
-        )->endOfDay();
-
-        $period = JournalPeriod::defaultPeriod();
+        $period = $journal->currentPeriod();
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
-    */
 }
