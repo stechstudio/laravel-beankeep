@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Models;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use STS\Beankeep\Database\Factories\JournalFactory;
@@ -26,6 +27,11 @@ final class Journal extends Beankeeper
     protected static function newFactory()
     {
         return JournalFactory::new();
+    }
+
+    public function currentPeriod(): CarbonPeriod
+    {
+        return $this->period->toCarbonPeriod();
     }
 
     public function accounts(): HasMany

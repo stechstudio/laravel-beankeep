@@ -76,9 +76,4 @@ enum JournalPeriod: int
             'dec', 'december'          => static::Dec,
         };
     }
-
-    public static function get(CarbonPeriod $period): CarbonPeriod
-    {
-        return $period;
-    }
 }

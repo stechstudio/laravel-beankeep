@@ -2,67 +2,33 @@
 
 declare(strict_types=1);
 
-namespace STS\Beankeep\Tests\Feature\Enums;
+namespace STS\Beankeep\Tests\Feature\Journal;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use STS\Beankeep\Enums\JournalPeriod;
+use STS\Beankeep\Models\Journal;
 use STS\Beankeep\Tests\TestCase;
 
-// TODO(zmd): can we delete this test case now (once we relocate and refactor
-//   the period tests relating to the journal model)?
-final class JournalPeriodTest extends TestCase
+final class JournalCurrentPeriodTest extends TestCase
 {
-    // -- ::get() -------------------------------------------------------------
-
-    // TODO(zmd): I think this is redundant with our unit test of
-    //   JournalPeriod::get(); we should delete it if so.
-    public function testGetWithCarbonPeriodReturnsThatPeriod(): void
+    public function testCurrentPeriodRespondsWithCurrentCalendarYear(): void
     {
-        $startDate = CarbonImmutable::now()->startOfMonth();
-        $endDate = CarbonImmutable::now()->endOfMonth();
-        $expectedPeriod = $startDate->daysUntil($endDate);
+        $this->travelTo(Carbon::parse('08/29/2023'));
 
-        $period = JournalPeriod::get($expectedPeriod);
+        $journal = new Journal(['period' => JournalPeriod::Jan]);
 
-        $this->assertEquals($expectedPeriod, $period);
+        $expectedStartDate = CarbonImmutable::parse('01/01/2023');
+        $expectedEndDate = CarbonImmutable::parse('12/31/2023')->endOfDay();
+
+        $period = $journal->currentPeriod();
+
+        $this->assertEquals($expectedStartDate, $period->startDate);
+        $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
     /* TODO(zmd): move these tests (those which are applicable) into Journal's
          test of ::period()
-
-    // -- ::defaultPeriod() ---------------------------------------------------
-
-    public function testDefaultPeriodRespondsWithCurrentCalendarYearInAbsenceOfConfig(): void
-    {
-        $expectedStartDate = CarbonImmutable::parse('1/1');
-        $expectedEndDate = $expectedStartDate->endOfYear();
-
-        $period = JournalPeriod::defaultPeriod();
-
-        $this->assertNull(config('beankeep.default-period'));
-        $this->assertEquals($expectedStartDate, $period->startDate);
-        $this->assertEquals($expectedEndDate, $period->endDate);
-    }
-
-    public function testDefaultPeriodRespondsWithConfiguredPeriodWhenAvailable(): void
-    {
-        $this->travelTo(Carbon::parse('11/23/2023'));
-        config(['beankeep.default-period' => 'oct']);
-
-        $expectedStartDate = CarbonImmutable::parse(
-            '1-oct ' . $this->thisYear(),
-        );
-
-        $expectedEndDate = CarbonImmutable::parse(
-            '30-sep ' . $this->nextYear(),
-        )->endOfDay();
-
-        $period = JournalPeriod::defaultPeriod();
-
-        $this->assertEquals($expectedStartDate, $period->startDate);
-        $this->assertEquals($expectedEndDate, $period->endDate);
-    }
 
     public function testDefaultPeriodDealsWithLeapYearsForConfiguredEndPeriodBeingFeb(): void
     {

@@ -68,8 +68,6 @@ final class Account extends Beankeeper
 
     public function openingBalance(CarbonPeriod $period = null): int
     {
-        $period = JournalPeriod::get($period);
-
         $debitSum = $this->lineItems()
             ->ledgerEntries(priorTo: $period)
             ->sum('debit');
