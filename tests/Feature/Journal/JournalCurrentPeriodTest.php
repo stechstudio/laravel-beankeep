@@ -27,28 +27,21 @@ final class JournalCurrentPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
-    /* TODO(zmd): move these tests (those which are applicable) into Journal's
-         test of ::period()
-
-    public function testDefaultPeriodDealsWithLeapYearsForConfiguredEndPeriodBeingFeb(): void
+    public function testCurrentPeriodHandlesLeapYearsCorrectly(): void
     {
         $this->travelTo(Carbon::parse('5/4/2023'));
-        config(['beankeep.default-period' => 'mar']);
 
-        $expectedStartDate = CarbonImmutable::parse(
-            '1-mar ' . $this->thisYear(),
-        );
+        $journal = new Journal(['period' => JournalPeriod::Mar]);
 
-        $expectedEndDate = CarbonImmutable::parse(
-            '29-feb ' . $this->nextYear(),
-        )->endOfDay();
-
-        $period = JournalPeriod::defaultPeriod();
+        $expectedStartDate = CarbonImmutable::parse('3/1/2023');
+        $expectedEndDate = CarbonImmutable::parse('2/29/2024')->endOfDay();
 
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
 
+    /* TODO(zmd): move these tests (those which are applicable) into Journal's
+         test of ::period()
     public function testDefaultPeriodCorrectlyHandlesContextOfCurrentTime(): void
     {
         $this->travelTo(Carbon::parse('5/4/2023'));
@@ -68,21 +61,4 @@ final class JournalCurrentPeriodTest extends TestCase
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
     */
-
-    // ========================================================================
-
-    protected function lastYear(): string
-    {
-        return Carbon::now()->subYear()->format('Y');
-    }
-
-    protected function thisYear(): string
-    {
-        return Carbon::now()->format('Y');
-    }
-
-    protected function nextYear(): string
-    {
-        return Carbon::now()->addYear()->format('Y');
-    }
 }
