@@ -31,22 +31,14 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeLedgerEntries() ----------------------------------------------
 
+    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testLedgerEntriesIncludesOnlyPostedEntriesForDefaultPeriodWhenPassedNoArguments(): void
     {
         $this->assertEquals(10, LineItem::ledgerEntries()->count());
         $this->assertEquals(690500, LineItem::ledgerEntries()->sum('debit'));
         $this->assertEquals(690500, LineItem::ledgerEntries()->sum('credit'));
     }
-
-    public function testLedgerEntriesIncludesOnlyPostedEntriesForConfiguredDefaultPeriodWhenPassedNoArguments(): void
-    {
-        $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => 'dec']);
-
-        $this->assertEquals(12, LineItem::ledgerEntries()->count());
-        $this->assertEquals(1690500, LineItem::ledgerEntries()->sum('debit'));
-        $this->assertEquals(1690500, LineItem::ledgerEntries()->sum('credit'));
-    }
+    */
 
     public function testLedgerEntriesIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
     {
@@ -120,22 +112,14 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeLedgerEntriesForPeriod() -------------------------------------
 
+    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForDefaultPeriod(): void
     {
         $this->assertEquals(10, LineItem::ledgerEntriesForPeriod()->count());
         $this->assertEquals(690500, LineItem::ledgerEntriesForPeriod()->sum('debit'));
         $this->assertEquals(690500, LineItem::ledgerEntriesForPeriod()->sum('credit'));
     }
-
-    public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForConfiguredDefaultPeriod(): void
-    {
-        $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => 'dec']);
-
-        $this->assertEquals(12, LineItem::ledgerEntriesForPeriod()->count());
-        $this->assertEquals(1690500, LineItem::ledgerEntriesForPeriod()->sum('debit'));
-        $this->assertEquals(1690500, LineItem::ledgerEntriesForPeriod()->sum('credit'));
-    }
+    */
 
     public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
     {
@@ -195,22 +179,14 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopePeriod() -----------------------------------------------------
 
+    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testPeriodIncludesAllItemsForDefaultPeriod(): void
     {
         $this->assertEquals(14, LineItem::period()->count());
         $this->assertEquals(1238500, LineItem::period()->sum('debit'));
         $this->assertEquals(1238500, LineItem::period()->sum('credit'));
     }
-
-    public function testPeriodIncludesAllItemsForConfiguredDefaultPeriod(): void
-    {
-        $this->travelTo($this->getDate(thisYear: '5/4'));
-        config(['beankeep.default-period' => 'dec']);
-
-        $this->assertEquals(16, LineItem::period()->count());
-        $this->assertEquals(2238500, LineItem::period()->sum('debit'));
-        $this->assertEquals(2238500, LineItem::period()->sum('credit'));
-    }
+    */
 
     public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void
     {

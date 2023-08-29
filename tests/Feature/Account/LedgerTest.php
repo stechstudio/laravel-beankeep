@@ -35,22 +35,14 @@ final class LedgerTest extends TestCase
         $this->assertEquals(998500, $janLedger->balance());
     }
 
+    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testItCanConstructLedgerObjectForDebitPositiveAccountForDefaultPeriod(): void
     {
         $ledger = $this->account('cash')->ledger();
 
         $this->assertEquals(953500, $ledger->balance());
     }
-
-    public function testItCanConstructLedgerObjectForDebitPositiveAccountForConfiguredDefaultPeriod(): void
-    {
-        $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => 'feb']);
-
-        $ledger = $this->account('cash')->ledger();
-
-        $this->assertEquals(998500, $ledger->balance());
-    }
+    */
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
@@ -68,22 +60,14 @@ final class LedgerTest extends TestCase
         $this->assertEquals(500000, $janLedger->balance());
     }
 
+    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void
     {
         $ledger = $this->account('accounts-payable')->ledger();
 
         $this->assertEquals(750000, $ledger->balance());
     }
-
-    public function testItCanConstructLedgerObjectForCreditPositiveAccountForConfiguredDefaultPeriod(): void
-    {
-        $this->travelTo($this->getDate(thisYear: '1/25'));
-        config(['beankeep.default-period' => 'feb']);
-
-        $ledger = $this->account('accounts-payable')->ledger();
-
-        $this->assertEquals(500000, $ledger->balance());
-    }
+    */
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {

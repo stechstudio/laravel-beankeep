@@ -9,10 +9,14 @@ use Illuminate\Support\Carbon;
 use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Tests\TestCase;
 
+// TODO(zmd): can we delete this test case now (once we relocate and refactor
+//   the period tests relating to the journal model)?
 final class JournalPeriodTest extends TestCase
 {
     // -- ::get() -------------------------------------------------------------
 
+    // TODO(zmd): I think this is redundant with our unit test of
+    //   JournalPeriod::get(); we should delete it if so.
     public function testGetWithCarbonPeriodReturnsThatPeriod(): void
     {
         $startDate = CarbonImmutable::now()->startOfMonth();
@@ -24,36 +28,8 @@ final class JournalPeriodTest extends TestCase
         $this->assertEquals($expectedPeriod, $period);
     }
 
-    public function testGetWithNullFallsBackToCurrentCalendarYearInAbsenceOfConfig(): void
-    {
-        $expectedStartDate = CarbonImmutable::parse('1/1');
-        $expectedEndDate = $expectedStartDate->endOfYear();
-
-        $period = JournalPeriod::get(null);
-
-        $this->assertNull(config('beankeep.default-period'));
-        $this->assertEquals($expectedStartDate, $period->startDate);
-        $this->assertEquals($expectedEndDate, $period->endDate);
-    }
-
-    public function testGetWithNullFallsBackToConfiguredPeriodWhenAvailable(): void
-    {
-        $this->travelTo(Carbon::parse('11/23/2023'));
-        config(['beankeep.default-period' => 'oct']);
-
-        $expectedStartDate = CarbonImmutable::parse(
-            '1-oct ' . $this->thisYear(),
-        );
-
-        $expectedEndDate = CarbonImmutable::parse(
-            '30-sep ' . $this->nextYear(),
-        )->endOfDay();
-
-        $period = JournalPeriod::get(null);
-
-        $this->assertEquals($expectedStartDate, $period->startDate);
-        $this->assertEquals($expectedEndDate, $period->endDate);
-    }
+    /* TODO(zmd): move these tests (those which are applicable) into Journal's
+         test of ::period()
 
     // -- ::defaultPeriod() ---------------------------------------------------
 
@@ -125,6 +101,7 @@ final class JournalPeriodTest extends TestCase
         $this->assertEquals($expectedStartDate, $period->startDate);
         $this->assertEquals($expectedEndDate, $period->endDate);
     }
+    */
 
     // ========================================================================
 

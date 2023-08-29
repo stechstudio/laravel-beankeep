@@ -96,7 +96,7 @@ final class LineItem extends Beankeeper
 
     public function scopeLedgerEntriesForPeriod(
         Builder $query,
-        ?CarbonPeriod $period = null,
+        CarbonPeriod $period = null,
     ): void {
         $period = JournalPeriod::get($period);
 
@@ -118,7 +118,7 @@ final class LineItem extends Beankeeper
 
     public function scopePeriod(
         Builder $query,
-        ?CarbonPeriod $period = null,
+        CarbonPeriod $period = null,
     ): void {
         $period = JournalPeriod::get($period);
 
