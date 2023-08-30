@@ -27,27 +27,6 @@ final class LedgerEntriesTest extends TestCase
         $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 
-    /*
-    public function testItCanGetLedgerEntriesForCurrentPeriod(): void
-    {
-        // TODO(zmd): refactor this test around Journal::currentPeriod()
-        // TODO(zmd): change the journal period & current time to suit this test
-
-        $account = $this->account('cash');
-        $ledgerEntries = $account->lineItems()->ledgerEntries()->get();
-
-        $this->assertEquals(2, $ledgerEntries->count());
-
-        $this->assertEquals(1500, $ledgerEntries[0]->credit);
-        $this->assertTrue($ledgerEntries[0]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '1/10'), $ledgerEntries[0]->transaction->date);
-
-        $this->assertEquals(45000, $ledgerEntries[1]->credit);
-        $this->assertTrue($ledgerEntries[1]->transaction->posted);
-        $this->assertEquals($this->getDate(thisYear: '2/1'), $ledgerEntries[1]->transaction->date);
-    }
-    */
-
     public function testItCanGetLedgerEntriesForSpecificPeriod(): void
     {
         $account = $this->account('cash');

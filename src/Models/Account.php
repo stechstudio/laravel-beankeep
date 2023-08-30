@@ -46,10 +46,7 @@ final class Account extends Beankeeper
 
     public function ledger(?CarbonPeriod $period = null): Ledger
     {
-        //
-        // TODO(zmd): if $period is null then get the current period from the
-        //   parent journal
-        //
+        $period = $period ?? $this->journal->currentPeriod();
 
         return new Ledger(
             account: $this,

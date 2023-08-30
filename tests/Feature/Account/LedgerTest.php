@@ -35,14 +35,12 @@ final class LedgerTest extends TestCase
         $this->assertEquals(998500, $janLedger->balance());
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testItCanConstructLedgerObjectForDebitPositiveAccountForDefaultPeriod(): void
+    public function testItCanConstructLedgerObjectForDebitPositiveAccountForJournalsCurrentPeriod(): void
     {
         $ledger = $this->account('cash')->ledger();
 
         $this->assertEquals(953500, $ledger->balance());
     }
-    */
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
@@ -60,14 +58,12 @@ final class LedgerTest extends TestCase
         $this->assertEquals(500000, $janLedger->balance());
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testItCanConstructLedgerObjectForCreditPositiveAccountForDefaultPeriod(): void
+    public function testItCanConstructLedgerObjectForCreditPositiveAccountForJournalsCurrentPeriod(): void
     {
         $ledger = $this->account('accounts-payable')->ledger();
 
         $this->assertEquals(750000, $ledger->balance());
     }
-    */
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
