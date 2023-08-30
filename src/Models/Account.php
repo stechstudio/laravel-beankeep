@@ -57,10 +57,7 @@ final class Account extends Beankeeper
 
     public function balance(?CarbonPeriod $period = null): int
     {
-        //
-        // TODO(zmd): if $period is null then get the current period from the
-        //   parent journal
-        //
+        $period = $period ?? $this->journal->currentPeriod();
 
         $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
         $creditSum = $this->lineItems()->ledgerEntries($period)->sum('credit');
@@ -75,10 +72,7 @@ final class Account extends Beankeeper
 
     public function openingBalance(?CarbonPeriod $period = null): int
     {
-        //
-        // TODO(zmd): if $period is null then get the current period from the
-        //   parent journal
-        //
+        $period = $period ?? $this->journal->currentPeriod();
 
         $debitSum = $this->lineItems()
             ->ledgerEntries(priorTo: $period)

@@ -35,12 +35,10 @@ final class BalanceTest extends TestCase
         $this->assertEquals(998500, $this->account('cash')->balance($this->janPeriod()));
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testItCanReportDebitPositiveBalanceForDefaultPeriod(): void
     {
         $this->assertEquals(953500, $this->account('cash')->balance());
     }
-    */
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveBalanceCalculations(): void
     {
@@ -54,12 +52,10 @@ final class BalanceTest extends TestCase
         $this->assertEquals(500000, $this->account('accounts-payable')->balance($this->janPeriod()));
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testItCanReportCreditPositiveBalanceForDefaultPeriod(): void
     {
         $this->assertEquals(750000, $this->account('accounts-payable')->balance());
     }
-    */
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveBalanceCalculations(): void
     {
@@ -75,12 +71,10 @@ final class BalanceTest extends TestCase
         $this->assertEquals(998500, $this->account('cash')->openingBalance($this->febPeriod()));
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testThatItCorrectlyReportsDebitPositiveOpeningBalanceForDefaultPeriod(): void
     {
         $this->assertEquals(1000000, $this->account('cash')->openingBalance());
     }
-    */
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveOpeningBalanceCalculations(): void
     {
@@ -94,12 +88,10 @@ final class BalanceTest extends TestCase
         $this->assertEquals(500000, $this->account('accounts-payable')->openingBalance($this->febPeriod()));
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
     public function testThatItCorrectlyReportsCreditPositiveOpeningBalanceForDefaultPeriod(): void
     {
         $this->assertEquals(0, $this->account('accounts-payable')->openingBalance());
     }
-    */
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveOpeningBalanceCalculations(): void
     {
