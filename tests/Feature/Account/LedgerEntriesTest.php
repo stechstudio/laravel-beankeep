@@ -27,9 +27,12 @@ final class LedgerEntriesTest extends TestCase
         $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
     }
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testItCanGetLedgerEntriesForDefaultPeriod(): void
+    /*
+    public function testItCanGetLedgerEntriesForCurrentPeriod(): void
     {
+        // TODO(zmd): refactor this test around Journal::currentPeriod()
+        // TODO(zmd): change the journal period & current time to suit this test
+
         $account = $this->account('cash');
         $ledgerEntries = $account->lineItems()->ledgerEntries()->get();
 
