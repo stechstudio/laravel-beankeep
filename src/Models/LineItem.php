@@ -80,8 +80,7 @@ final class LineItem extends Beankeeper
         ?CarbonPeriod $period = null,
         null|string|Carbon|CarbonImmutable|CarbonPeriod $priorTo = null,
     ): void {
-        // TODO(zmd): change to xor, and update tests accordingly
-        if ($period && $priorTo) {
+        if (!($period xor $priorTo)) {
             throw new ValueError('You must specify a period or a'
                 . 'priorTo argument.');
         }

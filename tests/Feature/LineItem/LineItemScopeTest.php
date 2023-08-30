@@ -101,6 +101,13 @@ final class LineItemScopeTest extends TestCase
         LineItem::ledgerEntries($date->daysUntil($date->endOfMonth()), $date);
     }
 
+    public function testLedgerEntriesCarpsIfYouPassNeigherAPeriodNorAPriorToDate(): void
+    {
+        $this->expectException(ValueError::class);
+
+        LineItem::ledgerEntries();
+    }
+
     // -- ::scopeLedgerEntriesForPeriod() -------------------------------------
 
     public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
