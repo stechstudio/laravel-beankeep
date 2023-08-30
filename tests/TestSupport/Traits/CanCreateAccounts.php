@@ -14,17 +14,11 @@ trait CanCreateAccounts
 {
     use CanLookupAccounts;
 
-    protected Journal $journal;
-
     protected function createAccounts(): array
     {
         $this->seed(AccountSeeder::class);
 
-        $accounts = AccountLookup::lookupTable();
-
-        $this->journal = $accounts['cash']->journal;
-
-        return $accounts;
+        return AccountLookup::lookupTable();
     }
 
     protected function createAccountsIfMissing(): void
