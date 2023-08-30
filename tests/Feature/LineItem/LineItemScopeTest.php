@@ -31,15 +31,6 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeLedgerEntries() ----------------------------------------------
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testLedgerEntriesIncludesOnlyPostedEntriesForDefaultPeriodWhenPassedNoArguments(): void
-    {
-        $this->assertEquals(10, LineItem::ledgerEntries()->count());
-        $this->assertEquals(690500, LineItem::ledgerEntries()->sum('debit'));
-        $this->assertEquals(690500, LineItem::ledgerEntries()->sum('credit'));
-    }
-    */
-
     public function testLedgerEntriesIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
     {
         $this->assertEquals(4, LineItem::ledgerEntries($this->febPeriod())->count());
@@ -112,15 +103,6 @@ final class LineItemScopeTest extends TestCase
 
     // -- ::scopeLedgerEntriesForPeriod() -------------------------------------
 
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForDefaultPeriod(): void
-    {
-        $this->assertEquals(10, LineItem::ledgerEntriesForPeriod()->count());
-        $this->assertEquals(690500, LineItem::ledgerEntriesForPeriod()->sum('debit'));
-        $this->assertEquals(690500, LineItem::ledgerEntriesForPeriod()->sum('credit'));
-    }
-    */
-
     public function testLedgerEntriesForPeriodIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
     {
         $this->assertEquals(4, LineItem::ledgerEntriesForPeriod($this->febPeriod())->count());
@@ -178,15 +160,6 @@ final class LineItemScopeTest extends TestCase
     }
 
     // -- ::scopePeriod() -----------------------------------------------------
-
-    /* TODO(zmd): refactor in terms of default period for parent journal:
-    public function testPeriodIncludesAllItemsForDefaultPeriod(): void
-    {
-        $this->assertEquals(14, LineItem::period()->count());
-        $this->assertEquals(1238500, LineItem::period()->sum('debit'));
-        $this->assertEquals(1238500, LineItem::period()->sum('credit'));
-    }
-    */
 
     public function testPeriodIncludesAllItemsForSpecifiedPeriod(): void
     {

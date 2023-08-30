@@ -44,8 +44,13 @@ final class Account extends Beankeeper
         return $this->hasMany(LineItem::class);
     }
 
-    public function ledger(CarbonPeriod $period = null): Ledger
+    public function ledger(?CarbonPeriod $period = null): Ledger
     {
+        //
+        // TODO(zmd): if $period is null then get the current period from the
+        //   parent journal
+        //
+
         return new Ledger(
             account: $this,
             startingBalance: $this->openingBalance($period),
@@ -53,8 +58,13 @@ final class Account extends Beankeeper
         );
     }
 
-    public function balance(CarbonPeriod $period = null): int
+    public function balance(?CarbonPeriod $period = null): int
     {
+        //
+        // TODO(zmd): if $period is null then get the current period from the
+        //   parent journal
+        //
+
         $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
         $creditSum = $this->lineItems()->ledgerEntries($period)->sum('credit');
 
@@ -66,8 +76,13 @@ final class Account extends Beankeeper
         );
     }
 
-    public function openingBalance(CarbonPeriod $period = null): int
+    public function openingBalance(?CarbonPeriod $period = null): int
     {
+        //
+        // TODO(zmd): if $period is null then get the current period from the
+        //   parent journal
+        //
+
         $debitSum = $this->lineItems()
             ->ledgerEntries(priorTo: $period)
             ->sum('debit');
