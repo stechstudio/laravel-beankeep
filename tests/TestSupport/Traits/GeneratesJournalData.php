@@ -91,8 +91,12 @@ trait GeneratesJournalData
         return $journalPeriod;
     }
 
-    protected function getAccounts(Journal $journal): array
+    protected function getAccounts(?Journal $journal = null): array
     {
+        if (! $journal) {
+            $journal = $this->getJournal(1);
+        }
+
         if (! Account::where('journal_id', $journal->id)->count()) {
             Account::factory()
                 ->for($journal)
