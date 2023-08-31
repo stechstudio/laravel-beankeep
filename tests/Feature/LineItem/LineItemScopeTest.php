@@ -4,36 +4,28 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\Feature\LineItem;
 
+use Carbon\CarbonImmutable;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Carbon;
+use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Tests\TestCase;
-//use STS\Beankeep\Tests\TestSupport\Traits\HasTransactionMakingShortcuts;
 use STS\Beankeep\Tests\TestSupport\Traits\GeneratesJournalData;
 use ValueError;
 
 final class LineItemScopeTest extends TestCase
 {
-    //use HasTransactionMakingShortcuts;
     use GeneratesJournalData;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        /*
-        $this->createAccountsIfMissing();
-
-        $this->txn(     lastYear: '12/25', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
-        $this->txn(     thisYear: '1/5',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
-        $this->txn(     thisYear: '1/10',  dr: ['cost-of-services',       15.00], cr: ['cash',                   15.00]);
-        $this->txn(     thisYear: '1/20',  dr: ['equipment',            5000.00], cr: ['accounts-payable',     5000.00]);
-        $this->txn(     thisYear: '2/1',   dr: ['rent-expense',          450.00], cr: ['cash',                  450.00]);
-        $this->txn(     thisYear: '2/12',  dr: ['accounts-receivable',   240.00], cr: ['services-revenue',      240.00]);
-        $this->draftTxn(thisYear: '2/16',  dr: ['accounts-payable',     5000.00], cr: ['cash',                 5000.00]);
-        $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
-        */
-
         // TODO(zmd): make this a reality
-        $this->travelTo('8/30/2023');
+        // TODO(zmd): do we need time travel for these tests?
+        //
+        //     $this->travelTo('2/18/2023');
+        //
         [$_journal, $_accounts] = $this->for('jan', function ($txn, $draft) {
             $txn(  '12/25/2022', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
             $txn(  '1/5/2023',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
@@ -50,9 +42,6 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesIncludesOnlyPostedEntriesForSpecifiedPeriod(): void
     {
-        $this->travelTo('5/1/2023');
-        $period = JournalPeriod::Feb->toPeriod();
-
         $this->assertEquals(4, LineItem::ledgerEntries($this->febPeriod())->count());
         $this->assertEquals(69000, LineItem::ledgerEntries($this->febPeriod())->sum('debit'));
         $this->assertEquals(69000, LineItem::ledgerEntries($this->febPeriod())->sum('credit'));
@@ -70,9 +59,9 @@ final class LineItemScopeTest extends TestCase
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
-            $this->getDate(thisYear: '2/1')->format('d-M Y'),
-            $this->getDate(thisYear: '2/1')->format('Y-m-d'),
-            $this->getDate(thisYear: '2/1')->format('m/d/Y'),
+            CarbonImmutable::parse('2/1/2023')->format('d-M Y'),
+            CarbonImmutable::parse('2/1/2023')->format('Y-m-d'),
+            CarbonImmutable::parse('2/1/2023')->format('m/d/Y'),
         ] as $dateStr) {
             $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $dateStr)->count());
             $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $dateStr)->sum('debit'));
@@ -83,7 +72,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbon(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $date = $this->getDate(thisYear: '2/1')->toMutable();
+        $date = Carbon::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
         $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $date)->sum('debit'));
@@ -93,7 +82,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonImmutable(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $date = $this->getDate(thisYear: '2/1')->toImmutable();
+        $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
         $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $date)->sum('debit'));
@@ -103,8 +92,9 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonPeriod(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $start = $this->getDate(thisYear: '2/1');
-        $end = $this->getDate(thisYear: '2/1')->endOfMonth();
+        // TODO(zmd): can we not just use our ::febPeriod() helper here?
+        $start = CarbonImmutable::parse('2/1/2023');
+        $end = CarbonImmutable::parse('2/28/2023');
         $period = $start->daysUntil($end);
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $period)->count());
@@ -114,7 +104,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesCarpsIfYouPassBothAPeriodAndAPriorToDate(): void
     {
-        $date = $this->getDate(thisYear: '2/1');
+        $date = CarbonImmutable::parse('2/1/2023');
 
         $this->expectException(ValueError::class);
 
@@ -144,9 +134,9 @@ final class LineItemScopeTest extends TestCase
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
-            $this->getDate(thisYear: '2/1')->format('d-M Y'),
-            $this->getDate(thisYear: '2/1')->format('Y-m-d'),
-            $this->getDate(thisYear: '2/1')->format('m/d/Y'),
+            CarbonImmutable::parse('2/1/2023')->format('d-M Y'),
+            CarbonImmutable::parse('2/1/2023')->format('Y-m-d'),
+            CarbonImmutable::parse('2/1/2023')->format('m/d/Y'),
         ] as $dateStr) {
             $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($dateStr)->count());
             $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($dateStr)->sum('debit'));
@@ -157,7 +147,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $date = $this->getDate(thisYear: '2/1')->toMutable();
+        $date = Carbon::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
         $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($date)->sum('debit'));
@@ -167,7 +157,7 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonImmutable(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $date = $this->getDate(thisYear: '2/1')->toImmutable();
+        $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
         $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($date)->sum('debit'));
@@ -177,8 +167,9 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $start = $this->getDate(thisYear: '2/1');
-        $end = $this->getDate(thisYear: '2/1')->endOfMonth();
+        // TODO(zmd): can we not just use our ::febPeriod() helper here?
+        $start = CarbonImmutable::parse('2/1/2023');
+        $end = CarbonImmutable::parse('2/28/2023');
         $period = $start->daysUntil($end);
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($period)->count());
@@ -200,9 +191,9 @@ final class LineItemScopeTest extends TestCase
     public function testPriorToWithDatePassedAsString(): void
     {
         foreach ([
-            $this->getDate(thisYear: '2/1')->format('d-M Y'),
-            $this->getDate(thisYear: '2/1')->format('Y-m-d'),
-            $this->getDate(thisYear: '2/1')->format('m/d/Y'),
+            CarbonImmutable::parse('2/1/2023')->format('d-M Y'),
+            CarbonImmutable::parse('2/1/2023')->format('Y-m-d'),
+            CarbonImmutable::parse('2/1/2023')->format('m/d/Y'),
         ] as $dateStr) {
             $this->assertEquals(8, LineItem::priorTo($dateStr)->count());
             $this->assertEquals(1621500, LineItem::priorTo($dateStr)->sum('debit'));
@@ -212,7 +203,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToWithDatePassedAsCarbon(): void
     {
-        $date = $this->getDate(thisYear: '2/1')->toMutable();
+        $date = Carbon::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::priorTo($date)->count());
         $this->assertEquals(1621500, LineItem::priorTo($date)->sum('debit'));
@@ -221,7 +212,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToWithDatePassedAsCarbonImmutable(): void
     {
-        $date = $this->getDate(thisYear: '2/1')->toImmutable();
+        $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::priorTo($date)->count());
         $this->assertEquals(1621500, LineItem::priorTo($date)->sum('debit'));
@@ -230,8 +221,9 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToWithDatePassedAsCarbonPeriod(): void
     {
-        $start = $this->getDate(thisYear: '2/1');
-        $end = $this->getDate(thisYear: '2/1')->endOfMonth();
+        // TODO(zmd): can we not just use our ::febPeriod() helper here?
+        $start = CarbonImmutable::parse('2/1/2023');
+        $end = CarbonImmutable::parse('2/28/2023');
         $period = $start->daysUntil($end);
 
         $this->assertEquals(8, LineItem::priorTo($period)->count());
@@ -242,7 +234,7 @@ final class LineItemScopeTest extends TestCase
     public function testPriorToDoesNotFilterOutPendingItems(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        $date = $this->getDate(thisYear: '2/1');
+        $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(10, LineItem::priorTo($date)->count());
         $this->assertEquals(1626500, LineItem::priorTo($date)->sum('debit'));
@@ -291,5 +283,23 @@ final class LineItemScopeTest extends TestCase
         $this->assertEquals(9, LineItem::credits()->count());
         $this->assertEquals(0, LineItem::credits()->sum('debit'));
         $this->assertEquals(2243500, LineItem::credits()->sum('credit'));
+    }
+
+    // ------------------------------------------------------------------------
+
+    protected function janPeriod(): CarbonPeriod
+    {
+        $start = CarbonImmutable::parse('1/1/2023');
+        $end = CarbonImmutable::parse('12/31/2023');
+
+        return $start->daysUntil($end);
+    }
+
+    protected function febPeriod(): CarbonPeriod
+    {
+        $start = CarbonImmutable::parse('2/1/2023');
+        $end = CarbonImmutable::parse('2/28/2023');
+
+        return $start->daysUntil($end);
     }
 }

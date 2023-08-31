@@ -8,10 +8,12 @@ use Closure;
 use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Models\Journal;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Database\Factories\Support\AccountLookup;
 use STS\Beankeep\Models\Transaction;
 use ValueError;
+use Carbon\Carbon;
 
 trait GeneratesJournalData
 {
@@ -27,7 +29,7 @@ trait GeneratesJournalData
             $cr,
             $posted,
             &$transaction,
-        ): Transaction {
+        ) {
             $transaction = $posted
                 ? $txn($date, $dr, $cr)
                 : $draftTxn($date, $dr, $cr);
@@ -44,7 +46,6 @@ trait GeneratesJournalData
         return $this->txn($date, $dr, $cr, false);
     }
 
-    // TODO(zmd): extract helpers and try to clean up this mess
     protected function for(
         JournalPeriod|string $journalPeriod,
         Closure $cb,
@@ -52,6 +53,7 @@ trait GeneratesJournalData
         return $this->forJournal(1, $journalPeriod, $cb);
     }
 
+    // TODO(zmd): extract helpers and try to clean up this mess
     protected function forJournal(
         int $journalId,
         JournalPeriod|string $journalPeriod,
@@ -62,18 +64,19 @@ trait GeneratesJournalData
             ['period' => $this->journalPeriod($journalPeriod)],
         );
 
-        Account::factory()
-            ->for($journal)
-            ->createMany(AccountFactory::defaultAccountAttributes());
+        if (! Account::where('journal_id', $journal->id)->count()) {
+            Account::factory()
+                ->for($journal)
+                ->createMany(AccountFactory::defaultAccountAttributes());
+        }
 
-        // TODO(zmd): this needs to be scoped to the journal:
-        $accounts = AccountLookup::lookupTable();
+        $accounts = AccountLookup::lookupTable($journal);
 
         $txn = function (
             string $date,
             array $dr,
             array $cr,
-            bool $posted = false,
+            bool $posted = true,
         ) use ($journal, $accounts): Transaction {
             [
                 $debitAccount,
@@ -82,23 +85,31 @@ trait GeneratesJournalData
                 $creditAmount,
             ] = $this->lineItemValues($dr, $cr);
 
-            $debitAccount = $accounts[$debitAccount];
-            $creditAccount = $accounts[$creditAccount];
+            $transaction = Transaction::factory()->create([
+                'date' => Carbon::parse($date),
+            ]);
 
-            // TODO(zmd): finish implementing me for real
-            $debit = new LineItem([
-                'debit' => $debitAmount,
+            $debit = LineItem::factory()->make([
+                'debit' => (int) ($debitAmount * 100),
                 'credit' => 0,
-                'account_id' => ???,
-                'transaction_id' => ???,
+                'account_id' => $accounts[$debitAccount]->id,
             ]);
 
-            $credit = new LineItem([
+            $credit = LineItem::factory()->make([
                 'debit' => 0,
-                'credit' => $creditAmount,
-                'account_id' => ???,
-                'transaction_id' => ???,
+                'credit' => (int) ($creditAmount * 100),
+                'account_id' => $accounts[$creditAccount]->id,
             ]);
+
+            $transaction->lineItems()->save($debit);
+            $transaction->lineItems()->save($credit);
+
+            if ($posted) {
+                $transaction->posted = true;
+                $transaction->save();
+            }
+
+            return $transaction;
         };
 
         $draftTxn = function (
