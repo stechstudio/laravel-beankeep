@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace STS\Beankeep\Tests\TestSupport\Traits;
 
+use Carbon\Carbon;
 use Closure;
-use STS\Beankeep\Enums\JournalPeriod;
-use STS\Beankeep\Models\Journal;
-use STS\Beankeep\Models\Account;
-use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Database\Factories\Support\AccountLookup;
+use STS\Beankeep\Enums\JournalPeriod;
+use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\Journal;
+use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
 use ValueError;
-use Carbon\Carbon;
 
 trait GeneratesJournalData
 {
@@ -53,25 +53,80 @@ trait GeneratesJournalData
         return $this->forJournal(1, $journalPeriod, $cb);
     }
 
-    // TODO(zmd): extract helpers and try to clean up this mess
     protected function forJournal(
         int $journalId,
         JournalPeriod|string $journalPeriod,
         Closure $cb,
     ): array {
-        $journal = Journal::updateOrCreate(
+        $journal = $this->getJournal(1, $journalPeriod);
+        $accounts = $this->getAccounts($journal);
+
+        [$txn, $draftTxn] = $this->getTransactionConstructors(
+            $journal,
+            $accounts,
+        );
+
+        $cb($txn, $draftTxn);
+
+        return [$journal, $accounts];
+    }
+
+    protected function getJournal(
+        int $journalId,
+        JournalPeriod|string $journalPeriod,
+    ): Journal {
+        return Journal::updateOrCreate(
             ['id' => $journalId],
             ['period' => $this->journalPeriod($journalPeriod)],
         );
+    }
 
+    protected function journalPeriod(
+        JournalPeriod|string $journalPeriod,
+    ): JournalPeriod {
+        if (is_string($journalPeriod)) {
+            return JournalPeriod::fromString($journalPeriod);
+        }
+
+        return $journalPeriod;
+    }
+
+    protected function getAccounts(Journal $journal): array
+    {
         if (! Account::where('journal_id', $journal->id)->count()) {
             Account::factory()
                 ->for($journal)
                 ->createMany(AccountFactory::defaultAccountAttributes());
         }
 
-        $accounts = AccountLookup::lookupTable($journal);
+        return AccountLookup::lookupTable($journal);
+    }
 
+    protected function lineItemValues(?array $dr, ?array $cr): array
+    {
+        if (is_null($dr) || is_null($cr)) {
+            throw new ValueError('Supply both a debit an a credit please.');
+        }
+
+        if (is_string($dr[0])) {
+            [$debitAccount, $debitAmount] = $dr;
+        } else {
+            [$debitAmount, $debitAccount] = $dr;
+        }
+
+        if (is_string($cr[0])) {
+            [$creditAccount, $creditAmount] = $cr;
+        } else {
+            [$creditAmount, $creditAccount] = $cr;
+        }
+
+        return [$debitAccount, $debitAmount, $creditAccount, $creditAmount];
+    }
+
+    protected function getTransactionConstructors(
+        Journal $journal,
+        array $accounts,
+    ): array {
         $txn = function (
             string $date,
             array $dr,
@@ -120,39 +175,6 @@ trait GeneratesJournalData
             return $txn($date, $dr, $cr, false);
         };
 
-        $cb($txn, $draftTxn);
-
-        return [$journal, $accounts];
-    }
-
-    protected function journalPeriod(
-        JournalPeriod|string $journalPeriod,
-    ): JournalPeriod {
-        if (is_string($journalPeriod)) {
-            return JournalPeriod::fromString($journalPeriod);
-        }
-
-        return $journalPeriod;
-    }
-
-    protected function lineItemValues(?array $dr, ?array $cr): array
-    {
-        if (is_null($dr) || is_null($cr)) {
-            throw new ValueError('Supply both a debit an a credit please.');
-        }
-
-        if (is_string($dr[0])) {
-            [$debitAccount, $debitAmount] = $dr;
-        } else {
-            [$debitAmount, $debitAccount] = $dr;
-        }
-
-        if (is_string($cr[0])) {
-            [$creditAccount, $creditAmount] = $cr;
-        } else {
-            [$creditAmount, $creditAccount] = $cr;
-        }
-
-        return [$debitAccount, $debitAmount, $creditAccount, $creditAmount];
+        return [$txn, $draftTxn];
     }
 }
