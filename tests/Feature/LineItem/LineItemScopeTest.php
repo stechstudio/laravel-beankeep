@@ -21,11 +21,6 @@ final class LineItemScopeTest extends TestCase
     {
         parent::setUp();
 
-        // TODO(zmd): make this a reality
-        // TODO(zmd): do we need time travel for these tests?
-        //
-        //     $this->travelTo('2/18/2023');
-        //
         [$_journal, $_accounts] = $this->for('jan', function ($txn, $draft) {
             $txn(  '12/25/2022', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
             $txn(  '1/5/2023',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);
@@ -92,14 +87,10 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonPeriod(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        // TODO(zmd): can we not just use our ::febPeriod() helper here?
-        $start = CarbonImmutable::parse('2/1/2023');
-        $end = CarbonImmutable::parse('2/28/2023');
-        $period = $start->daysUntil($end);
 
-        $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $period)->count());
-        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $period)->sum('debit'));
-        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $period)->sum('credit'));
+        $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $this->febPeriod())->count());
+        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $this->febPeriod())->sum('debit'));
+        $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $this->febPeriod())->sum('credit'));
     }
 
     public function testLedgerEntriesCarpsIfYouPassBothAPeriodAndAPriorToDate(): void
@@ -167,14 +158,10 @@ final class LineItemScopeTest extends TestCase
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void
     {
         $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
-        // TODO(zmd): can we not just use our ::febPeriod() helper here?
-        $start = CarbonImmutable::parse('2/1/2023');
-        $end = CarbonImmutable::parse('2/28/2023');
-        $period = $start->daysUntil($end);
 
-        $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($period)->count());
-        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($period)->sum('debit'));
-        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($period)->sum('credit'));
+        $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($this->febPeriod())->count());
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($this->febPeriod())->sum('debit'));
+        $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($this->febPeriod())->sum('credit'));
     }
 
     // -- ::scopePeriod() -----------------------------------------------------
@@ -221,14 +208,9 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToWithDatePassedAsCarbonPeriod(): void
     {
-        // TODO(zmd): can we not just use our ::febPeriod() helper here?
-        $start = CarbonImmutable::parse('2/1/2023');
-        $end = CarbonImmutable::parse('2/28/2023');
-        $period = $start->daysUntil($end);
-
-        $this->assertEquals(8, LineItem::priorTo($period)->count());
-        $this->assertEquals(1621500, LineItem::priorTo($period)->sum('debit'));
-        $this->assertEquals(1621500, LineItem::priorTo($period)->sum('credit'));
+        $this->assertEquals(8, LineItem::priorTo($this->febPeriod())->count());
+        $this->assertEquals(1621500, LineItem::priorTo($this->febPeriod())->sum('debit'));
+        $this->assertEquals(1621500, LineItem::priorTo($this->febPeriod())->sum('credit'));
     }
 
     public function testPriorToDoesNotFilterOutPendingItems(): void
@@ -286,14 +268,6 @@ final class LineItemScopeTest extends TestCase
     }
 
     // ------------------------------------------------------------------------
-
-    protected function janPeriod(): CarbonPeriod
-    {
-        $start = CarbonImmutable::parse('1/1/2023');
-        $end = CarbonImmutable::parse('12/31/2023');
-
-        return $start->daysUntil($end);
-    }
 
     protected function febPeriod(): CarbonPeriod
     {
