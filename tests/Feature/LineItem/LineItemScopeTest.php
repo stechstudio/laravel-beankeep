@@ -32,9 +32,8 @@ final class LineItemScopeTest extends TestCase
         $this->draftTxn(thisYear: '2/26',  dr: ['accounts-receivable',   480.00], cr: ['services-revenue',      480.00]);
         */
 
-        $this->travelTo('8/30/2023');
-
         // TODO(zmd): make this a reality
+        $this->travelTo('8/30/2023');
         [$_journal, $_accounts] = $this->for('jan', function ($txn, $draft) {
             $txn(  '12/25/2022', dr: ['cash',                10000.00], cr: ['capital',             10000.00]);
             $txn(  '1/5/2023',   dr: ['accounts-receivable',  1200.00], cr: ['services-revenue',     1200.00]);

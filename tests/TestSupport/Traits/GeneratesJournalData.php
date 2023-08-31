@@ -7,6 +7,9 @@ namespace STS\Beankeep\Tests\TestSupport\Traits;
 use Closure;
 use STS\Beankeep\Enums\JournalPeriod;
 use STS\Beankeep\Models\Journal;
+use STS\Beankeep\Models\Account;
+use STS\Beankeep\Database\Factories\AccountFactory;
+use STS\Beankeep\Database\Factories\Support\AccountLookup;
 use STS\Beankeep\Models\Transaction;
 use ValueError;
 
@@ -41,6 +44,7 @@ trait GeneratesJournalData
         return $this->txn($date, $dr, $cr, false);
     }
 
+    // TODO(zmd): extract helpers and try to clean up this mess
     protected function for(
         JournalPeriod|string $journalPeriod,
         Closure $cb,
@@ -58,8 +62,12 @@ trait GeneratesJournalData
             ['period' => $this->journalPeriod($journalPeriod)],
         );
 
-        // TODO(zmd): create accounts (if necessary) for real
-        $accounts = [];
+        Account::factory()
+            ->for($journal)
+            ->createMany(AccountFactory::defaultAccountAttributes());
+
+        // TODO(zmd): this needs to be scoped to the journal:
+        $accounts = AccountLookup::lookupTable();
 
         $txn = function (
             string $date,
@@ -78,7 +86,19 @@ trait GeneratesJournalData
             $creditAccount = $accounts[$creditAccount];
 
             // TODO(zmd): finish implementing me for real
+            $debit = new LineItem([
+                'debit' => $debitAmount,
+                'credit' => 0,
+                'account_id' => ???,
+                'transaction_id' => ???,
+            ]);
 
+            $credit = new LineItem([
+                'debit' => 0,
+                'credit' => $creditAmount,
+                'account_id' => ???,
+                'transaction_id' => ???,
+            ]);
         };
 
         $draftTxn = function (
