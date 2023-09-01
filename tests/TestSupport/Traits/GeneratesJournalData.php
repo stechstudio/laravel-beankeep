@@ -19,20 +19,22 @@ trait GeneratesJournalData
 {
     protected function txn(
         string $date,
+        ?Closure $cb = null,
         ?array $dr = null,
         ?array $cr = null,
         bool $posted = true,
     ): Transaction {
-        $this->for('jan', function (Closure $txn, Closure $draftTxn) use (
+        $this->for('jan', function (Closure $txn, Closure $draft) use (
             $date,
+            $cb,
             $dr,
             $cr,
             $posted,
             &$transaction,
         ) {
             $transaction = $posted
-                ? $txn($date, $dr, $cr)
-                : $draftTxn($date, $dr, $cr);
+                ? $txn($date, $cb, $dr, $cr)
+                : $draft($date, $cb, $dr, $cr);
         });
 
         return $transaction;
@@ -40,10 +42,11 @@ trait GeneratesJournalData
 
     protected function draft(
         string $date,
-        array $dr,
-        array $cr,
+        ?Closure $cb = null,
+        ?array $dr = null,
+        ?array $cr = null,
     ): Transaction {
-        return $this->txn($date, $dr, $cr, false);
+        return $this->txn($date, $cb, $dr, $cr, false);
     }
 
     protected function for(
@@ -115,8 +118,14 @@ trait GeneratesJournalData
         return AccountLookup::lookupTable($journal);
     }
 
-    protected function lineItemValues(?array $dr, ?array $cr): array
+    // TODO(zmd): lineItemValues(?Closure $cb, ?array $dr, ?array $cr)
+    protected function lineItemValues(?Closure $cb, ?array $dr, ?array $cr): array
     {
+        //
+        // TODO(zmd): re-work to return a list of list of line item values
+        //   rather than just the debit and credit values
+        //
+
         if (is_null($dr) || is_null($cr)) {
             throw new ValueError('Supply both a debit an a credit please.');
         }
@@ -142,16 +151,18 @@ trait GeneratesJournalData
     ): array {
         $txn = function (
             string $date,
-            array $dr,
-            array $cr,
+            ?Closure $cb = null,
+            ?array $dr = null,
+            ?array $cr = null,
             bool $posted = true,
         ) use ($journal, $accounts): Transaction {
+            // TODO(zmd): $lineItemValues = $this->lineItemValues($cb, $dr, $cr);
             [
                 $debitAccount,
                 $debitAmount,
                 $creditAccount,
                 $creditAmount,
-            ] = $this->lineItemValues($dr, $cr);
+            ] = $this->lineItemValues($cb, $dr, $cr);
 
             $transaction = Transaction::factory()->create([
                 'date' => Carbon::parse($date),
@@ -180,14 +191,15 @@ trait GeneratesJournalData
             return $transaction;
         };
 
-        $draftTxn = function (
+        $draft = function (
             string $date,
-            array $dr,
-            array $cr,
+            ?Closure $cb = null,
+            ?array $dr = null,
+            ?array $cr = null,
         ) use ($txn): Transaction {
-            return $txn($date, $dr, $cr, false);
+            return $txn($date, $cb, $dr, $cr, false);
         };
 
-        return [$txn, $draftTxn];
+        return [$txn, $draft];
     }
 }
