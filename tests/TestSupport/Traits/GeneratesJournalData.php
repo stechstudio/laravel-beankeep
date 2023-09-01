@@ -118,13 +118,45 @@ trait GeneratesJournalData
         return AccountLookup::lookupTable($journal);
     }
 
-    // TODO(zmd): lineItemValues(?Closure $cb, ?array $dr, ?array $cr)
-    protected function lineItemValues(?Closure $cb, ?array $dr, ?array $cr): array
-    {
+    protected function lineItemValues(
+        array $accounts,
+        ?Closure $cb,
+        ?array $dr,
+        ?array $cr,
+    ): array {
         //
         // TODO(zmd): re-work to return a list of list of line item values
         //   rather than just the debit and credit values
         //
+        $lineItems = collect();
+
+        //
+        // TODO(zmd): the callback expects a $debit and $credit closure to
+        //   actually allow specifying the line items to be created
+        //
+        $debit = function (
+            string $account,
+            float $amount,
+        ) use ($accounts, $lineItems) {
+            $lineItems->push(LineItem::factory()->make([
+                'debit' => (int) ($amount * 100),
+                'credit' => 0,
+                'account_id' => $accounts[$account]->id,
+            ]));
+        };
+
+        $credit = function (
+            string $account,
+            float $amount,
+        ) use ($accounts, $lineItems) {
+            $lineItems->push(LineItem::factory()->make([
+                'debit' => 0,
+                'credit' => (int) ($amount * 100),
+                'account_id' => $accounts[$account]->id,
+            ]));
+        };
+
+        // TODO(zmd): $cb($debit, $credit);
 
         if (is_null($dr) || is_null($cr)) {
             throw new ValueError('Supply both a debit an a credit please.');
@@ -162,7 +194,7 @@ trait GeneratesJournalData
                 $debitAmount,
                 $creditAccount,
                 $creditAmount,
-            ] = $this->lineItemValues($cb, $dr, $cr);
+            ] = $this->lineItemValues($accounts, $cb, $dr, $cr);
 
             $transaction = Transaction::factory()->create([
                 'date' => Carbon::parse($date),
