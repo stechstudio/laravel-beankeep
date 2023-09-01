@@ -1,0 +1,48 @@
+journal helper instance method for getting line items
+  all line items within journal's current period by default
+  optionally constrained to specific period
+  optionally constrained to specific account
+
+update account scopes - require journal
+
+denormalize line-item model (journal_id & date)
+  update factories, seeders, & tests
+  simplify existing scopes' implementations
+
+denormalize source-document model (journal_id)
+  update factories, seeders, & tests
+
+denormalize transaction model (journal_id)
+  update factories, seeders, & tests
+
+update line item scopes - require journal
+
+-----
+
+line item & account: current journal global scope (opt-in)
+
+report helpers
+  trial balance
+  other reports / custom report definitions?
+
+default accounts (used automatically for new journals)
+
+helpers/support for multi-db (journals grouped into sets, one db per set)?
+
+documentation, doc rendering (phpdocs?)
+
+code coverage
+
+-----
+
+prepare for & release 1.0
+
+-----
+
+headless livewire components?
+
+filament package?
+
+tease out "core" from laravel-specific bits?
+  look at money pattern & libs?
+  cli demo app?
