@@ -14,7 +14,6 @@ use STS\Beankeep\Models\Account;
 use STS\Beankeep\Models\Journal;
 use STS\Beankeep\Models\LineItem;
 use STS\Beankeep\Models\Transaction;
-use ValueError;
 
 trait GeneratesJournalData
 {
