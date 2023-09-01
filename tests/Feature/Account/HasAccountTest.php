@@ -7,11 +7,11 @@ namespace STS\Beankeep\Tests\Feature\Account;
 use STS\Beankeep\Models\Account as BeankeepAccount;
 use STS\Beankeep\Tests\TestCase;
 use STS\Beankeep\Tests\TestSupport\Models\Augmented\Account;
-use STS\Beankeep\Tests\TestSupport\Traits\CanCreateAccounts;
+use STS\Beankeep\Tests\TestSupport\Traits\GeneratesJournalData;
 
 final class HasAccountTest extends TestCase
 {
-    use CanCreateAccounts;
+    use GeneratesJournalData;
 
     public function testItKnowsItsBeankeepClass(): void
     {
@@ -23,9 +23,9 @@ final class HasAccountTest extends TestCase
 
     public function testItCanBeAssociatedWithAnEndUserAccountModel(): void
     {
-        $this->createAccounts();
-        $ar = $this->account('accounts-receivable');
-        $ap = $this->account('accounts-payable');
+        $accounts = $this->createAccounts();
+        $ar = $accounts['accounts-receivable'];
+        $ap = $accounts['accounts-payable'];
 
         $arDescription = "It's an account, where other people owe us monies! \o/";
         $ar->keep(Account::create(['description' => $arDescription]));
