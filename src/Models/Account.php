@@ -46,7 +46,7 @@ final class Account extends Beankeeper
 
     public function ledger(?CarbonPeriod $period = null): Ledger
     {
-        $period = $period ?? $this->journal->currentPeriod();
+        $period ??= $this->journal->currentPeriod();
 
         return new Ledger(
             account: $this,
@@ -57,7 +57,7 @@ final class Account extends Beankeeper
 
     public function balance(?CarbonPeriod $period = null): int
     {
-        $period = $period ?? $this->journal->currentPeriod();
+        $period ??= $this->journal->currentPeriod();
 
         $debitSum = $this->lineItems()->ledgerEntries($period)->sum('debit');
         $creditSum = $this->lineItems()->ledgerEntries($period)->sum('credit');
@@ -72,7 +72,7 @@ final class Account extends Beankeeper
 
     public function openingBalance(?CarbonPeriod $period = null): int
     {
-        $period = $period ?? $this->journal->currentPeriod();
+        $period ??= $this->journal->currentPeriod();
 
         $debitSum = $this->lineItems()
             ->ledgerEntries(priorTo: $period)
