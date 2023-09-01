@@ -94,7 +94,7 @@ trait GeneratesJournalData
     protected function getAccounts(?Journal $journal = null): array
     {
         if (! $journal) {
-            $journal = $this->getJournal(1);
+            $journal = $this->getJournal(1, 'jan');
         }
 
         if (! Account::where('journal_id', $journal->id)->count()) {
