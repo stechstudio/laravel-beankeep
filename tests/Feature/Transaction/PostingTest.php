@@ -30,7 +30,7 @@ final class PostingTest extends TestCase
 
     public function testCanPostReturnsTrueWithSplitDebits(): void
     {
-        $transaction = $this->draft('03/31', function ($debit, $credit) {
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
             $debit('interest-payable', 200.00);
             $debit('interest-expense', 200.00);
             $credit('cash', 400.00);
@@ -41,121 +41,94 @@ final class PostingTest extends TestCase
 
     public function testCanPostReturnsTrueWithSplitCredits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('buy netbook (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 400.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('equipment', 400.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 200.00);
+        });
 
         $this->assertTrue($transaction->canPost());
     }
 
     public function testCanPostReturnsTrueWithSplitDebitsAndSplitCredits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('05/05')
-            ->transact('buy netbook with extended damage insurance (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 200.00)
-            ->line('prepaid-insurance', dr: 200.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('5/5/2023', function ($debit, $credit) {
+            $debit('equipment', 200.00);
+            $debit('prepaid-insurance', 200.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 200.00);
+        });
 
         $this->assertTrue($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWhenDebitsAndCreditsDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')->transact('perform services')
-            ->line('accounts-receivable', dr: 400.00)
-            ->line('revenue', cr: 300.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $credit) {
+            $debit('accounts-receivable', 400.00);
+            $credit('revenue', 300.00);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWhenSplitDebitsAndCreditDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('pay interest on loan (including accrued interest from prior year)')
-            ->line('interest-payable', dr: 200.00)
-            ->line('interest-expense', dr: 200.00)
-            ->line('cash', cr: 400.02)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('interest-payable', 200.00);
+            $debit('interest-expense', 200.00);
+            $credit('cash', 400.02);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWhenDebitAndSplitCreditsDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('buy netbook (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 400.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 199.99)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('equipment', 400.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 199.99);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWhenSplitDebitsAndSplitCreditDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('05/05')
-            ->transact('buy netbook with extended damage insurance (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 200.00)
-            ->line('prepaid-insurance', dr: 200.00)
-            ->line('accounts-payable', cr: 200.10)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('05/05/2023', function ($debit, $credit) {
+            $debit('equipment', 200.00);
+            $debit('prepaid-insurance', 200.00);
+            $credit('accounts-payable', 200.10);
+            $credit('cash', 200.00);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWithoutLineItems(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($_debit, $_credit) {});
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWithoutAnyDebits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', cr: 400.00)
-            ->line('revenue', cr: 400.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($_debit, $credit) {
+            $credit('accounts-receivable', 400.00);
+            $credit('revenue', 400.00);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
 
     public function testCanPostReturnsFalseWithoutAnyCredits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', dr: 400.00)
-            ->line('revenue', dr: 400.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $_credit) {
+            $debit('accounts-receivable', 400.00);
+            $debit('revenue', 400.00);
+        });
 
         $this->assertFalse($transaction->canPost());
     }
@@ -164,13 +137,10 @@ final class PostingTest extends TestCase
 
     public function testSaveAllowsPostingWhenLineItemsDebitsAndCreditsBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', dr: 400.00)
-            ->line('revenue', cr: 400.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $credit) {
+            $debit('accounts-receivable', 400.00);
+            $credit('revenue', 400.00);
+        });
 
         $transaction->posted = true;
 
@@ -180,14 +150,11 @@ final class PostingTest extends TestCase
 
     public function testSaveAllowsPostingSplitDebits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('pay interest on loan (including accrued interest from prior year)')
-            ->line('interest-payable', dr: 200.00)
-            ->line('interest-expense', dr: 200.00)
-            ->line('cash', cr: 400.00)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('interest-payable', 200.00);
+            $debit('interest-expense', 200.00);
+            $credit('cash', 400.00);
+        });
 
         $transaction->posted = true;
 
@@ -197,14 +164,11 @@ final class PostingTest extends TestCase
 
     public function testSaveAllowsPostingSplitCredits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('buy netbook (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 400.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('equipment', 400.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 200.00);
+        });
 
         $transaction->posted = true;
 
@@ -214,15 +178,12 @@ final class PostingTest extends TestCase
 
     public function testSaveAllowsPostingSplitDebitsWithSplitCredits(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('05/05')
-            ->transact('buy netbook with extended damage insurance (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 200.00)
-            ->line('prepaid-insurance', dr: 200.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('5/5/2023', function ($debit, $credit) {
+            $debit('equipment', 200.00);
+            $debit('prepaid-insurance', 200.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 200.00);
+        });
 
         $transaction->posted = true;
 
@@ -232,13 +193,10 @@ final class PostingTest extends TestCase
 
     public function testSaveAllowedForUnbalancedLineItemsAsLongAsPostedRemainsFalse(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', 400.00)
-            ->line('revenue', 300.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $credit) {
+            $debit('accounts-receivable', 400.00);
+            $credit('revenue', 300.00);
+        });
 
         $transaction->memo = 'perform PREMIUM services';
 
@@ -248,13 +206,10 @@ final class PostingTest extends TestCase
 
     public function testSaveDisallowsPostingWhenLineItemsDebitsAndCreditsDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', dr: 400.00)
-            ->line('revenue', cr: 300.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $credit) {
+            $debit('accounts-receivable', 400.00);
+            $credit('revenue', 300.00);
+        });
 
         $this->expectException(TransactionLineItemsUnbalanced::class);
 
@@ -264,14 +219,11 @@ final class PostingTest extends TestCase
 
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndCreditDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('pay interest on loan (including accrued interest from prior year)')
-            ->line('interest-payable', dr: 200.00)
-            ->line('interest-expense', dr: 200.00)
-            ->line('cash', cr: 400.02)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('interest-payable', 200.00);
+            $debit('interest-expense', 200.00);
+            $credit('cash', 400.02);
+        });
 
         $this->expectException(TransactionLineItemsUnbalanced::class);
 
@@ -281,14 +233,11 @@ final class PostingTest extends TestCase
 
     public function testSaveDisallowsPostingWhenLineItemsDebitAndSplitCreditsDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('03/31')
-            ->transact('buy netbook (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 400.00)
-            ->line('accounts-payable', cr: 200.00)
-            ->line('cash', cr: 199.99)
-            ->draft();
+        $transaction = $this->draft('3/31/2023', function ($debit, $credit) {
+            $debit('equipment', 400.00);
+            $credit('accounts-payable', 200.00);
+            $credit('cash', 199.99);
+        });
 
         $this->expectException(TransactionLineItemsUnbalanced::class);
 
@@ -298,15 +247,12 @@ final class PostingTest extends TestCase
 
     public function testSaveDisallowsPostingWhenLineItemsSplitDebitsAndSplitCreditDontBalance(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('05/05')
-            ->transact('buy netbook with extended damage insurance (50% cash, 50% 30-day terms)')
-            ->line('equipment', dr: 200.00)
-            ->line('prepaid-insurance', dr: 200.00)
-            ->line('accounts-payable', cr: 200.10)
-            ->line('cash', cr: 200.00)
-            ->draft();
+        $transaction = $this->draft('5/5/2023', function ($debit, $credit) {
+            $debit('equipment', 200.00);
+            $debit('prepaid-insurance', 200.00);
+            $credit('accounts-payable', 200.10);
+            $credit('cash', 200.00);
+        });
 
         $this->expectException(TransactionLineItemsUnbalanced::class);
 
@@ -316,11 +262,7 @@ final class PostingTest extends TestCase
 
     public function testSaveDisallowsPostingWithoutLineItems(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->draft();
+        $transaction = $this->draft('07/18', function ($_debit, $_credit) {});
 
         $this->expectException(TransactionLineItemsMissing::class);
 
@@ -343,13 +285,10 @@ final class PostingTest extends TestCase
 
     public function testSaveRequiresAtLeastOneDebit(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', cr: 400.00)
-            ->line('revenue', cr: 400.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($_debit, $credit) {
+            $credit('accounts-receivable', 400.00);
+            $credit('revenue', 400.00);
+        });
 
         $this->expectException(TransactionLineItemsMissing::class);
 
@@ -359,13 +298,10 @@ final class PostingTest extends TestCase
 
     public function testSaveRequiresAtLeastOneCredit(): void
     {
-        $this->markTestSkipped('TODO(zmd): revision needed');
-
-        $transaction = $this->thisYear('07/18')
-            ->transact('perform services')
-            ->line('accounts-receivable', dr: 400.00)
-            ->line('revenue', dr: 400.00)
-            ->draft();
+        $transaction = $this->draft('7/18/2023', function ($debit, $_credit) {
+            $debit('accounts-receivable', 400.00);
+            $debit('revenue', 400.00);
+        });
 
         $this->expectException(TransactionLineItemsMissing::class);
 
