@@ -6,6 +6,7 @@ namespace STS\Beankeep\Tests\TestSupport\Traits;
 
 use Carbon\Carbon;
 use Closure;
+use Illuminate\Support\Collection;
 use STS\Beankeep\Database\Factories\AccountFactory;
 use STS\Beankeep\Database\Factories\Support\AccountLookup;
 use STS\Beankeep\Enums\JournalPeriod;
@@ -118,22 +119,14 @@ trait GeneratesJournalData
         return AccountLookup::lookupTable($journal);
     }
 
-    protected function lineItemValues(
+    protected function makeLineItems(
         array $accounts,
         ?Closure $cb,
         ?array $dr,
         ?array $cr,
-    ): array {
-        //
-        // TODO(zmd): re-work to return a list of list of line item values
-        //   rather than just the debit and credit values
-        //
+    ): Collection {
         $lineItems = collect();
 
-        //
-        // TODO(zmd): the callback expects a $debit and $credit closure to
-        //   actually allow specifying the line items to be created
-        //
         $debit = function (
             string $account,
             float $amount,
@@ -156,25 +149,19 @@ trait GeneratesJournalData
             ]));
         };
 
-        // TODO(zmd): $cb($debit, $credit);
-
-        if (is_null($dr) || is_null($cr)) {
-            throw new ValueError('Supply both a debit an a credit please.');
+        if ($dr) {
+            $debit($dr[0], $dr[1]);
         }
 
-        if (is_string($dr[0])) {
-            [$debitAccount, $debitAmount] = $dr;
-        } else {
-            [$debitAmount, $debitAccount] = $dr;
+        if ($cr) {
+            $credit($cr[0], $cr[1]);
         }
 
-        if (is_string($cr[0])) {
-            [$creditAccount, $creditAmount] = $cr;
-        } else {
-            [$creditAmount, $creditAccount] = $cr;
+        if ($cb) {
+            $cb($debit, $credit);
         }
 
-        return [$debitAccount, $debitAmount, $creditAccount, $creditAmount];
+        return $lineItems;
     }
 
     protected function getTransactionConstructors(
@@ -188,32 +175,14 @@ trait GeneratesJournalData
             ?array $cr = null,
             bool $posted = true,
         ) use ($journal, $accounts): Transaction {
-            // TODO(zmd): $lineItemValues = $this->lineItemValues($cb, $dr, $cr);
-            [
-                $debitAccount,
-                $debitAmount,
-                $creditAccount,
-                $creditAmount,
-            ] = $this->lineItemValues($accounts, $cb, $dr, $cr);
+            $lineItems = $this->makeLineItems($accounts, $cb, $dr, $cr);
 
             $transaction = Transaction::factory()->create([
                 'date' => Carbon::parse($date),
             ]);
 
-            $debit = LineItem::factory()->make([
-                'debit' => (int) ($debitAmount * 100),
-                'credit' => 0,
-                'account_id' => $accounts[$debitAccount]->id,
-            ]);
-
-            $credit = LineItem::factory()->make([
-                'debit' => 0,
-                'credit' => (int) ($creditAmount * 100),
-                'account_id' => $accounts[$creditAccount]->id,
-            ]);
-
-            $transaction->lineItems()->save($debit);
-            $transaction->lineItems()->save($credit);
+            $lineItems->each(fn ($lineItem) =>
+                $transaction->lineItems()->save($lineItem));
 
             if ($posted) {
                 $transaction->posted = true;
