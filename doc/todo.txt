@@ -1,3 +1,5 @@
+factories / seeders - create more than one journal
+
 journal helper instance method for getting line items
   all line items within journal's current period by default
   optionally constrained to specific period
