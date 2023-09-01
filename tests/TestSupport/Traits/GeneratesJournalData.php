@@ -73,8 +73,10 @@ trait GeneratesJournalData
 
     protected function getJournal(
         int $journalId,
-        JournalPeriod|string $journalPeriod,
+        JournalPeriod|string|null $journalPeriod = null,
     ): Journal {
+        $journalPeriod = $this->journalPeriod($journalPeriod);
+
         return Journal::updateOrCreate(
             ['id' => $journalId],
             ['period' => $this->journalPeriod($journalPeriod)],
@@ -82,22 +84,29 @@ trait GeneratesJournalData
     }
 
     protected function journalPeriod(
-        JournalPeriod|string $journalPeriod,
+        JournalPeriod|string|null $journalPeriod = null,
     ): JournalPeriod {
         if (is_string($journalPeriod)) {
             return JournalPeriod::fromString($journalPeriod);
         }
 
-        return $journalPeriod;
+        return $journalPeriod ?? JournalPeriod::Jan;
     }
 
-    protected function getAccounts(?Journal $journal = null): array
-    {
-        if (! $journal) {
-            $journal = $this->getJournal(1, 'jan');
-        }
+    protected function createAccounts(
+        ?Journal $journal = null,
+        JournalPeriod|string|null $journalPeriod = null,
+    ): array {
+        return $this->getAccounts($journal, $journalPeriod);
+    }
 
-        if (! Account::where('journal_id', $journal->id)->count()) {
+    protected function getAccounts(
+        ?Journal $journal = null,
+        JournalPeriod|string|null $journalPeriod = null,
+    ): array {
+        $journal ??= $this->getJournal(1, $journalPeriod);
+
+        if (! $journal->accounts()->exists()) {
             Account::factory()
                 ->for($journal)
                 ->createMany(AccountFactory::defaultAccountAttributes());
