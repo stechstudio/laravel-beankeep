@@ -48,7 +48,7 @@ final class LedgerTest extends TestCase
 
     public function testItCanConstructLedgerObjectForDebitPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $janLedger = $this->accounts['cash']->ledger($this->janPeriod());
 
@@ -71,7 +71,7 @@ final class LedgerTest extends TestCase
 
     public function testItCanConstructLedgerObjectForCreditPositiveAccountCorrectlyExcludingUnpostedTransactionsInThePast(): void
     {
-        $this->draftTxn('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
+        $this->draft('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
 
         $janLedger = $this->accounts['accounts-payable']->ledger($this->janPeriod());
 

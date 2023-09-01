@@ -38,7 +38,7 @@ trait GeneratesJournalData
         return $transaction;
     }
 
-    protected function draftTxn(
+    protected function draft(
         string $date,
         array $dr,
         array $cr,

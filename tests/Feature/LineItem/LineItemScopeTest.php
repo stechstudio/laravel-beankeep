@@ -51,7 +51,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsString(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
             CarbonImmutable::parse('2/1/2023')->format('d-M Y'),
@@ -66,7 +66,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbon(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = Carbon::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
@@ -76,7 +76,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonImmutable(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $date)->count());
@@ -86,7 +86,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesReturnsPostedEntriesPriorToDatePassedAsCarbonPeriod(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(8, LineItem::ledgerEntries(priorTo: $this->febPeriod())->count());
         $this->assertEquals(1621500, LineItem::ledgerEntries(priorTo: $this->febPeriod())->sum('debit'));
@@ -122,7 +122,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsString(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         foreach ([
             CarbonImmutable::parse('2/1/2023')->format('d-M Y'),
@@ -137,7 +137,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbon(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = Carbon::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
@@ -147,7 +147,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonImmutable(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($date)->count());
@@ -157,7 +157,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testLedgerEntriesPriorToWithDatePassedAsCarbonPeriod(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(8, LineItem::ledgerEntriesPriorTo($this->febPeriod())->count());
         $this->assertEquals(1621500, LineItem::ledgerEntriesPriorTo($this->febPeriod())->sum('debit'));
@@ -215,7 +215,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testPriorToDoesNotFilterOutPendingItems(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
         $date = CarbonImmutable::parse('2/1/2023');
 
         $this->assertEquals(10, LineItem::priorTo($date)->count());
@@ -227,7 +227,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopePostedReturnsJustPostedLineItems(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(12, LineItem::posted()->count());
         $this->assertEquals(1690500, LineItem::posted()->sum('debit'));
@@ -238,7 +238,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopePendingJustReturnsPendingLineItems(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(6, LineItem::pending()->count());
         $this->assertEquals(553000, LineItem::pending()->sum('debit'));
@@ -249,7 +249,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopeDebitsJustReturnsDebitLineItems(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(9, LineItem::debits()->count());
         $this->assertEquals(2243500, LineItem::debits()->sum('debit'));
@@ -260,7 +260,7 @@ final class LineItemScopeTest extends TestCase
 
     public function testScopeCreditsJustReturnsDebitLineItems(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(9, LineItem::credits()->count());
         $this->assertEquals(0, LineItem::credits()->sum('debit'));

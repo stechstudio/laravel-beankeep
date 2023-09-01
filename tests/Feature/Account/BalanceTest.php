@@ -46,7 +46,7 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveBalanceCalculations(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(998500, $this->accounts['cash']->balance($this->janPeriod()));
     }
@@ -63,7 +63,7 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveBalanceCalculations(): void
     {
-        $this->draftTxn('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
+        $this->draft('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
 
         $this->assertEquals(500000, $this->accounts['accounts-payable']->balance($this->janPeriod()));
     }
@@ -82,7 +82,7 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInDebitPositiveOpeningBalanceCalculations(): void
     {
-        $this->draftTxn('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
+        $this->draft('12/27/2022', dr: ['supplies-expense', 50.00], cr: ['cash', 50.00]);
 
         $this->assertEquals(998500, $this->accounts['cash']->openingBalance($this->febPeriod()));
     }
@@ -99,7 +99,7 @@ final class BalanceTest extends TestCase
 
     public function testThatItCorrectlyExcludesNonPostedTransactionsInCreditPositiveOpeningBalanceCalculations(): void
     {
-        $this->draftTxn('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
+        $this->draft('12/28/2022', dr: ['equipment', 25.00], cr: ['accounts-payable', 25.00]);
 
         $this->assertEquals(750000, $this->accounts['accounts-payable']->balance($this->febPeriod()));
     }
