@@ -7,6 +7,7 @@ namespace STS\Beankeep\Database\Factories\Support;
 use ArrayAccess;
 use Illuminate\Support\Str;
 use STS\Beankeep\Models\Account;
+use STS\Beankeep\Models\Journal;
 
 final class AccountLookup implements ArrayAccess
 {
@@ -17,13 +18,17 @@ final class AccountLookup implements ArrayAccess
         $this->refresh();
     }
 
-    public function refresh(): void
+    public function refresh(?Journal $journal = null): void
     {
-        $this->accounts = self::lookupTable();
+        $this->accounts = self::lookupTable($journal);
     }
 
-    public static function lookupTable(): array
+    public static function lookupTable(?Journal $journal = null): array
     {
+        if (!$journal) {
+            $journal = Journal::find(1);
+        }
+
         return Account::all()
             ->mapWithKeys(fn (Account $account) =>
                 [Str::kebab($account->name) => $account])

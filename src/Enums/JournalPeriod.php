@@ -76,40 +76,4 @@ enum JournalPeriod: int
             'dec', 'december'          => static::Dec,
         };
     }
-
-    public static function get(?CarbonPeriod $period): CarbonPeriod
-    {
-        if (is_null($period)) {
-            return static::defaultPeriod();
-        }
-
-        return $period;
-    }
-
-    public static function defaultPeriod(): CarbonPeriod
-    {
-        if (config('beankeep.default-period')) {
-            return static::defaultPeriodFromConfig();
-        }
-
-        return static::defaultPeriodThisYear();
-    }
-
-    private static function defaultPeriodFromConfig(): CarbonPeriod {
-        $startMonthStr = config('beankeep.default-period');
-
-        $journalPeriod = JournalPeriod::fromString(
-            config('beankeep.default-period'),
-        );
-
-        return $journalPeriod->toCarbonPeriod();
-    }
-
-    private static function defaultPeriodThisYear(): CarbonPeriod
-    {
-        $startOfYear = CarbonImmutable::now()->startOfYear();
-        $endOfYear = CarbonImmutable::now()->endOfYear();
-
-        return $startOfYear->daysUntil($endOfYear);
-    }
 }

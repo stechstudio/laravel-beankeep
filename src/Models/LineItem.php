@@ -80,8 +80,8 @@ final class LineItem extends Beankeeper
         ?CarbonPeriod $period = null,
         null|string|Carbon|CarbonImmutable|CarbonPeriod $priorTo = null,
     ): void {
-        if ($period && $priorTo) {
-            throw new ValueError('You cannot specify both a period and '
+        if (!($period xor $priorTo)) {
+            throw new ValueError('You must specify a period or a'
                 . 'priorTo argument.');
         }
 
@@ -96,10 +96,8 @@ final class LineItem extends Beankeeper
 
     public function scopeLedgerEntriesForPeriod(
         Builder $query,
-        ?CarbonPeriod $period = null,
+        CarbonPeriod $period,
     ): void {
-        $period = JournalPeriod::get($period);
-
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period)
             ->where('posted', true));
@@ -116,12 +114,8 @@ final class LineItem extends Beankeeper
             ->where('posted', true));
     }
 
-    public function scopePeriod(
-        Builder $query,
-        ?CarbonPeriod $period = null,
-    ): void {
-        $period = JournalPeriod::get($period);
-
+    public function scopePeriod(Builder $query, CarbonPeriod $period): void
+    {
         $query->whereHas('transaction', fn (Builder $query) => $query
             ->whereBetween('date', $period));
     }
